@@ -14,8 +14,8 @@ class UsersPower
   def default_scope
     case(@context.app)
     when "central" then User
-    when "network" then @context.entity.users
-    when "organization" then @context.entity.users
+#    when "network" then @context.entity.users
+#    when "organization" then @context.entity.users
     end
   end
 end

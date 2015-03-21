@@ -42,8 +42,8 @@ class ApplicationContext
   def entity
     case app
     when "central" then nil
-    when "network" then Network.find(entity_id)
-    when "organization" then Organization.find(entity_id)
+#    when "network" then Network.find(entity_id)
+#    when "organization" then Organization.find(entity_id)
     end
   end
   

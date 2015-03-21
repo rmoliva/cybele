@@ -27,10 +27,6 @@ class User < ActiveRecord::Base
   # Relations
   has_many :role_users
   has_many :roles, :through => :role_users 
-  has_many :network_users
-  has_many :networks, :through => :network_users 
-  has_many :process_item_users
-  has_many :process_items, :through => :process_item_users 
      
   # Attributes
   assignable_values_for :gender do

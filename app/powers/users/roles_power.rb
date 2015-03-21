@@ -15,8 +15,8 @@ module Users
     def default_scope
       case(@context.app)
         when "central" then @main.role_users
-        when "network" then @main.role_users.with_network(@context.entity_id)
-        when "organization" then @main.role_users.with_organization(@context.entity_id)
+#        when "network" then @main.role_users.with_network(@context.entity_id)
+#        when "organization" then @main.role_users.with_organization(@context.entity_id)
       end
     end
   end

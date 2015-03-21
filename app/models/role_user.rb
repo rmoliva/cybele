@@ -46,13 +46,9 @@ class RoleUser < ActiveRecord::Base
       where(:entity_id => entity_id)
     end
     
-    def with_network(entity_id)
-      with_entity_type("Network").with_entity_id(entity_id)
-    end
-    
-    def with_organization(entity_id)
-      with_entity_type("Organization").with_entity_id(entity_id)
-    end
+#    def with_organization(entity_id)
+#      with_entity_type("Organization").with_entity_id(entity_id)
+#    end
   end
   
   def self.permission_scope
