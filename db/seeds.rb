@@ -6,6 +6,15 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+
+puts "Creando paises"
+# https://github.com/umpirsky/country-list/blob/master/country/icu/en/country.json
+countries = YAML::load_file(File.join(__dir__, 'country.yaml'))
+
+countries.each do |code, name|
+  Country.where(:code => code).first_or_create!(:name => name)
+end
+
 if User.count == 0
   puts "Creando usuario Administrador"
   
@@ -48,7 +57,7 @@ puts "Asignando el rol al administrador"
 RoleUser.where(:role_id => role,:user_id=>User.first).first_or_create!
 
 # Asignarle todos los permisos
-%w(central network organization).each do |app|
+%w(central).each do |app|
   puts "- Permisos de app: #{app}"
   Permission.send(app.to_sym).each do |klass, action_list|
     puts "-- klass: #{klass}"

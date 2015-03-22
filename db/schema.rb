@@ -11,26 +11,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150321182910) do
+ActiveRecord::Schema.define(version: 20150322091853) do
 
-  create_table "organizations", force: :cascade do |t|
-    t.string   "name",              limit: 250,   null: false
-    t.string   "description",       limit: 250
-    t.string   "address",           limit: 250
-    t.string   "city",              limit: 150
-    t.string   "state",             limit: 150
-    t.string   "postal_code",       limit: 50
-    t.string   "phone1",            limit: 50
-    t.string   "phone2",            limit: 50
-    t.string   "email",             limit: 100
-    t.string   "email2",            limit: 100
-    t.text     "logo",              limit: 65535
-    t.string   "logo_content_type", limit: 50
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "countries", force: :cascade do |t|
+    t.string   "code",       limit: 2
+    t.string   "name",       limit: 255
+    t.text     "comments",   limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
-  add_index "organizations", ["name"], name: "index_organizations_on_name", unique: true, using: :btree
+  add_index "countries", ["code"], name: "index_countries_on_code", using: :btree
+  add_index "countries", ["name"], name: "index_countries_on_name", using: :btree
+
+  create_table "entities", force: :cascade do |t|
+    t.string   "name",           limit: 150,               null: false
+    t.string   "address",        limit: 250
+    t.string   "city",           limit: 150
+    t.string   "state",          limit: 150
+    t.integer  "country_id",     limit: 4
+    t.string   "postal_code",    limit: 50
+    t.string   "phone1",         limit: 50
+    t.string   "phone2",         limit: 50
+    t.string   "email1",         limit: 100
+    t.string   "email2",         limit: 100
+    t.integer  "parent_id",      limit: 4
+    t.integer  "lft",            limit: 4,                 null: false
+    t.integer  "rgt",            limit: 4,                 null: false
+    t.integer  "depth",          limit: 4,     default: 0, null: false
+    t.integer  "children_count", limit: 4,     default: 0, null: false
+    t.text     "comments",       limit: 65535
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "entities", ["country_id"], name: "fk_rails_d9fddbe4c8", using: :btree
+  add_index "entities", ["lft"], name: "index_entities_on_lft", using: :btree
+  add_index "entities", ["name"], name: "index_entities_on_name", using: :btree
+  add_index "entities", ["parent_id"], name: "index_entities_on_parent_id", using: :btree
+  add_index "entities", ["rgt"], name: "index_entities_on_rgt", using: :btree
 
   create_table "role_permissions", force: :cascade do |t|
     t.integer  "role_id",    limit: 4,  null: false
@@ -136,6 +155,7 @@ ActiveRecord::Schema.define(version: 20150321182910) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  add_foreign_key "entities", "countries"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "role_users", "roles"
   add_foreign_key "role_users", "users"
