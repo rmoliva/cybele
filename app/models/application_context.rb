@@ -36,7 +36,7 @@ class ApplicationContext
   end
   
   def can?(klass,action)
-    @permission.can?(@app,@entity_id,klass,action)
+    @permission.can?(@app,entity,klass,action)
   end
   
   def entity

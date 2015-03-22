@@ -3,13 +3,16 @@ require 'rails_helper'
 RSpec.describe UsersPower, type: :model do
   
   describe "for central application contexts" do
-    let(:user) {build_stubbed(:user)}
+    let(:user) {create(:user)}
     let(:context) do
       ApplicationContext.new(:app => "central", :entity_id => nil, :user => user)
     end
     let(:default_scope) {User}
     subject{UsersPower.new(context)}
-    it_should_behave_like ActsAsPowerScope
+    it_should_behave_like ActsAsPowerScope, {
+      :permission_app => "central",
+      :klass => "user"
+    }
   end
 
 #  describe "for network application contexts" do

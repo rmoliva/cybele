@@ -3,6 +3,8 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
+require "authlogic/test_case"
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -52,7 +54,10 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
   
+  config.include Authlogic::TestCase
+  config.include AuthlogicMacros
   config.include UserMacros
+  config.include PermissionMacros
   config.include FactoryGirl::Syntax::Methods
   
   config.before(:suite) do
@@ -68,6 +73,7 @@ RSpec.configure do |config|
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
+    activate_authlogic
   end
 
   config.after(:each) do

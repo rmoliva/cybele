@@ -35,4 +35,20 @@ module UserMacros
     user1.email2 == user2[:email2] 
   end
   
+  def debug user
+    ap ({
+      :email => user[:email],
+      :name => user[:name],
+      :surname => user[:surname], 
+      :gender => user[:gender],
+      :address => user[:address],
+      :city => user[:city],
+      :state => user[:state],
+      :postal_code => user[:postal_code],
+      :phone1 => user[:phone1],
+      :phone2 => user[:phone2],
+      :email2 => user[:email2]
+    })
+  end
+  
 end
