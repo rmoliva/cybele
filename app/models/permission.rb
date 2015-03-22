@@ -70,30 +70,24 @@ class Permission
   # una entidad en concreto (nil si es la central)
   # una clase (klass) y una accion en concreto
   def can?(app,entity,klass,action)
-    # Poder pasar un id o un objeto como entidad
-    entity_id = entity.is_a?(Fixnum) ? entity : entity.try(:id)
-    
-    permission = find_permission(entity_type_by_app(app), entity_id, app, klass, action)
-    
-    return permission[:value] if permission 
-    
     # A nivel central, no hay mas que buscar
-    return nil if app == 'central'
+    if app == 'central'
+      permission = find_permission(entity_type_by_app(app), entity, app, klass, action)
+      return permission.try(:'[]', :value)
+    end 
     
-    # Hay que buscar en la red si es un permiso a nivel de organizacion
-#    if app == 'organization'
-#      parent_id = Organization.find(entity_id).network_id
-#      permission = find_permission(entity_type_by_app("network"), parent_id, app, klass, action)
-#      return permission[:value] if permission 
-#    end
-    
-    # Hay que buscar a nivel central si es un permiso a nivel de red
-#    permission = find_permission(entity_type_by_app("central"), nil, app, klass, action)
-#    value = permission.try(:"[]",:value)
-    
-    unless value
-      Rails.logger.debug "No permisson to: #{app}, #{entity_id}, #{klass}, #{action}"
+    # Obtener todos los ancestors de la entidad
+    entity.self_and_parents.each do |ancestor|
+      permission = find_permission(entity_type_by_app("entity"), ancestor, app, klass, action)
+      return permission.try(:'[]', :value) if permission
     end
+
+    # Hay que buscar a nivel central si es un permiso a nivel de red
+    permission = find_permission(entity_type_by_app("central"), nil, app, klass, action)
+    value = permission.try(:"[]",:value)
+
+    # Si se llega aqui no se ha encontrado el permiso buscado
+    Rails.logger.debug "No permisson to: #{app}, #{entity.id}, #{klass}, #{action}"
     value
   end # can?
   
@@ -101,25 +95,23 @@ protected
   def entity_type_by_app(app)
     case(app)
     when "central" then nil
-#    when "organization" then Organization
-#    when "network" then Network
-#    else
-#      raise "Unkown application: #{app}"
+    when "entity" then Entity
+    else
+      raise "Unkown application: #{app}"
     end
   end
 
   def find_permission(role_entity_type, role_entity, app, klass, action)
     # Poder pasar un id o un objeto como entidad
-    entity_id = role_entity.is_a?(Fixnum) ? role_entity : role_entity.try(:id)
-    entity_id = app == 'central' ? nil : entity_id # Para la entidad central, no buscar por id
-    
+    entity_id = app == 'central' ? nil : role_entity.try(:id) # Para la entidad central, no buscar por id
+
     # Buscamos primero si hay una busqueda exacta
     permission = @permission_table.detect do |pt|
       pt[:app] == app.to_s and 
       pt[:klass] == klass.to_s and 
       pt[:action].to_s == action.to_s and
       pt[:role_entity_type].to_s == role_entity_type.to_s and 
-      pt[:role_entity_id] == entity_id
+      pt[:role_entity_id] == entity_id 
     end
     permission
   end  

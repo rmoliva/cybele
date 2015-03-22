@@ -14,7 +14,7 @@
 class ApplicationContext
   include Virtus.model
 
-  APPS = %w(central)
+  APPS = %w(central entity)
   
   attribute :app, String, :writer => :private
   attribute :entity_id, Integer, :writer => :private
@@ -42,8 +42,7 @@ class ApplicationContext
   def entity
     case app
     when "central" then nil
-#    when "network" then Network.find(entity_id)
-#    when "organization" then Organization.find(entity_id)
+    when "entity" then Entity.find(entity_id)
     end
   end
   

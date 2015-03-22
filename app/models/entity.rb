@@ -29,4 +29,16 @@ class Entity < ActiveRecord::Base
   # Callbacks
 
   # Scopes
+
+  # Devolver la propia entidad y un array con los padres   
+  def self_and_parents
+    p = [self]
+    parent = self.parent 
+    
+    while parent do
+      p << parent
+      parent = parent.parent 
+    end
+    p
+  end
 end
