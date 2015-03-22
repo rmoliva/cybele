@@ -28,7 +28,24 @@ class Permission
         permission: [ # permission
           :show # action
         ],
-        organization: [ # permission
+        role_user: [
+          :index, # action
+          :create,
+          :update,
+          :destroy
+        ],
+        entity: [
+          :index, # action
+          :create,
+          :update,
+          :destroy
+        ]
+      }
+    end
+
+    def entity # app 
+      {
+        entity_user: [ # klass
           :index, # action
           :create,
           :update,
@@ -39,10 +56,15 @@ class Permission
           :create,
           :update,
           :destroy
+        ],
+        entity: [
+          :index, # action
+          :create,
+          :update,
+          :destroy
         ]
       }
     end
-    
   end
   
   def initialize user
