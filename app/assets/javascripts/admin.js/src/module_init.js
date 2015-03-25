@@ -5,6 +5,7 @@ AdminJS.ModuleInit = function(core) {
 
     var modules = {
         layout: AdminJS.modules.layout.Module,
+        topnav: AdminJS.modules.topnav.Module,
         sidebar: AdminJS.modules.sidebar.Module,
         users: AdminJS.modules.users.Module
     };

@@ -8,7 +8,6 @@
 //= require scaleapp
 //= require bluebird
 //= require react
-//= require bootstrap-sass
 //= require bootstrap
 //= require signals
 //= require hasher
@@ -36,6 +35,7 @@
 
 // Lib Javascript libraries (not in bower)
 //= require_tree ../lib
+//= require ../sa/simplify
 
 // Application source code
 //= require_tree ./src

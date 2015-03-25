@@ -17,7 +17,7 @@ AdminJS.app = function(options) {
     function parseHash(newHash, oldHash) {
         if (newHash == '') {
             // redirect to "home" hash without keeping the empty hash on the history
-            hasher.replaceHash('countries');
+            hasher.replaceHash('dashboard');
         } else {
             router.parse(newHash);
         }
@@ -56,11 +56,7 @@ AdminJS.app = function(options) {
 
         router = crossroads.create();
 
-        router.addRoute('countries', onRouteCountries);
-        router.addRoute('users', onRouteUsers);
-        router.addRoute('networks', onRouteNetworks);
-        router.addRoute('efqm_trees', onRouteEfqmTrees);
-        router.addRoute('roles', onRouteRoles);
+        router.addRoute('dashboard', onRouteDashboard);
         router.routed.add(console.log, console); //log all routes
 
         hasher.initialized.add(parseHash); //parse initial hash
@@ -76,53 +72,12 @@ AdminJS.app = function(options) {
       }));
     };
 
-    var onRouteCountries = function() {
+    var onRouteDashboard = function() {
       promiseStopContentModules().then(function() {
-        return core.promises.moduleStart("layout", options)
+        return core.promises.moduleStart("layout", options);
       }).then(function() {
-        return core.promises.moduleStart("sidebar", {el: '#sidebar', active: "#countries"})
+        return core.promises.moduleStart("topnav", {el: '#topnav'});
       }).then(function() {
-        return core.promises.moduleStart("countries", {el: '#main'})
-      }).done();
-    };
-
-    var onRouteUsers = function() {
-      promiseStopContentModules().then(function() {
-        return core.promises.moduleStart("layout", options)
-      }).then(function() {
-        return core.promises.moduleStart("sidebar", {el: '#sidebar', active: "#users"})
-      }).then(function() {
-        return core.promises.moduleStart("users", {el: '#main'})
-      }).done();
-    };
-
-    var onRouteNetworks = function() {
-      promiseStopContentModules().then(function() {
-        return core.promises.moduleStart("layout", options)
-      }).then(function() {
-        return core.promises.moduleStart("sidebar", {el: '#sidebar', active: "#networks"})
-      }).then(function() {
-        return core.promises.moduleStart("networks", {el: '#main'})
-      }).done();
-    };
-
-    var onRouteEfqmTrees = function() {
-      promiseStopContentModules().then(function() {
-        return core.promises.moduleStart("layout", options)
-      }).then(function() {
-        return core.promises.moduleStart("sidebar", {el: '#sidebar', active: "#efqm_trees"})
-      }).then(function() {
-        return core.promises.moduleStart("efqm_trees", {el: '#main'})
-      }).done();
-    };
-    
-    var onRouteRoles = function() {
-      promiseStopContentModules().then(function() {
-        return core.promises.moduleStart("layout", options)
-      }).then(function() {
-        return core.promises.moduleStart("sidebar", {el: '#sidebar', active: "#roles"})
-      }).then(function() {
-        return core.promises.moduleStart("roles", {el: '#main'})
       }).done();
     };
 

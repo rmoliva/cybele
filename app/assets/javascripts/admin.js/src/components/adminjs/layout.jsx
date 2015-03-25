@@ -4,25 +4,37 @@ AdminJS.components.adminjs.Layout = React.createClass({
   
   render: function() {
     return (
-      <div>
-        <div className="wrapper">
-            <div className="sidebar-right">
-         
-            </div>
-            <div className="top-nav">
-          
-            </div>
-            <div className="sidebar-menu">
-          
-            </div>
-
-            <div className="main-container">
-          
-            </div>
-            <footer className="footer">
-          
-            </footer>
-        </div>
+      <div className="wrapper">
+       
+          {/* Right Sidebar */}
+          <div className="sidebar-right">
+       
+          </div>
+          {/* End of Right Sidebar */}
+       
+          {/* Top Navigation - Render module: topnav*/}
+          <div id='topnav'>
+          </div>
+       
+          {/* End of Top Navigation */}
+       
+          {/* Left Sidebar Menu */}
+          <div className="sidebar-menu">
+        
+          </div>
+          {/* End of Sidebar Menu */}
+        
+          {/* Main Container */}
+          <div className="main-container">
+        
+          </div>
+          {/* End of Main Container */}
+        
+          {/* Footer */}
+          <footer className="footer">
+        
+          </footer>
+          {/* End of Footer */}
       </div>
     );
   }

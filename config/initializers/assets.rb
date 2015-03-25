@@ -12,5 +12,3 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w( 
   admin.js/application.js 
 )
-
-# require File.join(Rails.root, "lib", "react-jsx-sprockets.rb")
