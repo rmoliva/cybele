@@ -1,0 +1,17 @@
+- content_for :js_links do
+  - # Load ExtJS App
+
+- content_for :main_content do
+  #application
+  :javascript         
+    $(function() {
+      var app = AdminJS.app({
+        el: "#application",
+        locale: 'es',
+        callbacks: AdminJS.test.Callbacks()
+      });
+      
+      app.initialize();
+     });
+
+

@@ -2,8 +2,8 @@
 
 class MainController < ApplicationController
   
-  # Accion para lanzar la aplicacion del admin.js
-  def admin
+  # Accion para lanzar aplicaciones
+  def index
     
   end
   

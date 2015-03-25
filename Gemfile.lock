@@ -87,6 +87,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     colorize (0.7.5)
     columnize (0.9.0)
+    commonjs (0.2.7)
     consul (0.12.0)
       edge_rider (>= 0.3.0)
       memoizer
@@ -135,6 +136,8 @@ GEM
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    less (2.6.0)
+      commonjs (~> 0.2.7)
     libv8 (3.16.14.7)
     lograge (0.3.1)
       actionpack (>= 3)
@@ -165,6 +168,8 @@ GEM
       mime-types
     puma (2.11.1)
       rack (>= 1.1, < 2.0)
+    quiet_assets (1.1.0)
+      railties (>= 3.1, < 5.0)
     rack (1.6.0)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -195,6 +200,11 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
+    react-jsx-sprockets (0.2.0)
+      execjs (>= 1.2.9)
+      sprockets (>= 2.0.3)
+      tilt (>= 1.3.3)
+      yajl-ruby
     ref (1.0.5)
     request_store (1.1.0)
     rspec-core (3.2.2)
@@ -239,6 +249,9 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    sprockets-less (0.6.1)
+      less (~> 2.4)
+      tilt (~> 1.1)
     sprockets-rails (2.2.4)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
@@ -268,6 +281,7 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    yajl-ruby (1.2.1)
 
 PLATFORMS
   ruby
@@ -290,6 +304,7 @@ DEPENDENCIES
   consul
   database_cleaner
   exception_notification
+  execjs
   factory_girl
   factory_girl_rails
   faker
@@ -298,17 +313,21 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   kaminari
+  less
   lograge
   mysql2
   paper_trail (~> 3.0.6)
   paperclip
   puma
+  quiet_assets
   rails (= 4.2.1)
+  react-jsx-sprockets
   rspec-rails (~> 3.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   shoulda
   spring
+  sprockets-less
   therubyracer
   uglifier (>= 1.3.0)
   virtus

@@ -79,5 +79,5 @@ Rails.application.routes.draw do
   resources :entities, :only => [:index, :show, :create, :update, :destroy] , :defaults => { :format => 'json' } do
     resources :entities, :only => [:index, :show, :create, :update, :destroy] , :defaults => { :format => 'json' }, :controller => 'entities/entities'
   end    
-  root 'main#admin'
+  root 'main#index'
 end

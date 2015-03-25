@@ -3,10 +3,11 @@
 %html
   %head
     %title= "EFQM"
-    = favicon_link_tag 'favicon.png'
+    = favicon_link_tag 'favicon.ico'
     = javascript_tag("var locale='#{get_locale}';")
-    = stylesheet_link_tag("http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css")
-    = stylesheet_link_tag "admin.js/style"
+    = stylesheet_link_tag "application"
+    = javascript_tag("var i18n_scope = 'js.adminjs';")
+    = javascript_include_tag "admin.js/application"
     = yield :js_links if content_for?(:js_links)
   %body
     = yield :main_content
