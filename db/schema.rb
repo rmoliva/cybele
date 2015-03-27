@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20150322091853) do
 
   add_index "entities", ["country_id"], name: "fk_rails_d9fddbe4c8", using: :btree
   add_index "entities", ["lft"], name: "index_entities_on_lft", using: :btree
+  add_index "entities", ["name", "parent_id"], name: "index_entities_on_name_and_parent_id", unique: true, using: :btree
   add_index "entities", ["name"], name: "index_entities_on_name", using: :btree
   add_index "entities", ["parent_id"], name: "index_entities_on_parent_id", using: :btree
   add_index "entities", ["rgt"], name: "index_entities_on_rgt", using: :btree

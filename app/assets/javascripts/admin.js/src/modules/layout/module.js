@@ -4,6 +4,7 @@ AdminJS.modules.layout.Module = function(sb) {
     'use strict';
 
     var $el = null;
+    var simplify = new AdminJS.modules.layout.Simplify(sb);
 
     var initialize = function(opts, done) {
         $el = $(opts.el);
@@ -11,7 +12,10 @@ AdminJS.modules.layout.Module = function(sb) {
         React.render(
             React.createElement(AdminJS.components.adminjs.Layout, null),
             document.querySelector(opts.el),
-            done
+            function() {
+              simplify.init();
+              done();
+            }
         );
     };
 

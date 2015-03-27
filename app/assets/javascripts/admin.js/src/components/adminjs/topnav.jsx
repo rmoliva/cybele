@@ -13,9 +13,6 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                     <span className="icon-bar"></span>
                 </button>
                 <ul className="nav-notification pull-right">
-                    .
-                    .
-                    .
                 </ul>
  
                 <a href="" className="brand">

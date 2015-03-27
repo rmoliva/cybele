@@ -7,8 +7,9 @@
     = javascript_tag("var locale='#{get_locale}';")
     = stylesheet_link_tag "application"
     = javascript_tag("var i18n_scope = 'js.adminjs';")
-    = javascript_include_tag "admin.js/application"
-    = yield :js_links if content_for?(:js_links)
   %body
     = yield :main_content
  
+    = javascript_include_tag "admin.js/application"
+    = yield :js_links if content_for?(:js_links)
+

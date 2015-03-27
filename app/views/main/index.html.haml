@@ -1,9 +1,10 @@
-- content_for :js_links do
-  - # Load ExtJS App
 
 - content_for :main_content do
   #application
-  :javascript         
+
+
+- content_for :js_links do
+  :javascript
     $(function() {
       var app = AdminJS.app({
         el: "#application",
@@ -13,5 +14,3 @@
       
       app.initialize();
      });
-
-

@@ -35,7 +35,6 @@
 
 // Lib Javascript libraries (not in bower)
 //= require_tree ../lib
-//= require ../sa/simplify
 
 // Application source code
 //= require_tree ./src
