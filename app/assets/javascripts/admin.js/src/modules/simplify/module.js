@@ -1,9 +1,9 @@
-NS('AdminJS.modules.layout');
+NS('AdminJS.modules.simplify');
 
-AdminJS.modules.layout.Simplify = function(sb) {
+AdminJS.modules.simplify.Module = function(sb) {
   'use strict';
 
-  var initialize = function() {
+  var initialize = function(options, done) {
     //scrollable sidebar
     $('.scrollable-sidebar').slimScroll({
       height: '100%',
@@ -249,6 +249,7 @@ AdminJS.modules.layout.Simplify = function(sb) {
         $('.scroll-to-top').removeClass('active')
        }
     });
+    done();
   };
 
   var destroy = function() {

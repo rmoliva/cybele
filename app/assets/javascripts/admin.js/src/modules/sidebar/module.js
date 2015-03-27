@@ -5,31 +5,11 @@ AdminJS.modules.sidebar.Module = function(sb) {
 
     var $el = null;
 
-    var items = [{
-      href: "#countries",
-      title: "Paises"
-    }, {
-      href: "#users",
-      title: "Usuarios"
-    }, {
-      href: "#networks",
-      title: "Redes"
-    }, {
-      href: "#efqm_trees",
-      title: "Árbol EFQM"
-    }, {
-      href: "#roles",
-      title: "Roles"
-    }];
-
     var initialize = function(opts, done) {
         $el = $(opts.el);
 
         React.render(
-            React.createElement(AdminJS.components.statsjs.Sidebar, {
-                items: items,
-                active: opts.active
-            }),
+            React.createElement(AdminJS.components.adminjs.Sidebar, null),
             document.querySelector(opts.el),
             done
         );

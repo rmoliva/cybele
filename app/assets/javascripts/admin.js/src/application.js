@@ -76,8 +76,12 @@ AdminJS.app = function(options) {
       promiseStopContentModules().then(function() {
         return core.promises.moduleStart("layout", options);
       }).then(function() {
-        return core.promises.moduleStart("topnav", {el: '#topnav'});
+        return Promise.all([
+          core.promises.moduleStart("topnav", {el: '#topnav'}),
+          core.promises.moduleStart("sidebar", {el: '#sidebar'})
+        ]);
       }).then(function() {
+        return core.promises.moduleStart("simplify", options);
       }).done();
     };
 
