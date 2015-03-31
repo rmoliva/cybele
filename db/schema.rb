@@ -25,27 +25,26 @@ ActiveRecord::Schema.define(version: 20150322091853) do
   add_index "countries", ["name"], name: "index_countries_on_name", using: :btree
 
   create_table "entities", force: :cascade do |t|
-    t.string   "name",           limit: 150,               null: false
-    t.string   "address",        limit: 250
-    t.string   "city",           limit: 150
-    t.string   "state",          limit: 150
+    t.string   "name",           limit: 150,                  null: false
     t.integer  "country_id",     limit: 4
-    t.string   "postal_code",    limit: 50
-    t.string   "phone1",         limit: 50
-    t.string   "phone2",         limit: 50
-    t.string   "email1",         limit: 100
-    t.string   "email2",         limit: 100
+    t.string   "label",          limit: 150,                  null: false
+    t.string   "child_label",    limit: 150,                  null: false
+    t.string   "child_labels",   limit: 150,                  null: false
+    t.boolean  "open",           limit: 1,     default: true, null: false
     t.integer  "parent_id",      limit: 4
-    t.integer  "lft",            limit: 4,                 null: false
-    t.integer  "rgt",            limit: 4,                 null: false
-    t.integer  "depth",          limit: 4,     default: 0, null: false
-    t.integer  "children_count", limit: 4,     default: 0, null: false
+    t.integer  "lft",            limit: 4,                    null: false
+    t.integer  "rgt",            limit: 4,                    null: false
+    t.integer  "depth",          limit: 4,     default: 0,    null: false
+    t.integer  "children_count", limit: 4,     default: 0,    null: false
     t.text     "comments",       limit: 65535
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
+  add_index "entities", ["child_label"], name: "index_entities_on_child_label", using: :btree
+  add_index "entities", ["child_labels"], name: "index_entities_on_child_labels", using: :btree
   add_index "entities", ["country_id"], name: "fk_rails_d9fddbe4c8", using: :btree
+  add_index "entities", ["label"], name: "index_entities_on_label", using: :btree
   add_index "entities", ["lft"], name: "index_entities_on_lft", using: :btree
   add_index "entities", ["name", "parent_id"], name: "index_entities_on_name_and_parent_id", unique: true, using: :btree
   add_index "entities", ["name"], name: "index_entities_on_name", using: :btree
