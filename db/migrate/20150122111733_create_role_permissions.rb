@@ -1,7 +1,7 @@
 class CreateRolePermissions < ActiveRecord::Migration
   class << self
     def up
-      create_table :role_permissions, options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8' do |t|
+      create_table :role_permissions do |t|
         t.integer :role_id, null: false
         t.string  :app, null: false, limit: 20
         t.string :klass, null: false, limit: 50

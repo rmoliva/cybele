@@ -1,11 +1,11 @@
 class CreateUsers < ActiveRecord::Migration
   class << self
     def up
-      create_table :users, options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8' do |t|
+      create_table :users do |t|
         t.string    :name, null: false, limit: 150
         t.string    :surname, null: false, limit: 250
         t.string    :gender, limit: 10, null: false
-        t.boolean   :active, null: false, default: 1
+        t.boolean   :active, null: false, default: true
   
         # Campos de Authlogic -> Acceso
         t.string    :email, null: false

@@ -6,7 +6,7 @@ class CreateEntities < ActiveRecord::Migration
       t.string :label,  :limit => 150, :null => false, :index => true
       t.string :child_label,  :limit => 150, :null => false, :index => true
       t.string :child_labels,  :limit => 150, :null => false, :index => true
-      t.boolean :open, :null => false, :default => 1
+      t.boolean :open, :null => false, :default => true
 
       # Is a nested set
       t.integer :parent_id, :null => true, :index => true
