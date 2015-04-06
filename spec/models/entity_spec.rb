@@ -15,5 +15,6 @@ RSpec.describe Entity, type: :model do
     it{should validate_length_of(:child_labels).is_at_most(150)}
     
     it{should belong_to(:country)}
+    it{should have_many(:containers)}
   end
 end

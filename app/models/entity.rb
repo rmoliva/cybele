@@ -4,8 +4,8 @@ class Entity < ActiveRecord::Base
   acts_as_nested_set 
 
   # Relations
-  
   belongs_to :country
+  has_many :containers
 
   # Validations
   validates_presence_of :name, :country_id, :label, :child_label, :child_labels, :open

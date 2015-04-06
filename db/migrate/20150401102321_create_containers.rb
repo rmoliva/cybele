@@ -13,8 +13,10 @@ class CreateContainers < ActiveRecord::Migration
         t.integer  :"relation#{index}_id", null: true, default: nil, index: true
         t.decimal  :"big_decimal#{index}", null: true, default: nil, precision: 12, scale: 4, index: true
       end
+      t.text :coments
       t.timestamps null: false
     end
-    add_index :containers, [:entity_id, :name], :unique => true
+    add_attachment :containers, :image
+    add_index :containers, [:entity_id, :name]
   end
 end

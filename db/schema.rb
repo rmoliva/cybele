@@ -17,220 +17,225 @@ ActiveRecord::Schema.define(version: 20150401102321) do
   enable_extension "plpgsql"
 
   create_table "containers", force: :cascade do |t|
-    t.integer  "entity_id",                                                null: false
-    t.string   "name",                                                     null: false
+    t.integer  "entity_id",                                                   null: false
+    t.string   "name",                                                        null: false
     t.string   "string0"
     t.integer  "integer0"
-    t.boolean  "boolean0",                                 default: false, null: false
+    t.boolean  "boolean0",                                    default: false, null: false
     t.datetime "datetime0"
     t.string   "relation0_type"
     t.integer  "relation0_id"
-    t.decimal  "big_decimal0",    precision: 12, scale: 4
+    t.decimal  "big_decimal0",       precision: 12, scale: 4
     t.string   "string1"
     t.integer  "integer1"
-    t.boolean  "boolean1",                                 default: false, null: false
+    t.boolean  "boolean1",                                    default: false, null: false
     t.datetime "datetime1"
     t.string   "relation1_type"
     t.integer  "relation1_id"
-    t.decimal  "big_decimal1",    precision: 12, scale: 4
+    t.decimal  "big_decimal1",       precision: 12, scale: 4
     t.string   "string2"
     t.integer  "integer2"
-    t.boolean  "boolean2",                                 default: false, null: false
+    t.boolean  "boolean2",                                    default: false, null: false
     t.datetime "datetime2"
     t.string   "relation2_type"
     t.integer  "relation2_id"
-    t.decimal  "big_decimal2",    precision: 12, scale: 4
+    t.decimal  "big_decimal2",       precision: 12, scale: 4
     t.string   "string3"
     t.integer  "integer3"
-    t.boolean  "boolean3",                                 default: false, null: false
+    t.boolean  "boolean3",                                    default: false, null: false
     t.datetime "datetime3"
     t.string   "relation3_type"
     t.integer  "relation3_id"
-    t.decimal  "big_decimal3",    precision: 12, scale: 4
+    t.decimal  "big_decimal3",       precision: 12, scale: 4
     t.string   "string4"
     t.integer  "integer4"
-    t.boolean  "boolean4",                                 default: false, null: false
+    t.boolean  "boolean4",                                    default: false, null: false
     t.datetime "datetime4"
     t.string   "relation4_type"
     t.integer  "relation4_id"
-    t.decimal  "big_decimal4",    precision: 12, scale: 4
+    t.decimal  "big_decimal4",       precision: 12, scale: 4
     t.string   "string5"
     t.integer  "integer5"
-    t.boolean  "boolean5",                                 default: false, null: false
+    t.boolean  "boolean5",                                    default: false, null: false
     t.datetime "datetime5"
     t.string   "relation5_type"
     t.integer  "relation5_id"
-    t.decimal  "big_decimal5",    precision: 12, scale: 4
+    t.decimal  "big_decimal5",       precision: 12, scale: 4
     t.string   "string6"
     t.integer  "integer6"
-    t.boolean  "boolean6",                                 default: false, null: false
+    t.boolean  "boolean6",                                    default: false, null: false
     t.datetime "datetime6"
     t.string   "relation6_type"
     t.integer  "relation6_id"
-    t.decimal  "big_decimal6",    precision: 12, scale: 4
+    t.decimal  "big_decimal6",       precision: 12, scale: 4
     t.string   "string7"
     t.integer  "integer7"
-    t.boolean  "boolean7",                                 default: false, null: false
+    t.boolean  "boolean7",                                    default: false, null: false
     t.datetime "datetime7"
     t.string   "relation7_type"
     t.integer  "relation7_id"
-    t.decimal  "big_decimal7",    precision: 12, scale: 4
+    t.decimal  "big_decimal7",       precision: 12, scale: 4
     t.string   "string8"
     t.integer  "integer8"
-    t.boolean  "boolean8",                                 default: false, null: false
+    t.boolean  "boolean8",                                    default: false, null: false
     t.datetime "datetime8"
     t.string   "relation8_type"
     t.integer  "relation8_id"
-    t.decimal  "big_decimal8",    precision: 12, scale: 4
+    t.decimal  "big_decimal8",       precision: 12, scale: 4
     t.string   "string9"
     t.integer  "integer9"
-    t.boolean  "boolean9",                                 default: false, null: false
+    t.boolean  "boolean9",                                    default: false, null: false
     t.datetime "datetime9"
     t.string   "relation9_type"
     t.integer  "relation9_id"
-    t.decimal  "big_decimal9",    precision: 12, scale: 4
+    t.decimal  "big_decimal9",       precision: 12, scale: 4
     t.string   "string10"
     t.integer  "integer10"
-    t.boolean  "boolean10",                                default: false, null: false
+    t.boolean  "boolean10",                                   default: false, null: false
     t.datetime "datetime10"
     t.string   "relation10_type"
     t.integer  "relation10_id"
-    t.decimal  "big_decimal10",   precision: 12, scale: 4
+    t.decimal  "big_decimal10",      precision: 12, scale: 4
     t.string   "string11"
     t.integer  "integer11"
-    t.boolean  "boolean11",                                default: false, null: false
+    t.boolean  "boolean11",                                   default: false, null: false
     t.datetime "datetime11"
     t.string   "relation11_type"
     t.integer  "relation11_id"
-    t.decimal  "big_decimal11",   precision: 12, scale: 4
+    t.decimal  "big_decimal11",      precision: 12, scale: 4
     t.string   "string12"
     t.integer  "integer12"
-    t.boolean  "boolean12",                                default: false, null: false
+    t.boolean  "boolean12",                                   default: false, null: false
     t.datetime "datetime12"
     t.string   "relation12_type"
     t.integer  "relation12_id"
-    t.decimal  "big_decimal12",   precision: 12, scale: 4
+    t.decimal  "big_decimal12",      precision: 12, scale: 4
     t.string   "string13"
     t.integer  "integer13"
-    t.boolean  "boolean13",                                default: false, null: false
+    t.boolean  "boolean13",                                   default: false, null: false
     t.datetime "datetime13"
     t.string   "relation13_type"
     t.integer  "relation13_id"
-    t.decimal  "big_decimal13",   precision: 12, scale: 4
+    t.decimal  "big_decimal13",      precision: 12, scale: 4
     t.string   "string14"
     t.integer  "integer14"
-    t.boolean  "boolean14",                                default: false, null: false
+    t.boolean  "boolean14",                                   default: false, null: false
     t.datetime "datetime14"
     t.string   "relation14_type"
     t.integer  "relation14_id"
-    t.decimal  "big_decimal14",   precision: 12, scale: 4
+    t.decimal  "big_decimal14",      precision: 12, scale: 4
     t.string   "string15"
     t.integer  "integer15"
-    t.boolean  "boolean15",                                default: false, null: false
+    t.boolean  "boolean15",                                   default: false, null: false
     t.datetime "datetime15"
     t.string   "relation15_type"
     t.integer  "relation15_id"
-    t.decimal  "big_decimal15",   precision: 12, scale: 4
+    t.decimal  "big_decimal15",      precision: 12, scale: 4
     t.string   "string16"
     t.integer  "integer16"
-    t.boolean  "boolean16",                                default: false, null: false
+    t.boolean  "boolean16",                                   default: false, null: false
     t.datetime "datetime16"
     t.string   "relation16_type"
     t.integer  "relation16_id"
-    t.decimal  "big_decimal16",   precision: 12, scale: 4
+    t.decimal  "big_decimal16",      precision: 12, scale: 4
     t.string   "string17"
     t.integer  "integer17"
-    t.boolean  "boolean17",                                default: false, null: false
+    t.boolean  "boolean17",                                   default: false, null: false
     t.datetime "datetime17"
     t.string   "relation17_type"
     t.integer  "relation17_id"
-    t.decimal  "big_decimal17",   precision: 12, scale: 4
+    t.decimal  "big_decimal17",      precision: 12, scale: 4
     t.string   "string18"
     t.integer  "integer18"
-    t.boolean  "boolean18",                                default: false, null: false
+    t.boolean  "boolean18",                                   default: false, null: false
     t.datetime "datetime18"
     t.string   "relation18_type"
     t.integer  "relation18_id"
-    t.decimal  "big_decimal18",   precision: 12, scale: 4
+    t.decimal  "big_decimal18",      precision: 12, scale: 4
     t.string   "string19"
     t.integer  "integer19"
-    t.boolean  "boolean19",                                default: false, null: false
+    t.boolean  "boolean19",                                   default: false, null: false
     t.datetime "datetime19"
     t.string   "relation19_type"
     t.integer  "relation19_id"
-    t.decimal  "big_decimal19",   precision: 12, scale: 4
+    t.decimal  "big_decimal19",      precision: 12, scale: 4
     t.string   "string20"
     t.integer  "integer20"
-    t.boolean  "boolean20",                                default: false, null: false
+    t.boolean  "boolean20",                                   default: false, null: false
     t.datetime "datetime20"
     t.string   "relation20_type"
     t.integer  "relation20_id"
-    t.decimal  "big_decimal20",   precision: 12, scale: 4
+    t.decimal  "big_decimal20",      precision: 12, scale: 4
     t.string   "string21"
     t.integer  "integer21"
-    t.boolean  "boolean21",                                default: false, null: false
+    t.boolean  "boolean21",                                   default: false, null: false
     t.datetime "datetime21"
     t.string   "relation21_type"
     t.integer  "relation21_id"
-    t.decimal  "big_decimal21",   precision: 12, scale: 4
+    t.decimal  "big_decimal21",      precision: 12, scale: 4
     t.string   "string22"
     t.integer  "integer22"
-    t.boolean  "boolean22",                                default: false, null: false
+    t.boolean  "boolean22",                                   default: false, null: false
     t.datetime "datetime22"
     t.string   "relation22_type"
     t.integer  "relation22_id"
-    t.decimal  "big_decimal22",   precision: 12, scale: 4
+    t.decimal  "big_decimal22",      precision: 12, scale: 4
     t.string   "string23"
     t.integer  "integer23"
-    t.boolean  "boolean23",                                default: false, null: false
+    t.boolean  "boolean23",                                   default: false, null: false
     t.datetime "datetime23"
     t.string   "relation23_type"
     t.integer  "relation23_id"
-    t.decimal  "big_decimal23",   precision: 12, scale: 4
+    t.decimal  "big_decimal23",      precision: 12, scale: 4
     t.string   "string24"
     t.integer  "integer24"
-    t.boolean  "boolean24",                                default: false, null: false
+    t.boolean  "boolean24",                                   default: false, null: false
     t.datetime "datetime24"
     t.string   "relation24_type"
     t.integer  "relation24_id"
-    t.decimal  "big_decimal24",   precision: 12, scale: 4
+    t.decimal  "big_decimal24",      precision: 12, scale: 4
     t.string   "string25"
     t.integer  "integer25"
-    t.boolean  "boolean25",                                default: false, null: false
+    t.boolean  "boolean25",                                   default: false, null: false
     t.datetime "datetime25"
     t.string   "relation25_type"
     t.integer  "relation25_id"
-    t.decimal  "big_decimal25",   precision: 12, scale: 4
+    t.decimal  "big_decimal25",      precision: 12, scale: 4
     t.string   "string26"
     t.integer  "integer26"
-    t.boolean  "boolean26",                                default: false, null: false
+    t.boolean  "boolean26",                                   default: false, null: false
     t.datetime "datetime26"
     t.string   "relation26_type"
     t.integer  "relation26_id"
-    t.decimal  "big_decimal26",   precision: 12, scale: 4
+    t.decimal  "big_decimal26",      precision: 12, scale: 4
     t.string   "string27"
     t.integer  "integer27"
-    t.boolean  "boolean27",                                default: false, null: false
+    t.boolean  "boolean27",                                   default: false, null: false
     t.datetime "datetime27"
     t.string   "relation27_type"
     t.integer  "relation27_id"
-    t.decimal  "big_decimal27",   precision: 12, scale: 4
+    t.decimal  "big_decimal27",      precision: 12, scale: 4
     t.string   "string28"
     t.integer  "integer28"
-    t.boolean  "boolean28",                                default: false, null: false
+    t.boolean  "boolean28",                                   default: false, null: false
     t.datetime "datetime28"
     t.string   "relation28_type"
     t.integer  "relation28_id"
-    t.decimal  "big_decimal28",   precision: 12, scale: 4
+    t.decimal  "big_decimal28",      precision: 12, scale: 4
     t.string   "string29"
     t.integer  "integer29"
-    t.boolean  "boolean29",                                default: false, null: false
+    t.boolean  "boolean29",                                   default: false, null: false
     t.datetime "datetime29"
     t.string   "relation29_type"
     t.integer  "relation29_id"
-    t.decimal  "big_decimal29",   precision: 12, scale: 4
-    t.datetime "created_at",                                               null: false
-    t.datetime "updated_at",                                               null: false
+    t.decimal  "big_decimal29",      precision: 12, scale: 4
+    t.text     "coments"
+    t.datetime "created_at",                                                  null: false
+    t.datetime "updated_at",                                                  null: false
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
   end
 
   add_index "containers", ["big_decimal0"], name: "index_containers_on_big_decimal0", using: :btree
@@ -323,7 +328,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
   add_index "containers", ["datetime7"], name: "index_containers_on_datetime7", using: :btree
   add_index "containers", ["datetime8"], name: "index_containers_on_datetime8", using: :btree
   add_index "containers", ["datetime9"], name: "index_containers_on_datetime9", using: :btree
-  add_index "containers", ["entity_id", "name"], name: "index_containers_on_entity_id_and_name", unique: true, using: :btree
+  add_index "containers", ["entity_id", "name"], name: "index_containers_on_entity_id_and_name", using: :btree
   add_index "containers", ["integer0"], name: "index_containers_on_integer0", using: :btree
   add_index "containers", ["integer1"], name: "index_containers_on_integer1", using: :btree
   add_index "containers", ["integer10"], name: "index_containers_on_integer10", using: :btree
