@@ -8,11 +8,12 @@ class Entity < ActiveRecord::Base
   has_many :containers
 
   # Validations
-  validates_presence_of :name, :country_id, :label, :child_label, :child_labels, :open
+  validates_presence_of :name, :country_id, :label, :child_label, :child_labels
   validates_length_of :name, :maximum=>150
   validates_length_of :label, :maximum=>150
   validates_length_of :child_label, :maximum=>150
   validates_length_of :child_labels, :maximum=>150
+  validates :open, inclusion: [true, false]
 
   validates_uniqueness_of :name, :scope => :parent_id
 

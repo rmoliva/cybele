@@ -20,5 +20,9 @@ class Country < ActiveRecord::Base
 
   # Scopes
   
+  def self.spain
+    find_by_code('ES')
+  end
+
 
 end
