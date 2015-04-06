@@ -78,6 +78,12 @@ Rails.application.routes.draw do
 
   resources :entities, :only => [:index, :show, :create, :update, :destroy] , :defaults => { :format => 'json' } do
     resources :entities, :only => [:index, :show, :create, :update, :destroy] , :defaults => { :format => 'json' }, :controller => 'entities/entities'
+    
+    get 'containers/:container_name', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'index'
+    get 'containers/:container_name/:id', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'show'
+    post 'containers/:container_name', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'create'
+    put 'containers/:container_name/:id', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'update'
+    delete 'containers/:container_name/:id', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'destroy'
   end    
   root 'main#index'
 end

@@ -27,8 +27,6 @@ class RoleUser < ActiveRecord::Base
   # Callbacks
 
   # Scopes
-
-
   class << self
     def with_role(role)
       where(:role_id => role)

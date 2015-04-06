@@ -17,5 +17,14 @@ class Container < ActiveRecord::Base
   # Callbacks
 
   # Scopes
+  class << self
+    def with_entity(entity)
+      where(:entity_id => entity)
+    end
+
+    def with_name(name)
+      where(:name => name)
+    end
+  end
   
 end

@@ -39,6 +39,12 @@ class Permission
           :create,
           :update,
           :destroy
+        ],
+        container: [
+          :index, # action
+          :create,
+          :update,
+          :destroy
         ]
       }
     end
@@ -58,6 +64,12 @@ class Permission
           :destroy
         ],
         entity: [
+          :index, # action
+          :create,
+          :update,
+          :destroy
+        ],
+        container: [
           :index, # action
           :create,
           :update,
