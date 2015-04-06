@@ -45,7 +45,7 @@ AdminJS.components.adminjs.Layout = React.createClass({
                       <li><a href="#">Project1</a></li>
                       <li><a href="#">Project2</a></li>
                       <li><a href="#">Project3</a></li>
-                      <li class="divider"></li>
+                      <li className="divider"></li>
                       <li><a href="#">Setting</a></li>
                     </ul>
                   </div>
