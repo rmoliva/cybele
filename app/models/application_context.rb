@@ -42,7 +42,7 @@ class ApplicationContext
   def entity
     case app
     when "central" then nil
-    when "entity" then Entity.find(entity_id)
+    when "entity" then Entity.find(@entity_id)
     end
   end
   
