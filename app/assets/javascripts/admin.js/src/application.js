@@ -7,6 +7,7 @@ AdminJS.app = function(options) {
     var plugins = null;
     var modules = null;
     var router = null;
+    var i18n = new AdminJS.I18n(options);
 
     /**
      * setup hasher
@@ -38,7 +39,11 @@ AdminJS.app = function(options) {
      * Inicializa la aplicacion
      */
     var initialize = function() {
-        moment.locale(options.locale);
+        // Inicializar i18n
+        i18n.initialize(options);
+        
+        // Hacer global la funcion de traduccion
+        window.t = i18n.t;
 
         // inicializar el scaleApp
         core = new scaleApp.Core();
@@ -88,6 +93,7 @@ AdminJS.app = function(options) {
     var destroy = function() {
         modules.destroy();
         plugins.destroy();
+        i18n.destroy();
     };
 
     return {

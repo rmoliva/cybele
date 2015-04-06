@@ -2,6 +2,8 @@
 // Gem javascript libraries
 //= require jquery
 //= require jquery_ujs
+//= require i18n
+//= require i18n/translations
 
 // Bower javascript libraries
 //= require lodash
@@ -38,3 +40,4 @@
 
 // Application source code
 //= require_tree ./src
+

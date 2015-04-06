@@ -16,7 +16,7 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                 </ul>
  
                 <a href="" className="brand">
-                    <i className="fa fa-database"></i><span className="brand-name">CENTRAL ADMIN</span>
+                    <i className="fa fa-database"></i><span className="brand-name">{t("app_name")}</span>
                 </a>
             </div>
             <div className="nav-container">
