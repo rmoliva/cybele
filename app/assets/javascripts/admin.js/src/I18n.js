@@ -6,11 +6,13 @@ AdminJS.I18n = function(core) {
     var scope = 'js.adminjs';
     var locale = 'en';
 
-    var initialize = function(options) {
-      moment.locale(options.locale);
-      
-      console.log(options.locale);
-      locale = options.locale;
+    var _getLocale = function() {
+      return core.conf.get('locale');
+    };
+    
+    var initialize = function() {
+      locale = _getLocale();
+      moment.locale(locale);
       I18n.locale = locale;
     };
     

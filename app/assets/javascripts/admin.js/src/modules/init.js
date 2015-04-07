@@ -1,6 +1,6 @@
-NS('AdminJS');
+NS('AdminJS.modules');
 
-AdminJS.ModuleInit = function(core) {
+AdminJS.modules.Init = function(core) {
     'use strict';
 
     var modules = {

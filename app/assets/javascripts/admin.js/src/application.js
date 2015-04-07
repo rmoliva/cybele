@@ -6,88 +6,42 @@ AdminJS.app = function(options) {
     var core = null;
     var plugins = null;
     var modules = null;
+    var configuration = null;
     var router = null;
-    var i18n = new AdminJS.I18n(options);
-
-    /**
-     * setup hasher
-     * @newHash <String>
-     * @oldHash <String>
-     */
-
-    function parseHash(newHash, oldHash) {
-        if (newHash == '') {
-            // redirect to "home" hash without keeping the empty hash on the history
-            hasher.replaceHash('dashboard');
-        } else {
-            router.parse(newHash);
-        }
-    };
-
-    /**
-     * Cambia la url pero sin que se lancen las señales (no se redirige)
-     * @hash <String> nuevo hash (porción de url) a introducir
-     */
-
-    function setHashSilently(hash) {
-        hasher.changed.active = false; //disable changed signal
-        hasher.setHash(hash); //set hash without dispatching changed signal
-        hasher.changed.active = true; //re-enable signal
-    };
+    var i18n = null;
 
     /** 
      * Inicializa la aplicacion
      */
     var initialize = function() {
-        // Inicializar i18n
-        i18n.initialize(options);
-        
-        // Hacer global la funcion de traduccion
-        window.t = i18n.t;
-
         // inicializar el scaleApp
         core = new scaleApp.Core();
 
+        // Inicializar la configuracion
+        configuration = new AdminJS.Configuration(core, options);
+        configuration.initialize();
+        
+        // Inicializar i18n
+        i18n = new AdminJS.I18n(core)
+        i18n.initialize();
+
+        // Hacer global la funcion de traduccion
+        window.t = i18n.t;
+        
         // Inicializar los plugins del Core
-        plugins = new AdminJS.PluginInit(core);
+        plugins = new AdminJS.plugins.Init(core);
         plugins.initialize();
 
         // Inicializar modulos
-        modules = new AdminJS.ModuleInit(core);
+        modules = new AdminJS.modules.Init(core);
         modules.initialize();
         
         // Inicializar el core
         core.boot();
 
-        router = crossroads.create();
-
-        router.addRoute('dashboard', onRouteDashboard);
-        router.routed.add(console.log, console); //log all routes
-
-        hasher.initialized.add(parseHash); //parse initial hash
-        hasher.changed.add(parseHash); //parse hash changes
-        hasher.init(); //start listening for history change
-        
-    };
-
-    // Parar todos los modulos
-    var promiseStopContentModules = function() {
-      return Promise.all(_.map(core.lsInstances(), function(instance) {
-        core.promises.moduleStop(instance);
-      }));
-    };
-
-    var onRouteDashboard = function() {
-      promiseStopContentModules().then(function() {
-        return core.promises.moduleStart("layout", options);
-      }).then(function() {
-        return Promise.all([
-          core.promises.moduleStart("topnav", {el: '#topnav'}),
-          core.promises.moduleStart("sidebar", {el: '#sidebar'})
-        ]);
-      }).then(function() {
-        return core.promises.moduleStart("simplify", options);
-      }).done();
+        // Incializar el router
+        router = new AdminJS.routes.Init(core);
+        router.initialize();
     };
 
     var destroy = function() {

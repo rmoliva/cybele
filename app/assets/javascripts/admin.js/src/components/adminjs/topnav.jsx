@@ -73,9 +73,6 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                         </div>
                     </div>
                     <ul className="nav-notification">
-                        .
-                        .
-                        .
                     </ul>
                 </div>
                 {/* End Notificaton */}
