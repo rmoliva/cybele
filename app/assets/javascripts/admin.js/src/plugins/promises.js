@@ -62,14 +62,8 @@ AdminJS.plugins.Promises = function(core, options) {
       return new Promise(function(resolve, reject) {
         amplify.request({
           resourceId: resourceId, 
-          data: {app: 'central', entity_id: null},
-          success: function(data) {
-            if(data.success) {
-              resolve(data.data);
-            } else {
-              reject(data.data);
-            }
-          },
+          data: data,
+          success: resolve,
           error: reject
         });
       });

@@ -1,4 +1,4 @@
-NS('AdminJS');
+NS('AdminJS.routes');
 
 AdminJS.routes.Init = function(core) {
     'use strict';
