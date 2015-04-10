@@ -45,16 +45,15 @@ AdminJS.plugins.Promises = function(core, options) {
     };
 
     var reactRender = function(element, component, props) {
-        var object = null;
-
         return new Promise(function(resolve, reject) {
-            object = React.render(
-                React.createElement(component, props),
+            var react = React.createElement(component, props);
+            React.render(
+                react,
                 document.querySelector(element),
-                resolve
+                function() {
+                  resolve(react); 
+                }
             );
-        }).then(function() {
-            return object;
         });
     };
 

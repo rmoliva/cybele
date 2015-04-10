@@ -33,7 +33,7 @@ AdminJS.routes.Init = function(core) {
      * @hash <String> nuevo hash (porción de url) a introducir
      */
 
-    function _setHashSilently(hash) {
+    function setHashSilently(hash) {
         hasher.changed.active = false; //disable changed signal
         hasher.setHash(hash); //set hash without dispatching changed signal
         hasher.changed.active = true; //re-enable signal
@@ -70,6 +70,20 @@ AdminJS.routes.Init = function(core) {
         route_manager.destroy(router);
       }, this);
     };
+    
+    // Extender el core
+    _.extend(core, {
+        hash: {
+            setSilently: setHashSilently
+        }
+    }, this);
+
+    // Extender el sandbox
+    _.extend(core.Sandbox.prototype, {
+        hash: {
+            setSilently: setHashSilently
+        }
+    }, this);
 
     return {
         initialize: initialize,

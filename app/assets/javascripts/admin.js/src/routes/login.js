@@ -4,12 +4,16 @@ AdminJS.routes.Login = function(core) {
     'use strict';
     
     var routes = {
-        login: null 
+        login: null,
+        forgot_password: null,
+        register: null
     }
     
 
     var initialize = function(router) {
       routes.login = router.addRoute('login', onRouteLogin);
+      routes.forgot_password = router.addRoute('forgot_password', onRouteForgotPassword);
+      routes.register = router.addRoute('register', onRouteRegister);
     };
 
     var destroy = function(router) {
@@ -18,11 +22,21 @@ AdminJS.routes.Login = function(core) {
       });
     };
 
-    var onRouteLogin = function(options) {
+    var onRouteLogin = function() {
       core.modules.stopAllModules();
-      core.modules.startLogin();
+      core.modules.startLogin({state: 'signin'});
     };
     
+    var onRouteForgotPassword = function() {
+      core.modules.stopAllModules();
+      core.modules.startLogin({state: 'forgot_password'});
+    };
+    
+    var onRouteRegister = function() {
+      core.modules.stopAllModules();
+      core.modules.startLogin({state: 'register'});
+    };
+
     return {
         initialize: initialize,
         destroy: destroy

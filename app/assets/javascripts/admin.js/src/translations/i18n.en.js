@@ -15,8 +15,12 @@ I18n.translations["en"] = {
         "sign_in": "Sign In",
         "forgot_password": "Forgot the password?",
         "do_not_have_an_account": "Do not have an account?",
+        "you_already_have_an_account": "¿You already have an account?",
         "create_an_account": "Create an account",
-        "remember_me": "Remember Me"
+        "remember_me": "Remember Me",
+        "send": "Send",
+        "register": "Register",
+        "repeat_password": "Repeat Password"
       }
     }
   }

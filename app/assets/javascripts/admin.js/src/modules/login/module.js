@@ -4,74 +4,93 @@ AdminJS.modules.login.Module = function(sb) {
     'use strict';
 
     var el = null;
-    
     var fsm = null;
+    var react = null;
+    var controller = null;
 
     var initialize = function(opts, done) {
         el = opts.el;
         
         fsm = StateMachine.create({
           events: [
-            { name: 'do_register', from: 'signin', to: 'register'},
-            { name: 'do_forgot_password', from: 'signin', to: 'forgot_password'},
-            { name: 'do_signin', from: ['none', 'register', 'forgot_password'], to: 'signin'}
+            { name: 'do_register', from: ['none','login'], to: 'register'},
+            { name: 'do_forgot_password', from: ['none','login'], to: 'forgot_password'},
+            { name: 'do_login', from: ['none', 'register', 'forgot_password'], to: 'login'}
           ],
           callbacks: {
-            onentersignin: onEnterSignin,
-            onleavesignin: onLeaveSignin,
+            onenterlogin: onEnterLogin,
+            onleavelogin: onLeaveLogin,
             onenterforgot_password: onEnterForgotPassword,
             onleaveforgot_password: onLeaveForgotPassword,
             onenterregister: onEnterRegister,
-            onleaveregister: onLeaveRegister,
-            onafterdo_signin: function() {
-              fsm.onafterdo_signin = null;
-              done();
-            }
+            onleaveregister: onLeaveRegister
           },
           error: function(eventName, from, to, args, errorCode, errorMessage) {
             console.log('event ' + eventName + ' was naughty :- ' + errorMessage);
           },
         });
-        fsm.do_signin();
+        
+        controller = new AdminJS.modules.login.Controller(sb, fsm);
+        
+        switch(opts.state) {
+          case "forgot_password": {
+            fsm.do_forgot_password();
+            break;
+          }
+          case "register": {
+            fsm.do_register();
+            break;
+          }
+          default:
+            fsm.do_login();
+        }
+        done();
     };
     
-    var onEnterSignin = function() {
+    var onEnterLogin = function() {
       sb.promises.reactRender(
           el,
-          AdminJS.components.adminjs.login.Login, null
-      ).then(function() {
+          AdminJS.components.adminjs.login.Login, controller
+      ).then(function(component) {
+        sb.hash.setSilently("login");
       });
     };
 
-    var onLeaveSignin = function() {
-      $el.empty();
+    var onLeaveLogin = function() {
+      $(el).empty();
     };
 
     var onEnterRegister = function() {
-      React.render(
-          React.createElement(AdminJS.components.adminjs.login.Register, null),
-          document.querySelector(el)
-      );
+      sb.promises.reactRender(
+          el,
+          AdminJS.components.adminjs.login.Register, controller 
+      ).then(function() {
+        sb.hash.setSilently("register");
+      });
     };
 
     var onLeaveRegister = function() {
-      $el.empty();
+      $(el).empty();
     };
     
     var onEnterForgotPassword = function() {
-      React.render(
-          React.createElement(AdminJS.components.adminjs.login.ForgotPasword, null),
-          document.querySelector(el)
-      );
+      sb.promises.reactRender(
+          el,
+          AdminJS.components.adminjs.login.ForgotPassword, controller
+      ).then(function() {
+        sb.hash.setSilently("forgot_password");
+      });
     };
 
     var onLeaveForgotPassword = function() {
-      $el.empty();
+      $(el).empty();
     };
 
     var destroy = function() {
-        // Quitar la plantilla
-        $el.empty();
+      controller = null;
+      
+      // Quitar la plantilla
+      $(el).empty();
     };
 
     return {
