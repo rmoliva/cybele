@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
 
   create_table "containers", force: :cascade do |t|
     t.integer  "entity_id",                                                   null: false
+    t.string   "entity_type",                                                 null: false
     t.string   "name",                                                        null: false
     t.string   "string0"
     t.integer  "integer0"
@@ -25,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime0"
     t.string   "relation0_type"
     t.integer  "relation0_id"
+    t.integer  "relation0_name"
     t.decimal  "big_decimal0",       precision: 12, scale: 4
     t.string   "string1"
     t.integer  "integer1"
@@ -32,6 +34,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime1"
     t.string   "relation1_type"
     t.integer  "relation1_id"
+    t.integer  "relation1_name"
     t.decimal  "big_decimal1",       precision: 12, scale: 4
     t.string   "string2"
     t.integer  "integer2"
@@ -39,6 +42,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime2"
     t.string   "relation2_type"
     t.integer  "relation2_id"
+    t.integer  "relation2_name"
     t.decimal  "big_decimal2",       precision: 12, scale: 4
     t.string   "string3"
     t.integer  "integer3"
@@ -46,6 +50,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime3"
     t.string   "relation3_type"
     t.integer  "relation3_id"
+    t.integer  "relation3_name"
     t.decimal  "big_decimal3",       precision: 12, scale: 4
     t.string   "string4"
     t.integer  "integer4"
@@ -53,6 +58,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime4"
     t.string   "relation4_type"
     t.integer  "relation4_id"
+    t.integer  "relation4_name"
     t.decimal  "big_decimal4",       precision: 12, scale: 4
     t.string   "string5"
     t.integer  "integer5"
@@ -60,6 +66,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime5"
     t.string   "relation5_type"
     t.integer  "relation5_id"
+    t.integer  "relation5_name"
     t.decimal  "big_decimal5",       precision: 12, scale: 4
     t.string   "string6"
     t.integer  "integer6"
@@ -67,6 +74,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime6"
     t.string   "relation6_type"
     t.integer  "relation6_id"
+    t.integer  "relation6_name"
     t.decimal  "big_decimal6",       precision: 12, scale: 4
     t.string   "string7"
     t.integer  "integer7"
@@ -74,6 +82,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime7"
     t.string   "relation7_type"
     t.integer  "relation7_id"
+    t.integer  "relation7_name"
     t.decimal  "big_decimal7",       precision: 12, scale: 4
     t.string   "string8"
     t.integer  "integer8"
@@ -81,6 +90,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime8"
     t.string   "relation8_type"
     t.integer  "relation8_id"
+    t.integer  "relation8_name"
     t.decimal  "big_decimal8",       precision: 12, scale: 4
     t.string   "string9"
     t.integer  "integer9"
@@ -88,6 +98,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime9"
     t.string   "relation9_type"
     t.integer  "relation9_id"
+    t.integer  "relation9_name"
     t.decimal  "big_decimal9",       precision: 12, scale: 4
     t.string   "string10"
     t.integer  "integer10"
@@ -95,6 +106,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime10"
     t.string   "relation10_type"
     t.integer  "relation10_id"
+    t.integer  "relation10_name"
     t.decimal  "big_decimal10",      precision: 12, scale: 4
     t.string   "string11"
     t.integer  "integer11"
@@ -102,6 +114,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime11"
     t.string   "relation11_type"
     t.integer  "relation11_id"
+    t.integer  "relation11_name"
     t.decimal  "big_decimal11",      precision: 12, scale: 4
     t.string   "string12"
     t.integer  "integer12"
@@ -109,6 +122,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime12"
     t.string   "relation12_type"
     t.integer  "relation12_id"
+    t.integer  "relation12_name"
     t.decimal  "big_decimal12",      precision: 12, scale: 4
     t.string   "string13"
     t.integer  "integer13"
@@ -116,6 +130,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime13"
     t.string   "relation13_type"
     t.integer  "relation13_id"
+    t.integer  "relation13_name"
     t.decimal  "big_decimal13",      precision: 12, scale: 4
     t.string   "string14"
     t.integer  "integer14"
@@ -123,6 +138,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime14"
     t.string   "relation14_type"
     t.integer  "relation14_id"
+    t.integer  "relation14_name"
     t.decimal  "big_decimal14",      precision: 12, scale: 4
     t.string   "string15"
     t.integer  "integer15"
@@ -130,6 +146,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime15"
     t.string   "relation15_type"
     t.integer  "relation15_id"
+    t.integer  "relation15_name"
     t.decimal  "big_decimal15",      precision: 12, scale: 4
     t.string   "string16"
     t.integer  "integer16"
@@ -137,6 +154,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime16"
     t.string   "relation16_type"
     t.integer  "relation16_id"
+    t.integer  "relation16_name"
     t.decimal  "big_decimal16",      precision: 12, scale: 4
     t.string   "string17"
     t.integer  "integer17"
@@ -144,6 +162,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime17"
     t.string   "relation17_type"
     t.integer  "relation17_id"
+    t.integer  "relation17_name"
     t.decimal  "big_decimal17",      precision: 12, scale: 4
     t.string   "string18"
     t.integer  "integer18"
@@ -151,6 +170,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime18"
     t.string   "relation18_type"
     t.integer  "relation18_id"
+    t.integer  "relation18_name"
     t.decimal  "big_decimal18",      precision: 12, scale: 4
     t.string   "string19"
     t.integer  "integer19"
@@ -158,6 +178,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime19"
     t.string   "relation19_type"
     t.integer  "relation19_id"
+    t.integer  "relation19_name"
     t.decimal  "big_decimal19",      precision: 12, scale: 4
     t.string   "string20"
     t.integer  "integer20"
@@ -165,6 +186,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime20"
     t.string   "relation20_type"
     t.integer  "relation20_id"
+    t.integer  "relation20_name"
     t.decimal  "big_decimal20",      precision: 12, scale: 4
     t.string   "string21"
     t.integer  "integer21"
@@ -172,6 +194,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime21"
     t.string   "relation21_type"
     t.integer  "relation21_id"
+    t.integer  "relation21_name"
     t.decimal  "big_decimal21",      precision: 12, scale: 4
     t.string   "string22"
     t.integer  "integer22"
@@ -179,6 +202,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime22"
     t.string   "relation22_type"
     t.integer  "relation22_id"
+    t.integer  "relation22_name"
     t.decimal  "big_decimal22",      precision: 12, scale: 4
     t.string   "string23"
     t.integer  "integer23"
@@ -186,6 +210,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime23"
     t.string   "relation23_type"
     t.integer  "relation23_id"
+    t.integer  "relation23_name"
     t.decimal  "big_decimal23",      precision: 12, scale: 4
     t.string   "string24"
     t.integer  "integer24"
@@ -193,6 +218,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime24"
     t.string   "relation24_type"
     t.integer  "relation24_id"
+    t.integer  "relation24_name"
     t.decimal  "big_decimal24",      precision: 12, scale: 4
     t.string   "string25"
     t.integer  "integer25"
@@ -200,6 +226,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime25"
     t.string   "relation25_type"
     t.integer  "relation25_id"
+    t.integer  "relation25_name"
     t.decimal  "big_decimal25",      precision: 12, scale: 4
     t.string   "string26"
     t.integer  "integer26"
@@ -207,6 +234,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime26"
     t.string   "relation26_type"
     t.integer  "relation26_id"
+    t.integer  "relation26_name"
     t.decimal  "big_decimal26",      precision: 12, scale: 4
     t.string   "string27"
     t.integer  "integer27"
@@ -214,6 +242,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime27"
     t.string   "relation27_type"
     t.integer  "relation27_id"
+    t.integer  "relation27_name"
     t.decimal  "big_decimal27",      precision: 12, scale: 4
     t.string   "string28"
     t.integer  "integer28"
@@ -221,6 +250,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime28"
     t.string   "relation28_type"
     t.integer  "relation28_id"
+    t.integer  "relation28_name"
     t.decimal  "big_decimal28",      precision: 12, scale: 4
     t.string   "string29"
     t.integer  "integer29"
@@ -228,6 +258,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
     t.datetime "datetime29"
     t.string   "relation29_type"
     t.integer  "relation29_id"
+    t.integer  "relation29_name"
     t.decimal  "big_decimal29",      precision: 12, scale: 4
     t.text     "coments"
     t.datetime "created_at",                                                  null: false
@@ -328,7 +359,7 @@ ActiveRecord::Schema.define(version: 20150401102321) do
   add_index "containers", ["datetime7"], name: "index_containers_on_datetime7", using: :btree
   add_index "containers", ["datetime8"], name: "index_containers_on_datetime8", using: :btree
   add_index "containers", ["datetime9"], name: "index_containers_on_datetime9", using: :btree
-  add_index "containers", ["entity_id", "name"], name: "index_containers_on_entity_id_and_name", using: :btree
+  add_index "containers", ["entity_id", "entity_type", "name"], name: "index_containers_on_entity_id_and_entity_type_and_name", using: :btree
   add_index "containers", ["integer0"], name: "index_containers_on_integer0", using: :btree
   add_index "containers", ["integer1"], name: "index_containers_on_integer1", using: :btree
   add_index "containers", ["integer10"], name: "index_containers_on_integer10", using: :btree
@@ -359,66 +390,36 @@ ActiveRecord::Schema.define(version: 20150401102321) do
   add_index "containers", ["integer7"], name: "index_containers_on_integer7", using: :btree
   add_index "containers", ["integer8"], name: "index_containers_on_integer8", using: :btree
   add_index "containers", ["integer9"], name: "index_containers_on_integer9", using: :btree
-  add_index "containers", ["relation0_id"], name: "index_containers_on_relation0_id", using: :btree
-  add_index "containers", ["relation0_type"], name: "index_containers_on_relation0_type", using: :btree
-  add_index "containers", ["relation10_id"], name: "index_containers_on_relation10_id", using: :btree
-  add_index "containers", ["relation10_type"], name: "index_containers_on_relation10_type", using: :btree
-  add_index "containers", ["relation11_id"], name: "index_containers_on_relation11_id", using: :btree
-  add_index "containers", ["relation11_type"], name: "index_containers_on_relation11_type", using: :btree
-  add_index "containers", ["relation12_id"], name: "index_containers_on_relation12_id", using: :btree
-  add_index "containers", ["relation12_type"], name: "index_containers_on_relation12_type", using: :btree
-  add_index "containers", ["relation13_id"], name: "index_containers_on_relation13_id", using: :btree
-  add_index "containers", ["relation13_type"], name: "index_containers_on_relation13_type", using: :btree
-  add_index "containers", ["relation14_id"], name: "index_containers_on_relation14_id", using: :btree
-  add_index "containers", ["relation14_type"], name: "index_containers_on_relation14_type", using: :btree
-  add_index "containers", ["relation15_id"], name: "index_containers_on_relation15_id", using: :btree
-  add_index "containers", ["relation15_type"], name: "index_containers_on_relation15_type", using: :btree
-  add_index "containers", ["relation16_id"], name: "index_containers_on_relation16_id", using: :btree
-  add_index "containers", ["relation16_type"], name: "index_containers_on_relation16_type", using: :btree
-  add_index "containers", ["relation17_id"], name: "index_containers_on_relation17_id", using: :btree
-  add_index "containers", ["relation17_type"], name: "index_containers_on_relation17_type", using: :btree
-  add_index "containers", ["relation18_id"], name: "index_containers_on_relation18_id", using: :btree
-  add_index "containers", ["relation18_type"], name: "index_containers_on_relation18_type", using: :btree
-  add_index "containers", ["relation19_id"], name: "index_containers_on_relation19_id", using: :btree
-  add_index "containers", ["relation19_type"], name: "index_containers_on_relation19_type", using: :btree
-  add_index "containers", ["relation1_id"], name: "index_containers_on_relation1_id", using: :btree
-  add_index "containers", ["relation1_type"], name: "index_containers_on_relation1_type", using: :btree
-  add_index "containers", ["relation20_id"], name: "index_containers_on_relation20_id", using: :btree
-  add_index "containers", ["relation20_type"], name: "index_containers_on_relation20_type", using: :btree
-  add_index "containers", ["relation21_id"], name: "index_containers_on_relation21_id", using: :btree
-  add_index "containers", ["relation21_type"], name: "index_containers_on_relation21_type", using: :btree
-  add_index "containers", ["relation22_id"], name: "index_containers_on_relation22_id", using: :btree
-  add_index "containers", ["relation22_type"], name: "index_containers_on_relation22_type", using: :btree
-  add_index "containers", ["relation23_id"], name: "index_containers_on_relation23_id", using: :btree
-  add_index "containers", ["relation23_type"], name: "index_containers_on_relation23_type", using: :btree
-  add_index "containers", ["relation24_id"], name: "index_containers_on_relation24_id", using: :btree
-  add_index "containers", ["relation24_type"], name: "index_containers_on_relation24_type", using: :btree
-  add_index "containers", ["relation25_id"], name: "index_containers_on_relation25_id", using: :btree
-  add_index "containers", ["relation25_type"], name: "index_containers_on_relation25_type", using: :btree
-  add_index "containers", ["relation26_id"], name: "index_containers_on_relation26_id", using: :btree
-  add_index "containers", ["relation26_type"], name: "index_containers_on_relation26_type", using: :btree
-  add_index "containers", ["relation27_id"], name: "index_containers_on_relation27_id", using: :btree
-  add_index "containers", ["relation27_type"], name: "index_containers_on_relation27_type", using: :btree
-  add_index "containers", ["relation28_id"], name: "index_containers_on_relation28_id", using: :btree
-  add_index "containers", ["relation28_type"], name: "index_containers_on_relation28_type", using: :btree
-  add_index "containers", ["relation29_id"], name: "index_containers_on_relation29_id", using: :btree
-  add_index "containers", ["relation29_type"], name: "index_containers_on_relation29_type", using: :btree
-  add_index "containers", ["relation2_id"], name: "index_containers_on_relation2_id", using: :btree
-  add_index "containers", ["relation2_type"], name: "index_containers_on_relation2_type", using: :btree
-  add_index "containers", ["relation3_id"], name: "index_containers_on_relation3_id", using: :btree
-  add_index "containers", ["relation3_type"], name: "index_containers_on_relation3_type", using: :btree
-  add_index "containers", ["relation4_id"], name: "index_containers_on_relation4_id", using: :btree
-  add_index "containers", ["relation4_type"], name: "index_containers_on_relation4_type", using: :btree
-  add_index "containers", ["relation5_id"], name: "index_containers_on_relation5_id", using: :btree
-  add_index "containers", ["relation5_type"], name: "index_containers_on_relation5_type", using: :btree
-  add_index "containers", ["relation6_id"], name: "index_containers_on_relation6_id", using: :btree
-  add_index "containers", ["relation6_type"], name: "index_containers_on_relation6_type", using: :btree
-  add_index "containers", ["relation7_id"], name: "index_containers_on_relation7_id", using: :btree
-  add_index "containers", ["relation7_type"], name: "index_containers_on_relation7_type", using: :btree
-  add_index "containers", ["relation8_id"], name: "index_containers_on_relation8_id", using: :btree
-  add_index "containers", ["relation8_type"], name: "index_containers_on_relation8_type", using: :btree
-  add_index "containers", ["relation9_id"], name: "index_containers_on_relation9_id", using: :btree
-  add_index "containers", ["relation9_type"], name: "index_containers_on_relation9_type", using: :btree
+  add_index "containers", ["relation0_type", "relation0_id", "relation0_name"], name: "index_cont_on_rel0_type_and_rel0_id_and_rel0_name", using: :btree
+  add_index "containers", ["relation10_type", "relation10_id", "relation10_name"], name: "index_cont_on_rel10_type_and_rel10_id_and_rel10_name", using: :btree
+  add_index "containers", ["relation11_type", "relation11_id", "relation11_name"], name: "index_cont_on_rel11_type_and_rel11_id_and_rel11_name", using: :btree
+  add_index "containers", ["relation12_type", "relation12_id", "relation12_name"], name: "index_cont_on_rel12_type_and_rel12_id_and_rel12_name", using: :btree
+  add_index "containers", ["relation13_type", "relation13_id", "relation13_name"], name: "index_cont_on_rel13_type_and_rel13_id_and_rel13_name", using: :btree
+  add_index "containers", ["relation14_type", "relation14_id", "relation14_name"], name: "index_cont_on_rel14_type_and_rel14_id_and_rel14_name", using: :btree
+  add_index "containers", ["relation15_type", "relation15_id", "relation15_name"], name: "index_cont_on_rel15_type_and_rel15_id_and_rel15_name", using: :btree
+  add_index "containers", ["relation16_type", "relation16_id", "relation16_name"], name: "index_cont_on_rel16_type_and_rel16_id_and_rel16_name", using: :btree
+  add_index "containers", ["relation17_type", "relation17_id", "relation17_name"], name: "index_cont_on_rel17_type_and_rel17_id_and_rel17_name", using: :btree
+  add_index "containers", ["relation18_type", "relation18_id", "relation18_name"], name: "index_cont_on_rel18_type_and_rel18_id_and_rel18_name", using: :btree
+  add_index "containers", ["relation19_type", "relation19_id", "relation19_name"], name: "index_cont_on_rel19_type_and_rel19_id_and_rel19_name", using: :btree
+  add_index "containers", ["relation1_type", "relation1_id", "relation1_name"], name: "index_cont_on_rel1_type_and_rel1_id_and_rel1_name", using: :btree
+  add_index "containers", ["relation20_type", "relation20_id", "relation20_name"], name: "index_cont_on_rel20_type_and_rel20_id_and_rel20_name", using: :btree
+  add_index "containers", ["relation21_type", "relation21_id", "relation21_name"], name: "index_cont_on_rel21_type_and_rel21_id_and_rel21_name", using: :btree
+  add_index "containers", ["relation22_type", "relation22_id", "relation22_name"], name: "index_cont_on_rel22_type_and_rel22_id_and_rel22_name", using: :btree
+  add_index "containers", ["relation23_type", "relation23_id", "relation23_name"], name: "index_cont_on_rel23_type_and_rel23_id_and_rel23_name", using: :btree
+  add_index "containers", ["relation24_type", "relation24_id", "relation24_name"], name: "index_cont_on_rel24_type_and_rel24_id_and_rel24_name", using: :btree
+  add_index "containers", ["relation25_type", "relation25_id", "relation25_name"], name: "index_cont_on_rel25_type_and_rel25_id_and_rel25_name", using: :btree
+  add_index "containers", ["relation26_type", "relation26_id", "relation26_name"], name: "index_cont_on_rel26_type_and_rel26_id_and_rel26_name", using: :btree
+  add_index "containers", ["relation27_type", "relation27_id", "relation27_name"], name: "index_cont_on_rel27_type_and_rel27_id_and_rel27_name", using: :btree
+  add_index "containers", ["relation28_type", "relation28_id", "relation28_name"], name: "index_cont_on_rel28_type_and_rel28_id_and_rel28_name", using: :btree
+  add_index "containers", ["relation29_type", "relation29_id", "relation29_name"], name: "index_cont_on_rel29_type_and_rel29_id_and_rel29_name", using: :btree
+  add_index "containers", ["relation2_type", "relation2_id", "relation2_name"], name: "index_cont_on_rel2_type_and_rel2_id_and_rel2_name", using: :btree
+  add_index "containers", ["relation3_type", "relation3_id", "relation3_name"], name: "index_cont_on_rel3_type_and_rel3_id_and_rel3_name", using: :btree
+  add_index "containers", ["relation4_type", "relation4_id", "relation4_name"], name: "index_cont_on_rel4_type_and_rel4_id_and_rel4_name", using: :btree
+  add_index "containers", ["relation5_type", "relation5_id", "relation5_name"], name: "index_cont_on_rel5_type_and_rel5_id_and_rel5_name", using: :btree
+  add_index "containers", ["relation6_type", "relation6_id", "relation6_name"], name: "index_cont_on_rel6_type_and_rel6_id_and_rel6_name", using: :btree
+  add_index "containers", ["relation7_type", "relation7_id", "relation7_name"], name: "index_cont_on_rel7_type_and_rel7_id_and_rel7_name", using: :btree
+  add_index "containers", ["relation8_type", "relation8_id", "relation8_name"], name: "index_cont_on_rel8_type_and_rel8_id_and_rel8_name", using: :btree
+  add_index "containers", ["relation9_type", "relation9_id", "relation9_name"], name: "index_cont_on_rel9_type_and_rel9_id_and_rel9_name", using: :btree
   add_index "containers", ["string0"], name: "index_containers_on_string0", using: :btree
   add_index "containers", ["string1"], name: "index_containers_on_string1", using: :btree
   add_index "containers", ["string10"], name: "index_containers_on_string10", using: :btree
@@ -545,9 +546,9 @@ ActiveRecord::Schema.define(version: 20150401102321) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",               limit: 150,                 null: false
-    t.string   "surname",            limit: 250,                 null: false
-    t.string   "gender",             limit: 10,                  null: false
+    t.string   "name",               limit: 150
+    t.string   "surname",            limit: 250
+    t.string   "gender",             limit: 10
     t.boolean  "active",                          default: true, null: false
     t.string   "email",                                          null: false
     t.string   "crypted_password",                               null: false

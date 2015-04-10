@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.1'
 # Use mysql as the database for Active Record
 gem 'pg'
+gem 'pghero'
 # gem 'mongoid'
 
 # Use SCSS for stylesheets

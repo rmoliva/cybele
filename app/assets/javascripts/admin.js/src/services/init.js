@@ -18,6 +18,8 @@ AdminJS.services.Init = function(core) {
         if(xhr.status === 401) {
           console.log("Unauthorized");
           core.emit("services.unauthorized", data);
+          // Hemos notificado convenientemente... lo tratamos como algo normal 
+          success(data, status);
         } else {
           error(xhr.responseText, xhr.status);
         }

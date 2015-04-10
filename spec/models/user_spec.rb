@@ -6,9 +6,6 @@ RSpec.describe User, :type => :model do
       @user = create(:user)
     end
     
-    it {should validate_presence_of(:name)}
-    it {should validate_presence_of(:surname)}
-    it {should validate_presence_of(:gender)}
     it {should validate_presence_of(:email)}
 #     it {should have_many(:user_providers)}
     it {should validate_uniqueness_of(:email)}

@@ -54,6 +54,8 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
   
+  mount PgHero::Engine, at: "pghero"
+  
   resources :sessions, :only => [:create], :defaults => { :format => 'json' } do
     collection do
       get 'show'

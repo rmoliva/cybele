@@ -166,6 +166,8 @@ GEM
       cocaine (~> 0.5.3)
       mime-types
     pg (0.18.1)
+    pghero (0.1.10)
+      activerecord
     puma (2.11.1)
       rack (>= 1.1, < 2.0)
     quiet_assets (1.1.0)
@@ -318,6 +320,7 @@ DEPENDENCIES
   paper_trail (~> 3.0.6)
   paperclip
   pg
+  pghero
   puma
   quiet_assets
   rails (= 4.2.1)

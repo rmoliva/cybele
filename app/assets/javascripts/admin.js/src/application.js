@@ -33,13 +33,11 @@ AdminJS.app = function(options) {
 
         // Inicializar servicios
         services.initialize();
-
-        core.on("services.unauthorized", function(data) {
-          console.log("services.unauthorized");
-        });
         
         // Inicializar la configuracion
         configuration.initialize().then(function() {
+          console.log("then....");
+          
           // Inicializar i18n
           i18n.initialize();
 
@@ -52,6 +50,9 @@ AdminJS.app = function(options) {
           // Incializar el router
           router.initialize();
           
+          core.on("services.unauthorized", function(data) {
+            console.log("services.unauthorized");
+          });
         });
     };
 

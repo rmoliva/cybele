@@ -8,6 +8,7 @@ AdminJS.modules.Init = function(core) {
         topnav: AdminJS.modules.topnav.Module,
         sidebar: AdminJS.modules.sidebar.Module,
         simplify: AdminJS.modules.simplify.Module,
+        login: AdminJS.modules.login.Module,
         users: AdminJS.modules.users.Module
     };
 

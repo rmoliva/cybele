@@ -5,7 +5,8 @@ AdminJS.routes.Init = function(core) {
 
     var router = null;
     var route_managers = {
-        dashboard: new AdminJS.routes.Dashboard(core)
+        dashboard: new AdminJS.routes.Dashboard(core),
+        login: new AdminJS.routes.Login(core)
     };
 
     /**
@@ -17,7 +18,11 @@ AdminJS.routes.Init = function(core) {
     function _parseHash(newHash, oldHash) {
         if (newHash == '') {
             // redirect to "home" hash without keeping the empty hash on the history
+          if(core.conf.get('current_user')) {
             hasher.replaceHash('dashboard');
+          } else {
+            hasher.replaceHash('login');
+          }
         } else {
             router.parse(newHash);
         }

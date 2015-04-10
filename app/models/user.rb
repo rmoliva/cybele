@@ -38,17 +38,12 @@ class User < ActiveRecord::Base
 
   # Validations
 
-  validates_presence_of :name
-  validates_length_of :name, maximum: 150
-  validates_presence_of :surname
-  validates_length_of :surname, maximum: 150
   validates_presence_of :email
   validates_uniqueness_of :email
+
+  validates_length_of :name, maximum: 150
   validates_length_of :surname, maximum: 150
-
-  validates_presence_of :gender
-  validates_inclusion_of :active, in: [true, false]
-
+  validates_length_of :surname, maximum: 150
   validates_length_of :address, maximum: 1024, allow_blank: true
   validates_length_of :city, maximum: 150, allow_blank: true
   validates_length_of :state, maximum: 150, allow_blank: true

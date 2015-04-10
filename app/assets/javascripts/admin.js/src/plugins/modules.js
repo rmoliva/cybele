@@ -27,6 +27,22 @@ AdminJS.plugins.Modules = function(core, options) {
       });
     };
     
+    var startLogin = function(options) {
+      return core.promises.moduleStart(
+        "login", 
+        _.merge({el: core.conf.get('el') }, options)
+      ).then(function() {
+        return core.promises.moduleStart("simplify", options);
+      });
+    };
+
+    var stopAllModules = function() {
+      var stop_promises = _.map(core.lsInstances(), function(instance) {
+        return core.promises.moduleStop(instance);
+      });
+      return Promise.all(stop_promises);
+    };
+    
     /* Liberar medios
      */
     var onPluginDestroy = function() {};
@@ -34,19 +50,24 @@ AdminJS.plugins.Modules = function(core, options) {
     // Extender el core
     _.extend(core, {
         modules: {
-          startLayout: startLayout
+          startLayout: startLayout,
+          stopAllModules: stopAllModules,
+          startLogin: startLogin
         }
     }, this);
 
     // Extender el sandbox
     _.extend(core.Sandbox.prototype, {
         modules: {
-          startLayout: startLayout
+          startLayout: startLayout,
+          stopAllModules: stopAllModules,
+          startLogin: startLogin
         }
     }, this);
 
     return {
         init: onPluginInit,
         destroy: onPluginDestroy
+        
     };
 };
