@@ -68,6 +68,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
             </form>
         </div>{/* ./sign-in-inner */}
         </div>{/* ./sign-in-wrapper */}
+        <AdminJS.components.adminjs.login.form.Login />
       </div>
     );
   }

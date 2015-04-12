@@ -14,7 +14,7 @@ AdminJS.app = function(options) {
     /** 
      * Inicializa la aplicacion
      */
-    var initialize = function() {
+    var initialize = function() {     
         // inicializar el scaleApp
         core = new scaleApp.Core();
 
