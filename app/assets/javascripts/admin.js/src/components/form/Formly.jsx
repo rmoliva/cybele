@@ -84,14 +84,14 @@ AdminJS.components.form.Formly = function() {
       this.props.model[fieldKey] = value;
       this.props.onFormlyUpdate(this.props.model);
     },
-  
+    
     render: function() {
       var model = this.props.model;
       var onValueUpdate = this.onValueUpdate;
       var fields = this.props.config.fields.map(function(field) {
         return generateFieldTag(field, model, onValueUpdate);
       });
-      return <form className="formly" role="form" name={this.props.config.name}>{fields}</form>;
+      return <form className="formly" role="form" ref="form" name={this.props.config.name}>{fields}</form>;
     }
   });
 }();

@@ -7,13 +7,14 @@ AdminJS.components.form.field_types.Checkbox = React.createClass({
     var config = this.props.config;
     var key = this.props.key;
     return (
-      <div className="checkbox">
-        <label>
+      <div className="form-group">
+        <div className="custom-checkbox">
           <input type="checkbox" name={key} checked={model[key]} onChange={this.onChange} />
-          {config.data.label}
-        </label>
+          <label forHtml="chkRemember"></label>
+        </div>
+        {config.data.label}
       </div>
-      );
+    );
   }
 });
 
