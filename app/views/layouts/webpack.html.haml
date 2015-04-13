@@ -1,0 +1,14 @@
+!!! XML
+!!! Strict
+%html
+  %head
+    %title= "Cybele"
+    = favicon_link_tag 'favicon.ico'
+    = javascript_tag("var locale='#{get_locale}';")
+    - # = stylesheet_link_tag "application"
+  %body
+    = yield :main_content
+ 
+    = javascript_include_tag "bundle"
+    = yield :js_links if content_for?(:js_links)
+

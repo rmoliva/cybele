@@ -1,4 +1,5 @@
 
+asset "webpack"
 asset "lodash"
 asset "scaleapp"
 asset "bluebird"

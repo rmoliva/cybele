@@ -1,0 +1,16 @@
+
+- content_for :main_content do
+  #application
+
+
+- content_for :js_links do
+  :javascript
+    $(function() {
+      var app = AdminJS.app({
+        el: "#application",
+        locale: locale,
+        callbacks: null // AdminJS.test.Callbacks()
+      });
+      
+      app.initialize();
+     });

@@ -87,5 +87,6 @@ Rails.application.routes.draw do
     put 'containers/:container_name/:id', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'update'
     delete 'containers/:container_name/:id', :defaults => { :format => 'json' }, :controller => 'entities/containers', :action => 'destroy'
   end    
+  get 'webpack' => 'main#webpack'
   root 'main#index'
 end
