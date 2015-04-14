@@ -5,14 +5,17 @@ AdminJS.components.adminjs.login.Login = React.createClass({
 
   getInitialState: function() {
     return {
-      login_form: {},
       spinner: false
     };
   },
   
   onClickSignIn: function() {
     if(this.parsley.validate()) {
-      this.props.controller.handleSignIn(this.state.login_form);
+      this.props.controller.handleSignIn({
+        email: this.state.email,
+        password: this.state.password,
+        remember_me: this.state.remember_me
+      });
     }
   },
   
@@ -34,12 +37,6 @@ AdminJS.components.adminjs.login.Login = React.createClass({
     var state = {};
     state[data.key] = data.value;
     this.setState(state);
-    
-    console.group("onModelSetted");
-    console.log(data);
-    console.log(state);
-    console.log(this.state);
-    console.groupEnd("onModelSetted");
   },
   
   loginFormConfig: function() {
@@ -65,7 +62,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
           required: true
         }          
       }, {
-        key: 'chkRemember',
+        key: 'remember_me',
         type: 'checkbox',
         placeholder: t('login.password'),
         data: {
@@ -76,7 +73,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
   },
   
   onFormlyUpdate: function(model) {
-    this.setState({model: model});
+    this.setState(model);
   },
   
   render: function() {
@@ -100,7 +97,9 @@ AdminJS.components.adminjs.login.Login = React.createClass({
               <i className="fa fa-database m-right-xs"></i>{t("brand")}<strong className='text-skin'>{t("login.access")}</strong>
             </div>
             
-            <AdminJS.components.form.Formly ref="login_form" config={this.loginFormConfig()} model={this.state.login_form} onFormlyUpdate={this.onFormlyUpdate} />
+          {/* <pre>{JSON.stringify(this.state)}</pre> */}
+            
+            <AdminJS.components.form.Formly ref="login_form" config={this.loginFormConfig()} model={this.state} onFormlyUpdate={this.onFormlyUpdate} />
   
             <div className="m-top-md p-top-sm">
               <a onClick={this.onClickSignIn} className={btn_classes}>
