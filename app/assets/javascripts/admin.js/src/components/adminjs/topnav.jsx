@@ -2,6 +2,10 @@ NS('AdminJS.components.adminjs');
 
 AdminJS.components.adminjs.Topnav = React.createClass({
   
+  onClickLogOut: function() {
+    this.props.handleOnLogout();
+  },
+  
   render: function() {
     return (
       <div className="top-nav">
@@ -64,7 +68,7 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a onClick={this.onClickLogOut}>
                                             <i className="fa fa-power-off fa-lg"></i><span className="m-left-xs">Sign out</span>
                                         </a>
                                     </li>

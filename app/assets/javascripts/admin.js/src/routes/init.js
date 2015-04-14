@@ -16,16 +16,19 @@ AdminJS.routes.Init = function(core) {
      */
 
     function _parseHash(newHash, oldHash) {
-        if (newHash == '') {
-            // redirect to "home" hash without keeping the empty hash on the history
-          if(core.conf.get('current_user')) {
-            hasher.replaceHash('dashboard');
-          } else {
-            hasher.replaceHash('login');
-          }
-        } else {
-            router.parse(newHash);
-        }
+      var not_loggedin_hashes = ["", "login", "register", "forgot_password"]
+      
+      if(!core.session.isAuthenticated()) {
+        hasher.replaceHash('login');
+        router.parse('login');
+        return;
+      }
+      
+      if (_.include(not_loggedin_hashes, newHash)) {
+        hasher.replaceHash('dashboard');
+      } else {
+        router.parse(newHash);
+      }
     };
 
     /**
@@ -39,7 +42,7 @@ AdminJS.routes.Init = function(core) {
     };
     
     function setHash(hash) {
-      hasher.setHash(hash); //set hash without dispatching changed signal
+      hasher.setHash(hash);
     };
     
     /**

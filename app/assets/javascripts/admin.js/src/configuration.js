@@ -14,13 +14,6 @@ AdminJS.Configuration = function(core, opts) {
      * Inicializa la aplicacion
      */
     var initialize = function() {
-      // Hay que cargar los datos del usuario
-//      return new Promise(function(resolve, reject) {
-      return core.services.get('current_user','show').then(function(data) {
-        console.log(data);
-      });
-        
-//       });
     };
 
     var destroy = function() {

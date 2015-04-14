@@ -8,3 +8,5 @@
 
 * Checkbox de Remember me no funciona
 * Password field
+* Cuadro de confirmacion de logout con bootstrap
+* http://facebook.github.io/react/docs/class-name-manipulation.html

@@ -8,7 +8,7 @@ AdminJS.services.Sessions = function(core) {
       decoder: decoder
     });
     amplify.request.define("destroySession", "ajax", {
-      url: "/sessions.json",
+      url: "/sessions/destroy.json",
       type: "DELETE",
       decoder: decoder
     });

@@ -10,6 +10,7 @@ AdminJS.app = function(options) {
     var router = null;
     var i18n = null;
     var services = null;
+    var session = null;
 
     /** 
      * Inicializa la aplicacion
@@ -19,6 +20,7 @@ AdminJS.app = function(options) {
         core = new scaleApp.Core();
 
         configuration = new AdminJS.Configuration(core, options);
+        session = new AdminJS.Session(core);
         services = new AdminJS.services.Init(core);
         i18n = new AdminJS.I18n(core);
         plugins = new AdminJS.plugins.Init(core);
@@ -31,28 +33,30 @@ AdminJS.app = function(options) {
         // Inicializar el core
         core.boot();
 
+        core.on("services.unauthorized", function(data) {
+          console.log("services.unauthorized");
+        });
+
         // Inicializar servicios
         services.initialize();
-        
-        // Inicializar la configuracion
-        configuration.initialize().then(function() {
-          console.log("then....");
-          
-          // Inicializar i18n
-          i18n.initialize();
 
-          // Hacer global la funcion de traduccion
-          window.t = i18n.t;
-          
+        // Inicializar la configuracion
+        configuration.initialize();
+        
+        session.initialize();
+
+        // Inicializar i18n
+        i18n.initialize();
+        
+        // Hacer global la funcion de traduccion
+        window.t = i18n.t;
+
+        session.loadCurrentUser().then(function() {
           // Inicializar modulos
           modules.initialize();
 
           // Incializar el router
           router.initialize();
-          
-          core.on("services.unauthorized", function(data) {
-            console.log("services.unauthorized");
-          });
         });
     };
 

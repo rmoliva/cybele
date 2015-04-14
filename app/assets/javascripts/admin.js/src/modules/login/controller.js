@@ -11,7 +11,7 @@ AdminJS.modules.login.Controller = function(sb, fsm, model) {
       model.set('spinner', true);
       
       // Hacer una llamada de login
-      sb.services.get('sessions', 'create', {record: state}).then(function(data) {
+      sb.session.login(state).then(function() {
         // Todo ha ido bien ir a la aplicacion central
         sb.hash.setHash("");
       }).catch(function() {

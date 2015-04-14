@@ -13,7 +13,7 @@ AdminJS.services.Init = function(core) {
      */
     var _decoder = function(data, status, xhr, success, errorfn) {
       if (status === "success") {
-        if(data.suceess) {
+        if(data.success) {
           success(data, status);
         } else {
           _notifyError(data.message, data, errorfn);
@@ -23,7 +23,7 @@ AdminJS.services.Init = function(core) {
           console.log("Unauthorized");
           core.emit("services.unauthorized", data);
           // Hemos notificado convenientemente... lo tratamos como algo normal 
-          success(data, status);
+          success({data: null}, status);
         } else {
           _notifyError(xhr.responseText, {}, errorfn);
         }
