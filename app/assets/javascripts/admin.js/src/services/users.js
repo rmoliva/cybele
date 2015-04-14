@@ -51,10 +51,6 @@ CommonJS.services.Users = function(sb) {
   };
   
   
-  var destroy = function() {
-    // TODO
-  };
-
   /**
    * Trata los valores devueltos por los reiqests
    * @data <Object> Datos devueltos por el request
@@ -73,7 +69,6 @@ CommonJS.services.Users = function(sb) {
   
   return {
     initialize: initialize,
-    destroy: destroy,
     index: index,
     show: show,
     create: create,

@@ -47,7 +47,7 @@ AdminJS.plugins.Promises = function(core, options) {
     var reactRender = function(element, component, props) {
         return new Promise(function(resolve, reject) {
             var react = React.createElement(component, props);
-            React.render(
+            return React.render(
                 react,
                 document.querySelector(element),
                 function() {

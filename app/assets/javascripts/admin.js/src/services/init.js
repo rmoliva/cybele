@@ -11,9 +11,13 @@ AdminJS.services.Init = function(core) {
      * @success <Function> Función a ejecutar cuando se produce success en el request
      * @error <Function> Función a ejecutar cuando se produce un error en el request
      */
-    var _decoder = function(data, status, xhr, success, error) {
+    var _decoder = function(data, status, xhr, success, errorfn) {
       if (status === "success") {
-        success(data, status);
+        if(data.suceess) {
+          success(data, status);
+        } else {
+          _notifyError(data.message, data, errorfn);
+        }
       } else if (status === "fail" || status === "error") {
         if(xhr.status === 401) {
           console.log("Unauthorized");
@@ -21,13 +25,19 @@ AdminJS.services.Init = function(core) {
           // Hemos notificado convenientemente... lo tratamos como algo normal 
           success(data, status);
         } else {
-          error(xhr.responseText, xhr.status);
+          _notifyError(xhr.responseText, {}, errorfn);
         }
       }
     };
     
+    var _notifyError = function(message, data, errorfn) {
+      core.emit('notification.message', {message: message, data: data, type: 'error'});
+      errorfn(message, data);
+    };
+    
     var services = {
-        current_user: new AdminJS.services.CurrentUser(core)
+      current_user: new AdminJS.services.CurrentUser(core),
+      sessions: new AdminJS.services.Sessions(core)
     };
     
     var initialize = function() {
@@ -44,7 +54,13 @@ AdminJS.services.Init = function(core) {
     
     var get = function(service, action, options, scope) {
       var srv = services[service];
+      
+      options = options || {};
       return _.bind(srv[action], scope || this)(options);
+    };
+    
+    var authToken = function() {
+      return $('meta[name="csrf-token"]').attr('content');
     };
     
     // Extender el core

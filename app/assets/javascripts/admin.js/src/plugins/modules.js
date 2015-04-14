@@ -14,6 +14,10 @@ AdminJS.plugins.Modules = function(core, options) {
       ).then(function() {
         return Promise.all([
           core.promises.moduleStart(
+              "notification",
+              options
+          ),
+          core.promises.moduleStart(
             "topnav",
             _.merge({el: '#topnav' }, options)
           ),
@@ -32,6 +36,11 @@ AdminJS.plugins.Modules = function(core, options) {
         "login", 
         _.merge({el: core.conf.get('el') }, options)
       ).then(function() {
+        return core.promises.moduleStart(
+          "notification",
+          options
+        );
+      }).then(function() {
         return core.promises.moduleStart("simplify", options);
       });
     };

@@ -4,7 +4,10 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :get_locale
-  before_filter :set_locale
+
+  # http://stackoverflow.com/questions/14734243/rails-csrf-protection-angular-js-protect-from-forgery-makes-me-to-log-out-on
+  after_action :set_csrf_cookie_for_ng
+  before_action :set_locale
 
   def default_url_options(options = {})
     { locale: get_locale }.merge options
@@ -22,4 +25,13 @@ protected
   def common_allowed_params params
     [:id, "_dc", :tpl, :page, :start, :limit, :app, :entity_id, :locale, :format, :user, {sort: [:property, :direction]}] << params
   end
+  
+  def set_csrf_cookie_for_ng
+    cookies['XSRF-TOKEN'] = form_authenticity_token if protect_against_forgery?
+  end
+  
+  def verified_request?
+    super || valid_authenticity_token?(session, cookies["XSRF-TOKEN"])
+  end
+  
 end

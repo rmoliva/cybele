@@ -4,6 +4,7 @@ AdminJS.modules.Init = function(core) {
     'use strict';
 
     var modules = {
+        notification: AdminJS.modules.notification.Module,
         layout: AdminJS.modules.layout.Module,
         topnav: AdminJS.modules.topnav.Module,
         sidebar: AdminJS.modules.sidebar.Module,

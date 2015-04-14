@@ -9,7 +9,7 @@
 //= require lodash
 //= require scaleapp
 //= require bluebird
-//= require react
+//= require react/react-with-addons
 //= require bootstrap
 //= require signals
 //= require hasher
@@ -41,3 +41,4 @@
 // Application source code
 //= require_tree ./src
 
+var Signal = signals.Signal;

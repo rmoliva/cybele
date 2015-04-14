@@ -6,6 +6,7 @@ AdminJS.modules.login.Module = function(sb) {
     var el = null;
     var fsm = null;
     var react = null;
+    var model = null;
     var controller = null;
 
     var initialize = function(opts, done) {
@@ -30,7 +31,8 @@ AdminJS.modules.login.Module = function(sb) {
           },
         });
         
-        controller = new AdminJS.modules.login.Controller(sb, fsm);
+        model = new AdminJS.modules.login.Model(sb);
+        controller = new AdminJS.modules.login.Controller(sb, fsm, model);
         
         switch(opts.state) {
           case "forgot_password": {
@@ -50,7 +52,10 @@ AdminJS.modules.login.Module = function(sb) {
     var onEnterLogin = function() {
       sb.promises.reactRender(
           el,
-          AdminJS.components.adminjs.login.Login, controller
+          AdminJS.components.adminjs.login.Login, {
+            controller: controller,
+            model: model
+          }
       ).then(function(component) {
         sb.hash.setSilently("login");
       });
@@ -63,7 +68,10 @@ AdminJS.modules.login.Module = function(sb) {
     var onEnterRegister = function() {
       sb.promises.reactRender(
           el,
-          AdminJS.components.adminjs.login.Register, controller 
+          AdminJS.components.adminjs.login.Register, {
+            controller: controller,
+            model: model
+          }
       ).then(function() {
         sb.hash.setSilently("register");
       });
@@ -76,7 +84,10 @@ AdminJS.modules.login.Module = function(sb) {
     var onEnterForgotPassword = function() {
       sb.promises.reactRender(
           el,
-          AdminJS.components.adminjs.login.ForgotPassword, controller
+          AdminJS.components.adminjs.login.ForgotPassword, {
+            controller: controller,
+            model: model
+          }
       ).then(function() {
         sb.hash.setSilently("forgot_password");
       });

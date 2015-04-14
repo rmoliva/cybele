@@ -32,11 +32,14 @@ AdminJS.routes.Init = function(core) {
      * Cambia la url pero sin que se lancen las señales (no se redirige)
      * @hash <String> nuevo hash (porción de url) a introducir
      */
-
     function setHashSilently(hash) {
         hasher.changed.active = false; //disable changed signal
         hasher.setHash(hash); //set hash without dispatching changed signal
         hasher.changed.active = true; //re-enable signal
+    };
+    
+    function setHash(hash) {
+      hasher.setHash(hash); //set hash without dispatching changed signal
     };
     
     /**
@@ -74,14 +77,16 @@ AdminJS.routes.Init = function(core) {
     // Extender el core
     _.extend(core, {
         hash: {
-            setSilently: setHashSilently
+          setSilently: setHashSilently,
+          setHash: setHash
         }
     }, this);
 
     // Extender el sandbox
     _.extend(core.Sandbox.prototype, {
         hash: {
-            setSilently: setHashSilently
+          setSilently: setHashSilently,
+          setHash: setHash
         }
     }, this);
 
