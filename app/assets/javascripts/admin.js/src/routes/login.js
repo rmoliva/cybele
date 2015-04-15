@@ -7,7 +7,7 @@ AdminJS.routes.Login = function(core) {
         login: null,
         forgot_password: null,
         register: null
-    }
+    };
     
 
     var initialize = function(router) {

@@ -41,7 +41,7 @@ AdminJS.plugins.Modules = function(core, options) {
           options
         );
       }).then(function() {
-        return core.promises.moduleStart("simplify", options);
+			  return core.promises.moduleStart("simplify", options);
       });
     };
 

@@ -62,7 +62,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
   
   render: function() {
     var spinner, 
-      btn_classes = React.addons.classSet({
+      btn_classes = classNames({
         btn: true,
         "btn-success": true,
         block: true,

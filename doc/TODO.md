@@ -4,7 +4,7 @@
 
 * Checkbox de Remember no funciona
 * Cuadro de confirmacion de logout con bootstrap
-* http://facebook.github.io/react/docs/class-name-manipulation.html
+* Localizacion de Parsley
 
 * Implementar recuperacion de contraseña
 * Implementar registro

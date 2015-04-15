@@ -9,7 +9,8 @@
 //= require lodash
 //= require scaleapp
 //= require bluebird
-//= require react/react-with-addons
+//= require react
+//= require classnames
 //= require bootstrap
 //= require signals
 //= require hasher
