@@ -35,6 +35,7 @@ AdminJS.app = function(options) {
 
         core.on("services.unauthorized", function(data) {
           console.log("services.unauthorized");
+          core.hash.setHash('login');
         });
 
         // Inicializar servicios

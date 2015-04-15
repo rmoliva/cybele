@@ -8,11 +8,11 @@ AdminJS.components.adminjs.login.ForgotPassword = React.createClass({
   },
 
   onClickLogin: function() {
-    this.props.controller.handleLogin();
+    this.props.controller.call("handleLogin");
   },
   
   onSendPassword: function() {
-    this.props.controller.handleSendPassword(this.state);
+    this.props.controller.call("handleSendPassword", this.state);
   },
   
   handleEmailChange: function(event) {

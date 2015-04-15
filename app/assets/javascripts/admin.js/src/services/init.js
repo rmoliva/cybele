@@ -53,11 +53,30 @@ AdminJS.services.Init = function(core) {
     };
     
     var get = function(service, action, options, scope) {
-      var srv = services[service];
+      var action = _getAction(service, action);
       
       options = options || {};
-      return _.bind(srv[action], scope || this)(options);
+
+      if(action) {
+        return _.bind(action, scope || this)(options);
+      }
     };
+    
+    var _getAction = function(service, action) {
+      var srv = services[service];
+      
+      if(!srv) {
+        console.log("No service found: "+service+" in services: "+Object.keys(services).join(','));
+        return;
+      }
+      
+      if(!srv[action]) {
+        console.log("No action found: "+action+" in service: "+service);
+        return;
+      }
+      return srv[action]
+    };
+    
     
     var authToken = function() {
       return $('meta[name="csrf-token"]').attr('content');

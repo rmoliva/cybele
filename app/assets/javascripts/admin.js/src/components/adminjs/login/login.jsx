@@ -11,7 +11,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
   
   onClickSignIn: function() {
     if(this.parsley.validate()) {
-      this.props.controller.handleSignIn({
+      this.props.controller.call("handleSignIn",{
         email: this.state.email,
         password: this.state.password,
         remember_me: this.state.remember_me
@@ -20,11 +20,11 @@ AdminJS.components.adminjs.login.Login = React.createClass({
   },
   
   onClickForgotPassword: function() {
-    this.props.controller.handleForgotPassword();
+    this.props.controller.call("handleForgotPassword");
   },
   
   onClickRegister: function() {
-    this.props.controller.handleRegister();
+    this.props.controller.call("handleRegister");
   },
 
   componentDidMount: function() {
