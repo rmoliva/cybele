@@ -1,12 +1,14 @@
 class User < ActiveRecord::Base
   include ::UserTpl
   
+  # Authlogic
   acts_as_authentic do |config|
     config.session_class = UserSession
     config.login_field = :email 
     config.validates_length_of_login_field_options minimum: 4, maximum: 50
   end
   
+  # Papertrail
   has_paper_trail ignore:
     [
       :crypted_password,
@@ -24,6 +26,10 @@ class User < ActiveRecord::Base
       :password_confirmation
     ]
 
+  # Paperclip
+  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "100x100>" }, :default_url => "/images/:style/missing.png"
+  validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
+  
   # Relations
   has_many :role_users
   has_many :roles, :through => :role_users 

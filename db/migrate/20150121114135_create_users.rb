@@ -32,6 +32,8 @@ class CreateUsers < ActiveRecord::Migration
   
         t.timestamps null: false
       end
+      
+      add_attachment :users, :avatar
       add_index :users, [:name, :surname]
       add_index :users, :email, :unique => true
       add_index :users, :gender

@@ -69,6 +69,15 @@ Rails.application.routes.draw do
   put 'current_user' => 'current_user#update', :defaults => { :format => 'json' }
   get 'current_user/permissions' => 'current_user#permissions', :defaults => { :format => 'json' }
   
+  namespace :current_user do
+    resources :avatar do
+      collection do
+        get 'index'
+        post 'create'
+      end
+    end
+  end
+  
   resources :users, :only => [:index, :show, :create, :update, :destroy], :defaults => { :format => 'json' } do
     resources :roles, :only => [:index, :show, :create, :update, :destroy] , :defaults => { :format => 'json' }, :controller => 'users/roles' 
   end
