@@ -29,6 +29,13 @@ AdminJS.Session = function(core) {
     var getCurrentUser = function() {
       return current_user;
     };
+    
+    var getCurrentUserCompleteName = function () {
+      if(current_user) {
+        return current_user.surname+", "+current_user.name;
+      }
+      return null;
+    }
 
     var _setCurrentUser = function(data) {
       current_user = data;
@@ -48,6 +55,7 @@ AdminJS.Session = function(core) {
     _.extend(core, {
         session: {
           getCurrentUser: getCurrentUser,
+          getCurrentUserCompleteName: getCurrentUserCompleteName,
           isAuthenticated: isAuthenticated,
           login: login,
           logout: logout
@@ -58,6 +66,7 @@ AdminJS.Session = function(core) {
     _.extend(core.Sandbox.prototype, {
       session: {
         getCurrentUser: getCurrentUser,
+        getCurrentUserCompleteName: getCurrentUserCompleteName,
         isAuthenticated: isAuthenticated,
         login: login,
         logout: logout

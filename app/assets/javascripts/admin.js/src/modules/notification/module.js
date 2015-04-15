@@ -9,6 +9,7 @@ AdminJS.modules.notification.Module = function(sb) {
     
     var initialize = function(opts, done) {
       subscriptions.message = sb.on('notification.message', _.bind(onReceiveMessage));
+      done();
     };
 
     var onReceiveMessage = function(event) {
@@ -22,7 +23,8 @@ AdminJS.modules.notification.Module = function(sb) {
       });      
     };
     
-    var destroy = function() {
+    var destroy = function(done) {
+      done();
     };
 
     return {

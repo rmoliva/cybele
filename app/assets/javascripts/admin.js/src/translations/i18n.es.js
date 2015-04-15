@@ -8,6 +8,8 @@ I18n.translations["es"] = {
       "entities": "Entidades",
       "roles": "Roles",
       "brand": "Cybele",
+      "my_profile": "Mi Perfil",
+      "sign_out": "Cerrar Sesión",
       "login": {
         "access": "Acceso",
         "email_address": "Correo electrónico",

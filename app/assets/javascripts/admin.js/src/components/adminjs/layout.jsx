@@ -130,6 +130,10 @@ AdminJS.components.adminjs.Layout = React.createClass({
             </p>
           </footer>
           {/* End of Footer */}
+          
+          <a href="#" className="scroll-to-top hidden-print">
+            <i className="fa fa-chevron-up fa-lg"></i>
+          </a>
       </div>
     );
   }

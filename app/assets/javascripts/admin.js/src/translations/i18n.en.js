@@ -8,6 +8,8 @@ I18n.translations["en"] = {
       "entities": "Entities",
       "roles": "Roles",
       "brand": "Cybele",
+      "my_profile": "Mi Profile",
+      "sign_out": "Sign Out",
       "login": {
         "access": "Access",
         "email_address": "Email Address",

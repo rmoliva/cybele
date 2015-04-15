@@ -39,6 +39,18 @@
 //= require_tree ../lib
 
 // Application source code
-//= require_tree ./src
+//= require_tree ./src/lib
+//= require_tree ./src/components
+//= require_tree ./src/modules
+//= require_tree ./src/plugins
+//= require_tree ./src/routes
+//= require_tree ./src/services
+//= require_tree ./src/test
+//= require_tree ./src/translations
+//= require ./src/configuration
+//= require ./src/error
+//= require ./src/I18n
+//= require ./src/session
+//= require ./src/application
 
 var Signal = signals.Signal;

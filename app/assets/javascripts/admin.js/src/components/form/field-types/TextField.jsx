@@ -16,6 +16,7 @@ AdminJS.components.form.field_types.TextField = React.createClass({
     var model = this.props.model;
     var config = this.props.config;
     var key = this.props.key;
+    var type = config.password ? "password" : "text"
 
     var validations = this.validations();
     if(config.data.label) {
@@ -23,14 +24,14 @@ AdminJS.components.form.field_types.TextField = React.createClass({
         <div>
           <label>
             {config.data.label}
-            <input className="form-control" type="text" name={key} value={model[key]} placeholder={config.placeholder} onChange={this.onChange} {...validations} />
+            <input className="form-control" type={type} name={key} value={model[key]} placeholder={config.placeholder} onChange={this.onChange} {...validations} />
           </label>
         </div>
       );
     } else {
       return (
         <div className="form-group m-bottom-md">
-          <input className="form-control" type="text"  name={key} placeholder={config.placeholder} value={model[key]} onChange={this.onChange} {...validations} />
+          <input className="form-control" type={type}  name={key} placeholder={config.placeholder} value={model[key]} onChange={this.onChange} {...validations} />
         </div>
       );
     }

@@ -1,9 +1,10 @@
 NS('AdminJS.components.adminjs');
 
 AdminJS.components.adminjs.Topnav = React.createClass({
+  mixins: [AdminJS.lib.ModelMixin],
   
   onClickLogOut: function() {
-    this.props.handleOnLogout();
+    this.props.controller.call("handleOnLogout");
   },
   
   render: function() {
@@ -49,7 +50,7 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                         <a href="#" id="userToggle" data-toggle="dropdown">
                             <img src="images/profile/profile1.jpg" alt="" className="img-circle inline-block user-profile-pic" />
                             <div className="user-detail inline-block">
-                                Jane Doe
+                                {this.state.user_name}
                                 <i className="fa fa-angle-down"></i>
                             </div>
                         </a>
@@ -58,18 +59,12 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                                 <ul>
                                     <li>
                                         <a href="#">
-                                            <i className="fa fa-edit fa-lg"></i><span className="m-left-xs">My Profile</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-inbox fa-lg"></i><span className="m-left-xs">Inboxes</span>
-                                            <span className="badge badge-danger bounceIn animation-delay3">2</span>
+                                            <i className="fa fa-edit fa-lg"></i><span className="m-left-xs">{t("my_profile")}</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a onClick={this.onClickLogOut}>
-                                            <i className="fa fa-power-off fa-lg"></i><span className="m-left-xs">Sign out</span>
+                                            <i className="fa fa-power-off fa-lg"></i><span className="m-left-xs">{t("sign_out")}</span>
                                         </a>
                                     </li>
                                 </ul>

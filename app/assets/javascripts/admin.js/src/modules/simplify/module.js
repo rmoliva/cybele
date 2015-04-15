@@ -206,7 +206,7 @@ AdminJS.modules.simplify.Module = function(sb) {
 
       return false;
     });
-
+    
     //Scroll to Top
     $(".scroll-to-top").click(function()  {
       $("html, body").animate({ scrollTop: 0 }, 600);

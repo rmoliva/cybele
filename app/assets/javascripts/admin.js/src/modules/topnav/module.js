@@ -4,25 +4,27 @@ AdminJS.modules.topnav.Module = function(sb) {
     'use strict';
 
     var $el = null;
-
+    var model = null;
+    var controller = null;
+    
     var initialize = function(opts, done) {
-        $el = $(opts.el);
+      var user_name;
+      $el = $(opts.el);
 
-        React.render(
-            React.createElement(AdminJS.components.adminjs.Topnav, {
-              handleOnLogout: handleOnLogout
-            }),
-            document.querySelector(opts.el),
-            done
-        );
-    };
+      model = new AdminJS.modules.topnav.Model(sb);
+      controller = new AdminJS.modules.topnav.Controller(sb, model);
 
-    var handleOnLogout = function() {
-      if(confirm(t("confirm_logout"))) {
-        sb.session.logout().then(function() {
-          window.location.href = "/";
-        });
-      }
+      sb.promises.reactRender(
+          opts.el,
+          AdminJS.components.adminjs.Topnav, {
+            controller: controller,
+            model: model
+          }
+      ).then(function(component) {
+        user_name = sb.session.getCurrentUserCompleteName();
+        model.set("user_name", user_name);
+        done();
+      });
     };
 
     var destroy = function() {

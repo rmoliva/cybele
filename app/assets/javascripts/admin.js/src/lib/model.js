@@ -13,8 +13,13 @@ AdminJS.lib.Model = function(sb, values) {
       signals.setted.dispatch({key: key, value: value, old: old});
     };
     
+    var getValues = function() {
+      return values;
+    };
+    
     return {
         on: signals,
-        set: set
+        set: set,
+        getValues: getValues
     };
 };

@@ -1,16 +1,11 @@
 NS('AdminJS.components.adminjs.login');
+NS('AdminJS.lib');
 
 AdminJS.components.adminjs.login.Login = React.createClass({
-  parsley: null, 
-
-  getInitialState: function() {
-    return {
-      spinner: false
-    };
-  },
+  mixins: [AdminJS.lib.ModelMixin, AdminJS.lib.ParsleyMixin],
   
   onClickSignIn: function() {
-    if(this.parsley.validate()) {
+    if(this.validate()) {
       this.props.controller.call("handleSignIn",{
         email: this.state.email,
         password: this.state.password,
@@ -27,18 +22,6 @@ AdminJS.components.adminjs.login.Login = React.createClass({
     this.props.controller.call("handleRegister");
   },
 
-  componentDidMount: function() {
-    var selector = this.refs.login_form.getDOMNode();
-    this.parsley = $(selector).parsley();
-    this.props.model.on.setted.add(this.onModelSetted);
-  },
-  
-  onModelSetted: function(data) {
-    var state = {};
-    state[data.key] = data.value;
-    this.setState(state);
-  },
-  
   loginFormConfig: function() {
     return {
       name: 'login_form',
@@ -56,6 +39,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
         key: 'password',
         type: 'text',
         placeholder: t('login.password'),
+        password: true,
         data: {
         },
         validate: {
@@ -99,7 +83,7 @@ AdminJS.components.adminjs.login.Login = React.createClass({
             
           {/* <pre>{JSON.stringify(this.state)}</pre> */}
             
-            <AdminJS.components.form.Formly ref="login_form" config={this.loginFormConfig()} model={this.state} onFormlyUpdate={this.onFormlyUpdate} />
+            <AdminJS.components.form.Formly ref="parsley_form" config={this.loginFormConfig()} model={this.state} onFormlyUpdate={this.onFormlyUpdate} />
   
             <div className="m-top-md p-top-sm">
               <a onClick={this.onClickSignIn} className={btn_classes}>
