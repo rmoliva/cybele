@@ -5,7 +5,6 @@ AdminJS.modules.login.Module = function(sb) {
 
     var el = null;
     var fsm = null;
-    var react = null;
     var model = null;
     var controller = null;
 

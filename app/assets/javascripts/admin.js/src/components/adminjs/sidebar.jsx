@@ -1,7 +1,13 @@
 NS('AdminJS.components.adminjs');
 
 AdminJS.components.adminjs.Sidebar = React.createClass({
-  _renderMenu: function(menu, index) {
+  mixins: [AdminJS.lib.ModelMixin],
+  
+  _handleClickMenu: function(link) {
+    this.props.controller.call('handleClick',{link: link});
+  },
+  
+  _renderMenu: function(menu) {
     var submenu, submenu_icon, liClass = [menu.palette];
     
     if(menu.menu) {
@@ -9,12 +15,13 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
       liClass.push("openable")
       submenu_icon = <span className="submenu-icon"></span>;
     }
-    if(menu.active) {
+    
+    if(menu.key === this.state.sidebar_active) {
       liClass.push("active")
     }
     
-    return <li className={liClass.join(" ")} key={index}>
-      <a href="#">
+    return <li className={liClass.join(" ")} key={menu.key}>
+      <a onClick={this._handleClickMenu.bind(this, menu.link)}>
         <span className="menu-content block">
           <span className="menu-icon"><i className={menu.iconClass}></i></span>
           <span className="text m-left-sm">{menu.text}</span>
@@ -30,7 +37,7 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
 
   _renderSubmenu: function(menu, palette) {
     var submenu = menu.menu.map(function(submenu, index) {
-      return <li key={index}><a href="form_element.html"><span className="submenu-label">{submenu.text}</span></a></li>;
+      return <li key={submenu.key}><a onClick={this._handleClickMenu.bind(this, submenu.link)}><span className="submenu-label">{submenu.text}</span></a></li>;
     }, this), ulClass = ["submenu", palette];
     return <ul className={ulClass.join(" ")}>
       {submenu}
@@ -38,9 +45,13 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
   },
   
   render: function() {
-    var menus = this.props.menu.map(function(menu, index) {
-      return this._renderMenu(menu, index);
-    }, this);
+    var menus;
+    
+    if(this.state.menu_tree) {
+      menus = this.state.menu_tree.map(function(menu, index) {
+        return this._renderMenu(menu);
+      }, this);
+    }
     
     return (
         <aside className="sidebar-menu fixed">

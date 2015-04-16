@@ -11,6 +11,7 @@
 //= require bluebird
 //= require react
 //= require classnames
+//= require eventemitter2
 //= require bootstrap
 //= require signals
 //= require hasher

@@ -4,6 +4,8 @@ AdminJS.modules.simplify.Module = function(sb) {
   'use strict';
 
   var initialize = function(options, done) {
+    console.log("Loading Simplify");
+    
     //scrollable sidebar
     $('.scrollable-sidebar').slimScroll({
       height: '100%',

@@ -24,7 +24,9 @@ AdminJS.routes.Dashboard = function(core) {
     };
 
     var onRouteDashboard = function(options) {
-      core.modules.startLayout(options).done();
+      core.modules.startLayout(
+          _.merge({sidebar_active: 'dashboard_menu',options})
+      ).done();
     };
     
     return {

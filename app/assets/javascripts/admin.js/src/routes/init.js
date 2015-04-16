@@ -6,7 +6,8 @@ AdminJS.routes.Init = function(core) {
     var router = null;
     var route_managers = {
         dashboard: new AdminJS.routes.Dashboard(core),
-        login: new AdminJS.routes.Login(core)
+        login: new AdminJS.routes.Login(core),
+        users: new AdminJS.routes.Users(core)
     };
 
     /**
