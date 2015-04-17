@@ -30,19 +30,21 @@ AdminJS.components.adminjs.Layout = React.createClass({
           {/* End of Main Container */}
         
           {/* Footer */}
-          <footer className="footer">
-            <span className="footer-brand">
-              <strong className="text-danger">Simplify</strong> Admin
-            </span>
-            <p className="no-margin">
-              &copy; 2014 <strong>Simplify Admin</strong>. ALL Rights Reserved. 
-            </p>
-          </footer>
-          {/* End of Footer */}
-          
-          <a href="#" className="scroll-to-top hidden-print">
-            <i className="fa fa-chevron-up fa-lg"></i>
-          </a>
+          <div className="navbar navbar-fixed-bottom">
+            <footer className="footer">
+              <span className="footer-brand">
+                <strong className="text-danger">Simplify</strong> Admin
+              </span>
+              <p className="no-margin">
+                &copy; 2014 <strong>Simplify Admin</strong>. ALL Rights Reserved. 
+              </p>
+            </footer>
+            {/* End of Footer */}
+            
+            <a href="#" className="scroll-to-top hidden-print">
+              <i className="fa fa-chevron-up fa-lg"></i>
+            </a>
+        </div>
       </div>
     );
   }

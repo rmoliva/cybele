@@ -2,11 +2,17 @@ NS('CommonJS.components');
 
 CommonJS.components.Paginator = React.createClass({
   propTypes: {
-    page: React.PropTypes.number,
-    page_count: React.PropTypes.number,
+    page: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
+    page_count: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
     size: React.PropTypes.oneOf(['large', 'small', 'normal']),
     limit: React.PropTypes.number,
-      onClickPage: React.PropTypes.func
+    onClickPage: React.PropTypes.func
   },
   _onPageClick: function(page) {
     this.props.onClickPage(page);

@@ -2,10 +2,22 @@ NS('CommonJS.components');
 
 CommonJS.components.PaginatorLegend = React.createClass({
   propTypes: {
-    page: React.PropTypes.number,
-    page_count: React.PropTypes.number,
-    per_page: React.PropTypes.number,
-    total: React.PropTypes.number
+    page: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
+    page_count: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
+    per_page: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
+    total: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ])
   },
   _getPage: function() {
     return parseInt(this.props.page,10);

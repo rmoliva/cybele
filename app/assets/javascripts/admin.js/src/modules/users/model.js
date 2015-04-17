@@ -9,7 +9,7 @@ AdminJS.modules.users.Model = function(sb) {
       loading_spinner: false,
       records: [],
       page: 1,
-      per_page: 15,
+      per_page: 20,
       total: 1, // Numero total de registros
       page_count: 5 // Numero de paginas segun el numero de registros
     };

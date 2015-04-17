@@ -77,6 +77,9 @@ AdminJS.modules.users.Controller = function(sb, model, module_options) {
         model: model,
         page: options.page
       });
+    },
+    handleToolbar: function(options) {
+      console.log(options);
     }
   
   });
