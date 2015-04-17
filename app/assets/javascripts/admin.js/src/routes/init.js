@@ -32,6 +32,11 @@ AdminJS.routes.Init = function(core) {
       }
     };
 
+    function _bypassedHandler(req, res, requestString) {
+      console.log("404");
+      console.log(arguments);
+    };
+
     /**
      * Cambia la url pero sin que se lancen las señales (no se redirige)
      * @hash <String> nuevo hash (porción de url) a introducir
@@ -53,6 +58,7 @@ AdminJS.routes.Init = function(core) {
       router = crossroads.create();
       _initalizeRouteManagers();
       router.routed.add(console.log, console); //log all routes
+      router.bypassed.add(_bypassedHandler);
       hasher.initialized.add(_parseHash); //parse initial hash
       hasher.changed.add(_parseHash); //parse hash changes
       hasher.init(); //start listening for history change

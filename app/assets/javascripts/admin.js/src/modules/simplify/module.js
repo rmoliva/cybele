@@ -222,7 +222,7 @@ AdminJS.modules.simplify.Module = function(sb) {
     $("[data-toggle=tooltip]").tooltip();
     $("[rel=tooltip]").tooltip();
 
-    $(window).load(function() {
+/*    $(window).load(function() {
       $('body').removeClass('overflow-hidden');
   
       //Enable animation
@@ -238,7 +238,7 @@ AdminJS.modules.simplify.Module = function(sb) {
         $('.chat-alert').removeClass('active');
       }, 8000);
     });
-  
+*/  
     // Toggle Scroll to Top button
     $(window).scroll(function(){
         
