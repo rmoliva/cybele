@@ -3,7 +3,17 @@ NS('AdminJS.components.adminjs');
 AdminJS.components.adminjs.Users = React.createClass({
   mixins: [AdminJS.lib.ModelMixin],
   
+  _handleToolbar: function(command) {
+    this.props.controller.call('handleToolbar', {cmd: command});
+  },
+  
+  _handlePageClick: function(page) {
+    this.props.controller.call('handlePageClick', {page: page});
+  },
+  
   render: function() {
+    var spinner_style = (this.state.loading_spinner ? {} : {display: "none"})
+    
     return (
       <div className="padding-md">
         <div className="clearfix">
@@ -12,7 +22,7 @@ AdminJS.components.adminjs.Users = React.createClass({
               <i className="block fa fa-users fa-lg"></i>
             </span>
             <div className="pull-left m-left-sm">
-              <h3 className="m-bottom-xs m-top-xs">Users</h3>
+              <h3 className="m-bottom-xs m-top-xs">{t("users.title")}</h3>
             </div>
           </div>
         </div>
@@ -42,41 +52,57 @@ AdminJS.components.adminjs.Users = React.createClass({
         </div>
 
         <div className="smart-widget">
+          <div className="smart-widget-header">
+            <button type="submit" className="btn btn-primary marginTB-xs" onClick={this._handleToolbar('add')}>{t("add")}</button>
+            <button type="submit" className="btn btn-warning marginTB-xs" onClick={this._handleToolbar('add')}>{t("update")}</button>
+            <button type="submit" className="btn btn-danger marginTB-xs" onClick={this._handleToolbar('add')}>{t("delete")}</button>
+            <span className="smart-widget-option">
+              <a className="widget-toggle-hidden-option" style={spinner_style}>
+                  <i className="fa fa-circle-o-notch fa-spin"></i>
+              </a>
+            </span>
+          </div>        
           <div className="smart-widget-inner">
             <div className="smart-widget-body">
               <CommonJS.components.Table 
                 columns={[{
                   key: 'name',
-                  text: 'Nombre'
+                  text: t('users.name')
                 }, {
                   key: 'surname',
-                  text: 'Apellidos'
+                  text: t('users.surname')
                 }, {
                   key: 'email',
-                  text: 'Email'
+                  text: t('users.email')
                 }]}
                 
-                records = {[{
-                  id: 23,
-                  name: "Pepe",
-                  surname: "Lopez",
-                  email: "plopez@gmail.com"
-                }, {
-                  id: 35,
-                  name: "Juan",
-                  surname: "Sanchez",
-                  email: "plopez@gmail.com"
-                }, {
-                  id: 74,
-                  name: "Ramón",
-                  surname: "Ramirez",
-                  email: "plopez@gmail.com"
-                }]}
+                records = {this.state.records}
                 
-                condensed={false}
+                condensed={true}
                 hover={true}
                 keyAttribute="name"
               />
+              <div className="row">
+                <div className="col-xs-6">
+                  <CommonJS.components.PaginatorLegend
+                      page={this.state.page}
+                      page_count={this.state.page_count} 
+                      per_page={this.state.per_page} 
+                      total={this.state.total}
+                  />
+                </div>
+                <div className="col-xs-6">
+                  <div className="pull-right">
+                    <CommonJS.components.Paginator 
+                      page={this.state.page}
+                      page_count={this.state.page_count} 
+                      size='normal' 
+                      limit={3} 
+                      onClickPage={this._handlePageClick}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

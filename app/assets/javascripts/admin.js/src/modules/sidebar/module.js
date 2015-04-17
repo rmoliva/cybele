@@ -16,14 +16,14 @@ AdminJS.modules.sidebar.Module = function(sb) {
         palette: "bg-palette1",
         link: 'dashboard'
       }, {
-        text: t("users"),
-        alt: t("users"),
+        text: t("users.title"),
+        alt: t("users.title"),
         key: 'users_menu',
         iconClass: "block fa fa-users fa-lg",
         palette: "bg-palette2",
         menu: [{
-          text: t("users"),
-          alt: t("users"),
+          text: t("users.title"),
+          alt: t("users.title"),
           key: 'users_submenu',
           link: 'users'
         }, {

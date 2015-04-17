@@ -7,7 +7,7 @@ AdminJS.lib.Controller = function(sb, fsm, model, handlers) {
       var handler = handlers[name];
       
       if(!handler) {
-        console.log("No handler function found: "+name+" in handlers: "+Object.keys(handlers).join(','));
+        // console.log("No handler function found: "+name+" in handlers: "+Object.keys(handlers).join(','));
         return;
       }
       return _.bind(handler, scope || this)(options);

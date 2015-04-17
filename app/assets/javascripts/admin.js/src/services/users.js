@@ -1,8 +1,8 @@
 NS('CommonJS.services');
 
-CommonJS.services.Users = function(sb) {
+AdminJS.services.Users = function(core) {
   
-  var initialize = function() {
+  var initialize = function(decoder) {
     amplify.request.define("indexUsers", "ajax", {
       url: "/users.json",
       type: "GET",
@@ -23,7 +23,7 @@ CommonJS.services.Users = function(sb) {
       type: "PUT",
       decoder: decoder
     });
-    amplify.request.define("destroyusers", "ajax", {
+    amplify.request.define("destroyUsers", "ajax", {
       url: "/users/{id}.json",
       type: "DELETE",
       decoder: decoder
@@ -31,40 +31,23 @@ CommonJS.services.Users = function(sb) {
   };
   
   var index = function(options) {
-    return sb.promises.promiseRequest("indexCountries", options);
+    return core.promises.promiseRequest("indexUsers", options);
   };
   
   var show = function(options) {
-    return sb.promises.promiseRequest("showCountries", options);
+    return core.promises.promiseRequest("showUsers", options);
   };
 
   var create = function(options) {
-    return sb.promises.promiseRequest("createCountries", options);
+    return core.promises.promiseRequest("createUsers", options);
   };
 
   var update = function(options) {
-    return sb.promises.promiseRequest("updateCountries", options);
+    return core.promises.promiseRequest("updateUsers", options);
   };
   
   var destroy = function(options) {
-    return sb.promises.promiseRequest("destroyCountries", options);
-  };
-  
-  
-  /**
-   * Trata los valores devueltos por los reiqests
-   * @data <Object> Datos devueltos por el request
-   * @status <String> Indica si el resultado del request ha sido satisfactorio o no
-   * @xhr
-   * @success <Function> Función a ejecutar cuando se produce success en el request
-   * @error <Function> Función a ejecutar cuando se produce un error en el request
-   */
-  var decoder = function(data, status, xhr, success, error) {
-    if (status === "success") {
-      success(data, status);
-    } else if (status === "fail" || status === "error") {
-      error(xhr.responseText, status);
-    }
+    return core.promises.promiseRequest("destroyUsers", options);
   };
   
   return {

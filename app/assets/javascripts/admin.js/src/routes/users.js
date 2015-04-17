@@ -9,7 +9,7 @@ AdminJS.routes.Users = function(core) {
     
 
     var initialize = function(router) {
-      routes.users = router.addRoute('users/:id:', onRouteUsers);
+      routes.users = router.addRoute('users/:id::?params:', onRouteUsers);
     };
 
     var destroy = function(router) {
@@ -18,14 +18,15 @@ AdminJS.routes.Users = function(core) {
       });
     };
 
-    var onRouteUsers = function(id) {
+    var onRouteUsers = function(id, params) {
       core.modules.startLayout(
-        {sidebar_active: 'users_menu', id: id}
+        {sidebar_active: 'users_menu'}
       ).then(function() {
         return core.promises.moduleStart(
           'users', {
            el: '#main-container',
-           id: id
+           id: id,
+           params: params
         });
       });
     };

@@ -4,12 +4,16 @@ I18n.translations["es"] = {
     "adminjs": {
       "app_name": "Administración Central",
       "dashboard": "Tablero",
-      "users": "Usuarios",
       "entities": "Entidades",
       "roles": "Roles",
       "brand": "Cybele",
       "my_profile": "Mi Perfil",
       "sign_out": "Cerrar Sesión",
+      "add": "Añadir",
+      "update": "Actualizar",
+      "delete": "Borrar",
+      "previous": "Anterior",
+      "next": "Siguiente",
       "login": {
         "access": "Acceso",
         "email_address": "Correo electrónico",
@@ -23,6 +27,12 @@ I18n.translations["es"] = {
         "send": "Enviar",
         "register": "Registro",
         "repeat_password": "Repetir Contraseña"
+      },
+      "users": {
+        "title": "Usuarios",
+        "name": "Nombre",
+        "surname": "Apellidos",
+        "email": "Email"
       }
     }
   }

@@ -23,7 +23,7 @@ protected
   end
 
   def common_allowed_params params
-    [:id, "_dc", :tpl, :page, :start, :limit, :app, :entity_id, :locale, :format, :user, {sort: [:property, :direction]}] << params
+    [:id, "_dc", :tpl, :page, :start, :per_page, :app, :entity_id, :locale, :format, :user, {sort: [:property, :direction]}] << params
   end
   
   def set_csrf_cookie_for_ng

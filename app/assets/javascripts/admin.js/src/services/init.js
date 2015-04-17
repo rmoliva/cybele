@@ -37,7 +37,8 @@ AdminJS.services.Init = function(core) {
     
     var services = {
       current_user: new AdminJS.services.CurrentUser(core),
-      sessions: new AdminJS.services.Sessions(core)
+      sessions: new AdminJS.services.Sessions(core),
+      users: new AdminJS.services.Users(core)
     };
     
     var initialize = function() {
@@ -56,6 +57,7 @@ AdminJS.services.Init = function(core) {
       var action = _getAction(service, action);
       
       options = options || {};
+      options = _.merge(options, {app: 'central'});
 
       if(action) {
         return _.bind(action, scope || this)(options);
@@ -66,7 +68,7 @@ AdminJS.services.Init = function(core) {
       var srv = services[service];
       
       if(!srv) {
-        console.log("No service found: "+service+" in services: "+Object.keys(services).join(','));
+        console.log("No service found: "+service+". Only services: "+Object.keys(services).join(','));
         return;
       }
       

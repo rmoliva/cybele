@@ -4,12 +4,16 @@ I18n.translations["en"] = {
     "adminjs": {
       "app_name": "Central Administration",
       "dashboard": "Dashboard",
-      "users": "Users",
       "entities": "Entities",
       "roles": "Roles",
       "brand": "Cybele",
       "my_profile": "Mi Profile",
       "sign_out": "Sign Out",
+      "add": "Add",
+      "update": "Update",
+      "delete": "Delete",
+      "previous": "Previous",
+      "next": "Next",
       "login": {
         "access": "Access",
         "email_address": "Email Address",
@@ -23,6 +27,15 @@ I18n.translations["en"] = {
         "send": "Send",
         "register": "Register",
         "repeat_password": "Repeat Password"
+      },
+      "users": {
+        "title": "Users",
+        "name": "Name",
+        "surname": "Surname",
+        "email": "Email"
+      },
+      "paginator_legend": {
+        "text": "Showing {{from}} to {{to}} of {{total}} entries"
       }
     }
   }
