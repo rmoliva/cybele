@@ -30,7 +30,7 @@ AdminJS.modules.login.Module = function(sb) {
           },
         });
         
-        model = new AdminJS.modules.login.Model(sb);
+        model = AdminJS.modules.login.Model.create(sb);
         controller = new AdminJS.modules.login.Controller(sb, fsm, model);
         
         switch(opts.state) {

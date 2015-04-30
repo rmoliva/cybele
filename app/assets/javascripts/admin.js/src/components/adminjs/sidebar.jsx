@@ -7,6 +7,22 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
     this.props.controller.call('handleClick',{link: link});
   },
   
+  /**
+   * La siguiente funcion comprueba si un menu tiene una clave
+   * determinada o la tienen sus hijos 
+   */
+  _hasKey: function(menu, key) {
+    // Comprobar si la tiene el propio menu
+    if(menu.key === key) {
+      return true; 
+    }
+    
+    // Comprobar si la tiene alguno de sus hijos
+    return _.any(menu.menu, function(submenu) {
+      return submenu.key === key;
+    })
+  },
+  
   _renderMenu: function(menu) {
     var submenu, submenu_icon, liClass = [menu.palette];
     
@@ -16,8 +32,9 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
       submenu_icon = <span className="submenu-icon"></span>;
     }
     
-    if(menu.key === this.state.sidebar_active) {
+    if(this._hasKey(menu, this.state.sidebar_active)) {
       liClass.push("active")
+      liClass.push("open")
     }
     
     return <li className={liClass.join(" ")} key={menu.key}>

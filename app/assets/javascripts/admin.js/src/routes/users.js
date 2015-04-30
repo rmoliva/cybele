@@ -20,7 +20,7 @@ AdminJS.routes.Users = function(core) {
 
     var onRouteUsers = function(id, params) {
       core.modules.startLayout(
-        {sidebar_active: 'users_menu'}
+        {sidebar_active: 'users_submenu'}
       ).then(function() {
         return core.promises.moduleStart(
           'users', {

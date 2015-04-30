@@ -1,9 +1,12 @@
 NS('AdminJS.modules.topnav');
 
-AdminJS.modules.topnav.Model = function(sb) {
-    'use strict';
-    
-    return AdminJS.lib.Model(sb, {
-      user_name: null
+AdminJS.modules.topnav.Model = {
+  create: function(sb) {
+    return AdminJS.lib.Model.create({
+      sb: sb, 
+      values:{
+        user_name: null
+      }
     });
+  }
 };

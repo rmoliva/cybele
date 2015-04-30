@@ -1,10 +1,15 @@
 NS('AdminJS.modules.login');
 
-AdminJS.modules.sidebar.Model = function(sb) {
+AdminJS.modules.sidebar.Model = {
+  create: function(sb) {
     'use strict';
     
-    return AdminJS.lib.Model(sb, {
-      menu_tree: null,
-      sidebar_active: null
+    return AdminJS.lib.Model.create({
+      sb: sb, 
+      values: {
+        menu_tree: null,
+        sidebar_active: null
+      }
     });
+  }
 };

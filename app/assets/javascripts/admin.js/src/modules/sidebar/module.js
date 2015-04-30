@@ -49,7 +49,7 @@ AdminJS.modules.sidebar.Module = function(sb) {
     var initialize = function(opts, done) {
         $el = $(opts.el);
         
-        model = new AdminJS.modules.sidebar.Model(sb);
+        model = AdminJS.modules.sidebar.Model.create(sb);
         controller = new AdminJS.modules.sidebar.Controller(sb, model);
         
         // Renderizamos la plantilla

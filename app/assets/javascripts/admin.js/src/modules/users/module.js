@@ -10,7 +10,7 @@ AdminJS.modules.users.Module = function(sb) {
     var initialize = function(opts, done) {
         $el = $(opts.el);
         
-        model = new AdminJS.modules.users.Model(sb);
+        model = AdminJS.modules.users.Model.create(sb);
         model.on.hash_changed.add(onHashChanged);
         
         controller = new AdminJS.modules.users.Controller(sb, model, opts);

@@ -1,6 +1,7 @@
 NS('AdminJS.modules.users');
 
-AdminJS.modules.users.Model = function(sb) {
+AdminJS.modules.users.Model = {
+  create: function(sb) {
     'use strict';
 
     // El siguiente hash contiene todas las variables con datos
@@ -21,5 +22,10 @@ AdminJS.modules.users.Model = function(sb) {
       "per_page"
     ];
     
-    return AdminJS.lib.Model(sb, def_values, hash_keys);
+    return AdminJS.lib.Model.create({
+      ab: sb, 
+      values: def_values, 
+      hash_keys: hash_keys
+    });
+  }
 };

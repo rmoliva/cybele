@@ -14,6 +14,7 @@
 //= require eventemitter2
 //= require bootstrap
 //= require signals
+
 //= require hasher
 //= require crossroads/dist/crossroads
 //= require moment
@@ -54,5 +55,3 @@
 //= require ./src/I18n
 //= require ./src/session
 //= require ./src/application
-
-var Signal = signals.Signal;

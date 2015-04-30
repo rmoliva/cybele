@@ -1,9 +1,14 @@
 NS('AdminJS.modules.login');
 
-AdminJS.modules.login.Model = function(sb) {
+AdminJS.modules.login.Model = {
+  create: function(sb) {
     'use strict';
     
-    return AdminJS.lib.Model(sb, {
-      spinner: false
+    return AdminJS.lib.Model.create({
+      sb: sb,
+      values: {
+        spinner: false
+      }
     });
+  }
 };

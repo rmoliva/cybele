@@ -11,7 +11,7 @@ AdminJS.modules.topnav.Module = function(sb) {
       var user_name;
       $el = $(opts.el);
 
-      model = new AdminJS.modules.topnav.Model(sb);
+      model = AdminJS.modules.topnav.Model.create(sb);
       controller = new AdminJS.modules.topnav.Controller(sb, model);
 
       sb.promises.reactRender(
