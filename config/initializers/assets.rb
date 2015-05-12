@@ -11,4 +11,9 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 Rails.application.config.assets.precompile += %w( 
   admin.js/application.js 
+  bundle.js 
 )
+
+Rails.application.config.assets.configure do |env|
+  env.unregister_postprocessor 'application/javascript', Sprockets::SafetyColons
+end

@@ -9,6 +9,7 @@
   %body
     = yield :main_content
  
-    = javascript_include_tag "admin.js/application"
+    - # = javascript_include_tag "admin.js/application"
+    = javascript_include_tag "bundle"
     = yield :js_links if content_for?(:js_links)
 
