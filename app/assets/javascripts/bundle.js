@@ -60,23 +60,52 @@
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var App, _;
+	/* WEBPACK VAR INJECTION */(function(scaleApp) {var App, plugins, services, session;
 	
-	_ = __webpack_require__(/*! lodash */ 5);
+	plugins = __webpack_require__(/*! ./plugins/init */ 5);
+	
+	services = __webpack_require__(/*! ./services/init */ 6);
+	
+	session = __webpack_require__(/*! ./session */ 20);
 	
 	module.exports = App = (function() {
 	  function App() {}
 	
+	  App.prototype.core = null;
+	
+	  App.prototype.plugins = null;
+	
+	  App.prototype.modules = null;
+	
+	  App.prototype.configuration = null;
+	
+	  App.prototype.router = null;
+	
+	  App.prototype.i18n = null;
+	
+	  App.prototype.services = null;
+	
+	  App.prototype.session = null;
+	
 	  App.prototype.start = function() {
-	    return _.times(3, function(i) {
-	      return console.log(i);
-	    });
+	    var core;
+	    core = new scaleApp.Core();
+	    this.plugins = new plugins(core);
+	    this.plugins.initialize();
+	    this.services = new services(core);
+	    this.services.initialize();
+	    this.session = new session(core);
+	    core.boot();
+	    return this.session.loadCurrentUser().then(function() {});
 	  };
+	
+	  App.prototype.destroy = function() {};
 	
 	  return App;
 	
 	})();
-
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! scaleapp/dist/scaleApp */ 9)))
 
 /***/ },
 /* 2 */
@@ -8935,16 +8964,173 @@
 	
 	})( window );
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/buildin/module.js */ 6)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/buildin/module.js */ 8)(module)))
 
 /***/ },
 /* 5 */
+/*!*****************************************************!*\
+  !*** ./app/webpack/javascripts/plugins/init.coffee ***!
+  \*****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var modules, promises, scaleAppLs, url;
+	
+	scaleAppLs = __webpack_require__(/*! ../lib/scaleApp.ls */ 13);
+	
+	modules = __webpack_require__(/*! ./modules */ 14);
+	
+	promises = __webpack_require__(/*! ./promises */ 15);
+	
+	url = __webpack_require__(/*! ./url */ 16);
+	
+	module.exports = function(core) {
+	  'use strict';
+	  var initialize;
+	  initialize = function() {
+	    core.use(scaleAppLs);
+	    core.use(modules);
+	    core.use(promises);
+	    return core.use(url);
+	  };
+	  return {
+	    initialize: initialize
+	  };
+	};
+
+
+/***/ },
+/* 6 */
+/*!******************************************************!*\
+  !*** ./app/webpack/javascripts/services/init.coffee ***!
+  \******************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(_, $) {var current_user, request, sessions, users;
+	
+	request = __webpack_require__(/*! superagent/lib/client */ 21);
+	
+	current_user = __webpack_require__(/*! ./current_user */ 10);
+	
+	users = __webpack_require__(/*! ./users */ 11);
+	
+	sessions = __webpack_require__(/*! ./sessions */ 12);
+	
+	module.exports = function(core) {
+	  'use strict';
+	  var _decoder, _getAction, _notifyError, authToken, destroy, get, getRequest, initialize, services;
+	  getRequest = function(url, options) {
+	    return new Promise(function(resolve, error) {
+	      debugger;
+	      return request.get('/current_user.json').query(options).end(resolve);
+	    }).then(function(err, request) {
+	      debugger;
+	      console.log(err);
+	      return console.log(request);
+	    });
+	  };
+	
+	  /**
+	   * Trata los valores devueltos por los reiqests
+	   * @data <Object> Datos devueltos por el request
+	   * @status <String> Indica si el resultado del request ha sido satisfactorio o no
+	   * @xhr
+	   * @success <Function> Función a ejecutar cuando se produce success en el request
+	   * @error <Function> Función a ejecutar cuando se produce un error en el request
+	   */
+	  _decoder = function(data, status, xhr, success, errorfn) {
+	    if (status === 'success') {
+	      if (data.success) {
+	        success(data, status);
+	      } else {
+	        _notifyError(data.message, data, errorfn);
+	      }
+	    } else if (status === 'fail' || status === 'error') {
+	      if (xhr.status === 401) {
+	        console.log('Unauthorized');
+	        core.emit('services.unauthorized', data);
+	        success({
+	          data: null
+	        }, status);
+	      } else {
+	        _notifyError(xhr.responseText, {}, errorfn);
+	      }
+	    }
+	  };
+	  _notifyError = function(message, data, errorfn) {
+	    core.emit('notification.message', {
+	      message: message,
+	      data: data,
+	      type: 'error'
+	    });
+	    errorfn(message, data);
+	  };
+	  services = {
+	    current_user: new current_user(core, _decoder),
+	    sessions: new sessions(core, _decoder),
+	    users: new users(core, _decoder)
+	  };
+	  initialize = function() {
+	    _.each(services, (function(service) {
+	      service.initialize();
+	    }), this);
+	  };
+	  destroy = function() {
+	    _.each(services, (function(service) {
+	      service.destroy();
+	    }), this);
+	  };
+	  get = function(service, action, options, scope) {
+	    var action;
+	    action = _getAction(service, action);
+	    options = options || {};
+	    if (action) {
+	      return _.bind(action, scope || this)(options);
+	    }
+	  };
+	  _getAction = function(service, action) {
+	    var srv;
+	    srv = services[service];
+	    if (!srv) {
+	      console.log('No service found: ' + service + '. Only services: ' + Object.keys(services).join(','));
+	      return;
+	    }
+	    if (!srv[action]) {
+	      console.log('No action found: ' + action + ' in service: ' + service);
+	      return;
+	    }
+	    return srv[action];
+	  };
+	  authToken = function() {
+	    return $('meta[name="csrf-token"]').attr('content');
+	  };
+	  _.extend(core, {
+	    services: {
+	      get: get,
+	      getRequest: getRequest
+	    }
+	  }, this);
+	  _.extend(core.Sandbox.prototype, {
+	    services: {
+	      get: get,
+	      getRequest: getRequest
+	    }
+	  }, this);
+	  return {
+	    initialize: initialize,
+	    destroy: destroy
+	  };
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! lodash */ 7), __webpack_require__(/*! jquery */ 4)))
+
+/***/ },
+/* 7 */
 /*!***************************!*\
   !*** ./~/lodash/index.js ***!
   \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
+	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global, _) {/**
 	 * @license
 	 * lodash 3.5.0 (Custom Build) <https://lodash.com/>
 	 * Build: `lodash modern -d -o ./index.js`
@@ -20544,10 +20730,10 @@
 	  }
 	}.call(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/buildin/module.js */ 6)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/buildin/module.js */ 8)(module), (function() { return this; }()), __webpack_require__(/*! lodash */ 7)))
 
 /***/ },
-/* 6 */
+/* 8 */
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
@@ -20563,6 +20749,2378 @@
 		}
 		return module;
 	}
+
+
+/***/ },
+/* 9 */
+/*!******************************************************************!*\
+  !*** ./vendor/assets/bower_components/scaleapp/dist/scaleApp.js ***!
+  \******************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {/*!
+	scaleapp - v0.4.3 - 2014-02-07
+	This program is distributed under the terms of the MIT license.
+	Copyright (c) 2011-2014 Markus Kohlhase <mail@markus-kohlhase.de>
+	*/
+	(function() {
+	  var Core, Mediator, api, argRgx, checkType, doForAll, fnRgx, getArgumentNames, runParallel, runSeries, runWaterfall, util,
+	    __slice = [].slice;
+	
+	  fnRgx = /function[^(]*\(([^)]*)\)/;
+	
+	  argRgx = /([^\s,]+)/g;
+	
+	  getArgumentNames = function(fn) {
+	    var _ref;
+	    return ((fn != null ? (_ref = fn.toString().match(fnRgx)) != null ? _ref[1] : void 0 : void 0) || '').match(argRgx) || [];
+	  };
+	
+	  runParallel = function(tasks, cb, force) {
+	    var count, errors, hasErr, i, results, t, _i, _len, _results;
+	    if (tasks == null) {
+	      tasks = [];
+	    }
+	    if (cb == null) {
+	      cb = (function() {});
+	    }
+	    count = tasks.length;
+	    results = [];
+	    if (count === 0) {
+	      return cb(null, results);
+	    }
+	    errors = [];
+	    hasErr = false;
+	    _results = [];
+	    for (i = _i = 0, _len = tasks.length; _i < _len; i = ++_i) {
+	      t = tasks[i];
+	      _results.push((function(t, i) {
+	        var e, next;
+	        next = function() {
+	          var err, res;
+	          err = arguments[0], res = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+	          if (err) {
+	            errors[i] = err;
+	            hasErr = true;
+	            if (!force) {
+	              return cb(errors, results);
+	            }
+	          } else {
+	            results[i] = res.length < 2 ? res[0] : res;
+	          }
+	          if (--count <= 0) {
+	            if (hasErr) {
+	              return cb(errors, results);
+	            } else {
+	              return cb(null, results);
+	            }
+	          }
+	        };
+	        try {
+	          return t(next);
+	        } catch (_error) {
+	          e = _error;
+	          return next(e);
+	        }
+	      })(t, i));
+	    }
+	    return _results;
+	  };
+	
+	  runSeries = function(tasks, cb, force) {
+	    var count, errors, hasErr, i, next, results;
+	    if (tasks == null) {
+	      tasks = [];
+	    }
+	    if (cb == null) {
+	      cb = (function() {});
+	    }
+	    i = -1;
+	    count = tasks.length;
+	    results = [];
+	    if (count === 0) {
+	      return cb(null, results);
+	    }
+	    errors = [];
+	    hasErr = false;
+	    next = function() {
+	      var e, err, res;
+	      err = arguments[0], res = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+	      if (err) {
+	        errors[i] = err;
+	        hasErr = true;
+	        if (!force) {
+	          return cb(errors, results);
+	        }
+	      } else {
+	        if (i > -1) {
+	          results[i] = res.length < 2 ? res[0] : res;
+	        }
+	      }
+	      if (++i >= count) {
+	        if (hasErr) {
+	          return cb(errors, results);
+	        } else {
+	          return cb(null, results);
+	        }
+	      } else {
+	        try {
+	          return tasks[i](next);
+	        } catch (_error) {
+	          e = _error;
+	          return next(e);
+	        }
+	      }
+	    };
+	    return next();
+	  };
+	
+	  runWaterfall = function(tasks, cb) {
+	    var i, next;
+	    i = -1;
+	    if (tasks.length === 0) {
+	      return cb();
+	    }
+	    next = function() {
+	      var err, res;
+	      err = arguments[0], res = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+	      if (err != null) {
+	        return cb(err);
+	      }
+	      if (++i >= tasks.length) {
+	        return cb.apply(null, [null].concat(__slice.call(res)));
+	      } else {
+	        return tasks[i].apply(tasks, __slice.call(res).concat([next]));
+	      }
+	    };
+	    return next();
+	  };
+	
+	  doForAll = function(args, fn, cb, force) {
+	    var a, tasks;
+	    if (args == null) {
+	      args = [];
+	    }
+	    tasks = (function() {
+	      var _i, _len, _results;
+	      _results = [];
+	      for (_i = 0, _len = args.length; _i < _len; _i++) {
+	        a = args[_i];
+	        _results.push((function(a) {
+	          return function(next) {
+	            return fn(a, next);
+	          };
+	        })(a));
+	      }
+	      return _results;
+	    })();
+	    return util.runParallel(tasks, cb, force);
+	  };
+	
+	  util = {
+	    doForAll: doForAll,
+	    runParallel: runParallel,
+	    runSeries: runSeries,
+	    runWaterfall: runWaterfall,
+	    getArgumentNames: getArgumentNames,
+	    hasArgument: function(fn, idx) {
+	      if (idx == null) {
+	        idx = 1;
+	      }
+	      return util.getArgumentNames(fn).length >= idx;
+	    }
+	  };
+	
+	  Mediator = (function() {
+	    function Mediator(obj, cascadeChannels) {
+	      this.cascadeChannels = cascadeChannels != null ? cascadeChannels : false;
+	      this.channels = {};
+	      if (obj instanceof Object) {
+	        this.installTo(obj);
+	      } else if (obj === true) {
+	        this.cascadeChannels = true;
+	      }
+	    }
+	
+	    Mediator.prototype.on = function(channel, fn, context) {
+	      var id, k, subscription, that, v, _base, _i, _len, _results, _results1;
+	      if (context == null) {
+	        context = this;
+	      }
+	      if ((_base = this.channels)[channel] == null) {
+	        _base[channel] = [];
+	      }
+	      that = this;
+	      if (channel instanceof Array) {
+	        _results = [];
+	        for (_i = 0, _len = channel.length; _i < _len; _i++) {
+	          id = channel[_i];
+	          _results.push(this.on(id, fn, context));
+	        }
+	        return _results;
+	      } else if (typeof channel === "object") {
+	        _results1 = [];
+	        for (k in channel) {
+	          v = channel[k];
+	          _results1.push(this.on(k, v, fn));
+	        }
+	        return _results1;
+	      } else {
+	        if (typeof fn !== "function") {
+	          return false;
+	        }
+	        if (typeof channel !== "string") {
+	          return false;
+	        }
+	        subscription = {
+	          context: context,
+	          callback: fn
+	        };
+	        return {
+	          attach: function() {
+	            that.channels[channel].push(subscription);
+	            return this;
+	          },
+	          detach: function() {
+	            Mediator._rm(that, channel, subscription.callback);
+	            return this;
+	          }
+	        }.attach();
+	      }
+	    };
+	
+	    Mediator.prototype.off = function(ch, cb) {
+	      var id;
+	      switch (typeof ch) {
+	        case "string":
+	          if (typeof cb === "function") {
+	            Mediator._rm(this, ch, cb);
+	          }
+	          if (typeof cb === "undefined") {
+	            Mediator._rm(this, ch);
+	          }
+	          break;
+	        case "function":
+	          for (id in this.channels) {
+	            Mediator._rm(this, id, ch);
+	          }
+	          break;
+	        case "undefined":
+	          for (id in this.channels) {
+	            Mediator._rm(this, id);
+	          }
+	          break;
+	        case "object":
+	          for (id in this.channels) {
+	            Mediator._rm(this, id, null, ch);
+	          }
+	      }
+	      return this;
+	    };
+	
+	    Mediator.prototype.emit = function(channel, data, cb) {
+	      var chnls, sub, subscribers, tasks;
+	      if (cb == null) {
+	        cb = function() {};
+	      }
+	      if (typeof data === "function") {
+	        cb = data;
+	        data = void 0;
+	      }
+	      if (typeof channel !== "string") {
+	        return false;
+	      }
+	      subscribers = this.channels[channel] || [];
+	      tasks = (function() {
+	        var _i, _len, _results;
+	        _results = [];
+	        for (_i = 0, _len = subscribers.length; _i < _len; _i++) {
+	          sub = subscribers[_i];
+	          _results.push((function(sub) {
+	            return function(next) {
+	              var e;
+	              try {
+	                if (util.hasArgument(sub.callback, 3)) {
+	                  return sub.callback.apply(sub.context, [data, channel, next]);
+	                } else {
+	                  return next(null, sub.callback.apply(sub.context, [data, channel]));
+	                }
+	              } catch (_error) {
+	                e = _error;
+	                return next(e);
+	              }
+	            };
+	          })(sub));
+	        }
+	        return _results;
+	      })();
+	      util.runSeries(tasks, (function(errors, results) {
+	        var e, x;
+	        if (errors) {
+	          e = new Error(((function() {
+	            var _i, _len, _results;
+	            _results = [];
+	            for (_i = 0, _len = errors.length; _i < _len; _i++) {
+	              x = errors[_i];
+	              if (x != null) {
+	                _results.push(x.message);
+	              }
+	            }
+	            return _results;
+	          })()).join('; '));
+	        }
+	        return cb(e);
+	      }), true);
+	      if (this.cascadeChannels && (chnls = channel.split('/')).length > 1) {
+	        this.emit(chnls.slice(0, -1).join('/'), data, cb);
+	      }
+	      return this;
+	    };
+	
+	    Mediator.prototype.installTo = function(obj, force) {
+	      var k, v;
+	      if (typeof obj === "object") {
+	        for (k in this) {
+	          v = this[k];
+	          if (force) {
+	            obj[k] = v;
+	          } else {
+	            if (obj[k] == null) {
+	              obj[k] = v;
+	            }
+	          }
+	        }
+	      }
+	      return this;
+	    };
+	
+	    Mediator._rm = function(o, ch, cb, ctxt) {
+	      var s;
+	      if (o.channels[ch] == null) {
+	        return;
+	      }
+	      return o.channels[ch] = (function() {
+	        var _i, _len, _ref, _results;
+	        _ref = o.channels[ch];
+	        _results = [];
+	        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	          s = _ref[_i];
+	          if ((cb != null ? s.callback !== cb : ctxt != null ? s.context !== ctxt : s.context !== o)) {
+	            _results.push(s);
+	          }
+	        }
+	        return _results;
+	      })();
+	    };
+	
+	    return Mediator;
+	
+	  })();
+	
+	  checkType = function(type, val, name) {
+	    if (typeof val !== type) {
+	      return "" + name + " has to be a " + type;
+	    }
+	  };
+	
+	  Core = (function() {
+	    function Core(Sandbox) {
+	      this.Sandbox = Sandbox;
+	      this._modules = {};
+	      this._plugins = [];
+	      this._instances = {};
+	      this._sandboxes = {};
+	      this._running = {};
+	      this._mediator = new Mediator(this);
+	      this.Mediator = Mediator;
+	      if (this.Sandbox == null) {
+	        this.Sandbox = function(core, instanceId, options, moduleId) {
+	          this.instanceId = instanceId;
+	          this.options = options != null ? options : {};
+	          this.moduleId = moduleId;
+	          core._mediator.installTo(this);
+	          return this;
+	        };
+	      }
+	    }
+	
+	    Core.prototype.log = {
+	      error: function() {},
+	      log: function() {},
+	      info: function() {},
+	      warn: function() {},
+	      enable: function() {}
+	    };
+	
+	    Core.prototype.register = function(id, creator, options) {
+	      var err;
+	      if (options == null) {
+	        options = {};
+	      }
+	      err = checkType("string", id, "module ID") || checkType("function", creator, "creator") || checkType("object", options, "option parameter");
+	      if (err) {
+	        this.log.error("could not register module '" + id + "': " + err);
+	        return this;
+	      }
+	      if (id in this._modules) {
+	        this.log.warn("module " + id + " was already registered");
+	        return this;
+	      }
+	      this._modules[id] = {
+	        creator: creator,
+	        options: options,
+	        id: id
+	      };
+	      return this;
+	    };
+	
+	    Core.prototype.start = function(moduleId, opt, cb) {
+	      var e, id, initInst;
+	      if (opt == null) {
+	        opt = {};
+	      }
+	      if (cb == null) {
+	        cb = function() {};
+	      }
+	      if (arguments.length === 0) {
+	        return this._startAll();
+	      }
+	      if (moduleId instanceof Array) {
+	        return this._startAll(moduleId, opt);
+	      }
+	      if (typeof moduleId === "function") {
+	        return this._startAll(null, moduleId);
+	      }
+	      if (typeof opt === "function") {
+	        cb = opt;
+	        opt = {};
+	      }
+	      e = checkType("string", moduleId, "module ID") || checkType("object", opt, "second parameter") || (!this._modules[moduleId] ? "module doesn't exist" : void 0);
+	      if (e) {
+	        return this._startFail(e, cb);
+	      }
+	      id = opt.instanceId || moduleId;
+	      if (this._running[id] === true) {
+	        return this._startFail(new Error("module was already started"), cb);
+	      }
+	      initInst = (function(_this) {
+	        return function(err, instance, opt) {
+	          if (err) {
+	            return _this._startFail(err, cb);
+	          }
+	          try {
+	            if (util.hasArgument(instance.init, 2)) {
+	              return instance.init(opt, function(err) {
+	                if (!err) {
+	                  _this._running[id] = true;
+	                }
+	                return cb(err);
+	              });
+	            } else {
+	              instance.init(opt);
+	              _this._running[id] = true;
+	              return cb();
+	            }
+	          } catch (_error) {
+	            e = _error;
+	            return _this._startFail(e, cb);
+	          }
+	        };
+	      })(this);
+	      return this.boot((function(_this) {
+	        return function(err) {
+	          if (err) {
+	            return _this._startFail(err, cb);
+	          }
+	          return _this._createInstance(moduleId, opt, initInst);
+	        };
+	      })(this));
+	    };
+	
+	    Core.prototype._startFail = function(e, cb) {
+	      this.log.error(e);
+	      cb(new Error("could not start module: " + e.message));
+	      return this;
+	    };
+	
+	    Core.prototype._createInstance = function(moduleId, o, cb) {
+	      var Sandbox, iOpts, id, key, module, obj, opt, sb, val, _i, _len, _ref;
+	      id = o.instanceId || moduleId;
+	      opt = o.options;
+	      module = this._modules[moduleId];
+	      if (this._instances[id]) {
+	        return cb(this._instances[id]);
+	      }
+	      iOpts = {};
+	      _ref = [module.options, opt];
+	      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	        obj = _ref[_i];
+	        if (obj) {
+	          for (key in obj) {
+	            val = obj[key];
+	            if (iOpts[key] == null) {
+	              iOpts[key] = val;
+	            }
+	          }
+	        }
+	      }
+	      Sandbox = typeof o.sandbox === 'function' ? o.sandbox : this.Sandbox;
+	      sb = new Sandbox(this, id, iOpts, moduleId);
+	      return this._runSandboxPlugins('init', sb, (function(_this) {
+	        return function(err) {
+	          var instance;
+	          instance = new module.creator(sb);
+	          if (typeof instance.init !== "function") {
+	            return cb(new Error("module has no 'init' method"));
+	          }
+	          _this._instances[id] = instance;
+	          _this._sandboxes[id] = sb;
+	          return cb(null, instance, iOpts);
+	        };
+	      })(this));
+	    };
+	
+	    Core.prototype._runSandboxPlugins = function(ev, sb, cb) {
+	      var p, tasks;
+	      tasks = (function() {
+	        var _i, _len, _ref, _ref1, _results;
+	        _ref = this._plugins;
+	        _results = [];
+	        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	          p = _ref[_i];
+	          if (typeof ((_ref1 = p.plugin) != null ? _ref1[ev] : void 0) === "function") {
+	            _results.push((function(p) {
+	              var fn;
+	              fn = p.plugin[ev];
+	              return function(next) {
+	                if (util.hasArgument(fn, 3)) {
+	                  return fn(sb, p.options, next);
+	                } else {
+	                  fn(sb, p.options);
+	                  return next();
+	                }
+	              };
+	            })(p));
+	          }
+	        }
+	        return _results;
+	      }).call(this);
+	      return util.runSeries(tasks, cb, true);
+	    };
+	
+	    Core.prototype._startAll = function(mods, cb) {
+	      var done, m, startAction;
+	      if (mods == null) {
+	        mods = (function() {
+	          var _results;
+	          _results = [];
+	          for (m in this._modules) {
+	            _results.push(m);
+	          }
+	          return _results;
+	        }).call(this);
+	      }
+	      startAction = (function(_this) {
+	        return function(m, next) {
+	          return _this.start(m, _this._modules[m].options, next);
+	        };
+	      })(this);
+	      done = function(err) {
+	        var e, i, mdls, x;
+	        if ((err != null ? err.length : void 0) > 0) {
+	          mdls = (function() {
+	            var _i, _len, _results;
+	            _results = [];
+	            for (i = _i = 0, _len = err.length; _i < _len; i = ++_i) {
+	              x = err[i];
+	              if (x != null) {
+	                _results.push("'" + mods[i] + "'");
+	              }
+	            }
+	            return _results;
+	          })();
+	          e = new Error("errors occoured in the following modules: " + mdls);
+	        }
+	        return typeof cb === "function" ? cb(e) : void 0;
+	      };
+	      util.doForAll(mods, startAction, done, true);
+	      return this;
+	    };
+	
+	    Core.prototype.stop = function(id, cb) {
+	      var instance, x;
+	      if (cb == null) {
+	        cb = function() {};
+	      }
+	      if (arguments.length === 0 || typeof id === "function") {
+	        util.doForAll((function() {
+	          var _results;
+	          _results = [];
+	          for (x in this._instances) {
+	            _results.push(x);
+	          }
+	          return _results;
+	        }).call(this), ((function(_this) {
+	          return function() {
+	            return _this.stop.apply(_this, arguments);
+	          };
+	        })(this)), id, true);
+	      } else if (instance = this._instances[id]) {
+	        delete this._instances[id];
+	        this._mediator.off(instance);
+	        this._runSandboxPlugins('destroy', this._sandboxes[id], (function(_this) {
+	          return function(err) {
+	            if (util.hasArgument(instance.destroy)) {
+	              return instance.destroy(function(err2) {
+	                delete _this._running[id];
+	                return cb(err || err2);
+	              });
+	            } else {
+	              if (typeof instance.destroy === "function") {
+	                instance.destroy();
+	              }
+	              delete _this._running[id];
+	              return cb(err);
+	            }
+	          };
+	        })(this));
+	      }
+	      return this;
+	    };
+	
+	    Core.prototype.use = function(plugin, opt) {
+	      var p, _i, _len;
+	      if (plugin instanceof Array) {
+	        for (_i = 0, _len = plugin.length; _i < _len; _i++) {
+	          p = plugin[_i];
+	          switch (typeof p) {
+	            case "function":
+	              this.use(p);
+	              break;
+	            case "object":
+	              this.use(p.plugin, p.options);
+	          }
+	        }
+	      } else {
+	        if (typeof plugin !== "function") {
+	          return this;
+	        }
+	        this._plugins.push({
+	          creator: plugin,
+	          options: opt
+	        });
+	      }
+	      return this;
+	    };
+	
+	    Core.prototype.boot = function(cb) {
+	      var core, p, tasks;
+	      core = this;
+	      tasks = (function() {
+	        var _i, _len, _ref, _results;
+	        _ref = this._plugins;
+	        _results = [];
+	        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	          p = _ref[_i];
+	          if (p.booted !== true) {
+	            _results.push((function(p) {
+	              if (util.hasArgument(p.creator, 3)) {
+	                return function(next) {
+	                  var plugin;
+	                  return plugin = p.creator(core, p.options, function(err) {
+	                    if (!err) {
+	                      p.booted = true;
+	                      p.plugin = plugin;
+	                    }
+	                    return next();
+	                  });
+	                };
+	              } else {
+	                return function(next) {
+	                  p.plugin = p.creator(core, p.options);
+	                  p.booted = true;
+	                  return next();
+	                };
+	              }
+	            })(p));
+	          }
+	        }
+	        return _results;
+	      }).call(this);
+	      util.runSeries(tasks, cb, true);
+	      return this;
+	    };
+	
+	    return Core;
+	
+	  })();
+	
+	  api = {
+	    VERSION: "0.4.3",
+	    util: util,
+	    Mediator: Mediator,
+	    Core: Core,
+	    plugins: {},
+	    modules: {}
+	  };
+	
+	  if (("function" !== "undefined" && __webpack_require__(/*! !webpack amd define */ 17) !== null ? __webpack_require__(/*! !webpack amd options */ 18) : void 0) != null) {
+	    !(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return api;
+	    }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof window !== "undefined" && window !== null) {
+	    if (window.scaleApp == null) {
+	      window.scaleApp = api;
+	    }
+	  } else if ((typeof module !== "undefined" && module !== null ? module.exports : void 0) != null) {
+	    module.exports = api;
+	  }
+	
+	}).call(this);
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/buildin/module.js */ 8)(module)))
+
+/***/ },
+/* 10 */
+/*!**************************************************************!*\
+  !*** ./app/webpack/javascripts/services/current_user.coffee ***!
+  \**************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(core, decoder) {
+	  var initialize, show;
+	  initialize = function() {};
+	  show = function(options) {
+	    return core.services.getRequest('/current_user.json', options);
+	  };
+	  return {
+	    initialize: initialize,
+	    show: show
+	  };
+	};
+
+
+/***/ },
+/* 11 */
+/*!*******************************************************!*\
+  !*** ./app/webpack/javascripts/services/users.coffee ***!
+  \*******************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(core, decoder) {
+	  var create, destroy, index, initialize, show, update;
+	  initialize = function() {};
+	  index = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.get('/users.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  show = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.get('/users.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  create = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.post('/users.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  update = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.put('/users.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  destroy = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.del('/users.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  return {
+	    initialize: initialize,
+	    index: index,
+	    show: show,
+	    create: create,
+	    update: update,
+	    destroy: destroy
+	  };
+	};
+
+
+/***/ },
+/* 12 */
+/*!**********************************************************!*\
+  !*** ./app/webpack/javascripts/services/sessions.coffee ***!
+  \**********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(core, decoder) {
+	  var create, destroy, initialize;
+	  initialize = function() {};
+	  create = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.post('/sessions.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  destroy = function(options) {
+	    return new Promise(function(resolve, error) {
+	      return request.del('/sessions.json').query(options).end(resolve(decoder));
+	    });
+	  };
+	  return {
+	    initialize: initialize,
+	    create: create,
+	    destroy: destroy
+	  };
+	};
+
+
+/***/ },
+/* 13 */
+/*!****************************************************!*\
+  !*** ./app/webpack/javascripts/lib/scaleApp.ls.js ***!
+  \****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {(function() {
+	  var plugin;
+	
+	  plugin = function(core) {
+	    var ls;
+	    ls = function(o) {
+	      var id, m, _results;
+	      _results = [];
+	      for (id in o) {
+	        m = o[id];
+	        _results.push(id);
+	      }
+	      return _results;
+	    };
+	    core.lsInstances = function() {
+	      return ls(core._instances);
+	    };
+	    core.lsModules = function() {
+	      return ls(core._modules);
+	    };
+	    return core.lsPlugins = function() {
+	      var p, _i, _len, _ref, _ref1, _results;
+	      _ref = core._plugins;
+	      _results = [];
+	      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	        p = _ref[_i];
+	        if (((_ref1 = p.plugin) != null ? _ref1.id : void 0) != null) {
+	          _results.push(p.plugin.id);
+	        }
+	      }
+	      return _results;
+	    };
+	  };
+	
+	  if (("function" !== "undefined" && __webpack_require__(/*! !webpack amd define */ 17) !== null ? __webpack_require__(/*! !webpack amd options */ 18) : void 0) != null) {
+	    !(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return plugin;
+	    }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if ((typeof window !== "undefined" && window !== null ? window.scaleApp : void 0) != null) {
+	    window.scaleApp.plugins.ls = plugin;
+	  } else if ((typeof module !== "undefined" && module !== null ? module.exports : void 0) != null) {
+	    module.exports = plugin;
+	  }
+	
+	}).call(this);
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! (webpack)/buildin/module.js */ 8)(module)))
+
+/***/ },
+/* 14 */
+/*!********************************************************!*\
+  !*** ./app/webpack/javascripts/plugins/modules.coffee ***!
+  \********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(_) {module.exports = function(core, options) {
+	  'use strict';
+	
+	  /* Inicializar el plugin
+	   */
+	  var onPluginDestroy, onPluginInit, startLayout, startLogin, stopAllModules;
+	  onPluginInit = function(instanceSandbox, options) {};
+	  startLayout = function(options) {
+	    return core.promises.moduleStart('layout', _.merge({
+	      el: core.conf.get('el')
+	    }, options)).then(function() {
+	      return Promise.all([
+	        core.promises.moduleStart('notification', options), core.promises.moduleStart('topnav', _.merge({
+	          el: '#topnav'
+	        }, options)), core.promises.moduleStart('sidebar', _.merge({
+	          el: '#sidebar'
+	        }, options))
+	      ]);
+	    }).then(function() {
+	      return core.promises.moduleStart('simplify', options);
+	    });
+	  };
+	  startLogin = function(options) {
+	    return core.promises.moduleStart('login', _.merge({
+	      el: core.conf.get('el')
+	    }, options)).then(function() {
+	      return core.promises.moduleStart('notification', options);
+	    }).then(function() {
+	      return core.promises.moduleStart('simplify', options);
+	    });
+	  };
+	  stopAllModules = function() {
+	    var stop_promises;
+	    stop_promises = _.map(core.lsInstances(), function(instance) {
+	      return core.promises.moduleStop(instance);
+	    });
+	    return Promise.all(stop_promises);
+	  };
+	
+	  /* Liberar medios
+	   */
+	  onPluginDestroy = function() {};
+	  _.extend(core, {
+	    modules: {
+	      startLayout: startLayout,
+	      stopAllModules: stopAllModules,
+	      startLogin: startLogin
+	    }
+	  }, this);
+	  _.extend(core.Sandbox.prototype, {
+	    modules: {
+	      startLayout: startLayout,
+	      stopAllModules: stopAllModules,
+	      startLogin: startLogin
+	    }
+	  }, this);
+	  return {
+	    init: onPluginInit,
+	    destroy: onPluginDestroy
+	  };
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! lodash */ 7)))
+
+/***/ },
+/* 15 */
+/*!*********************************************************!*\
+  !*** ./app/webpack/javascripts/plugins/promises.coffee ***!
+  \*********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(_) {module.exports = function(core, options) {
+	  'use strict';
+	  var _isModuleRunning, moduleStart, moduleStop, onPluginDestroy, onPluginInit, reactRender, timeout;
+	  _isModuleRunning = function(module) {
+	    return _.findIndex(core.lsInstances(), function(instance) {
+	      return instance === module;
+	    }) >= 0;
+	  };
+	  moduleStart = function(module, options) {
+	    return moduleStop(module).then(function() {
+	      return new Promise(function(resolve, error) {
+	        core.start(module, {
+	          options: options
+	        }, resolve);
+	      });
+	    });
+	  };
+	  moduleStop = function(module) {
+	    if (_isModuleRunning(module)) {
+	      return new Promise(function(resolve, error) {
+	        core.stop(module, function() {
+	          resolve();
+	        });
+	      });
+	    } else {
+	      return Promise.resolve();
+	    }
+	  };
+	  timeout = function(secs) {
+	    return new Promise(function(resolve, reject) {
+	      setTimeout((function() {
+	        resolve();
+	      }), secs * 1000);
+	    });
+	  };
+	  reactRender = function(element, component, props) {
+	    return new Promise(function(resolve, reject) {
+	      var react;
+	      react = React.createElement(component, props);
+	      return React.render(react, document.querySelector(element), function() {
+	        resolve(react);
+	      });
+	    });
+	  };
+	
+	  /* Inicializar el plugin
+	   */
+	  onPluginInit = function(instanceSandbox, options) {};
+	
+	  /* Liberar medios
+	   */
+	  onPluginDestroy = function() {};
+	  _.extend(core, {
+	    promises: {
+	      moduleStart: moduleStart,
+	      moduleStop: moduleStop,
+	      timeout: timeout,
+	      reactRender: reactRender
+	    }
+	  }, this);
+	  _.extend(core.Sandbox.prototype, {
+	    promises: {
+	      moduleStart: moduleStart,
+	      moduleStop: moduleStop,
+	      timeout: timeout,
+	      reactRender: reactRender
+	    }
+	  }, this);
+	  return {
+	    init: onPluginInit,
+	    destroy: onPluginDestroy
+	  };
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! lodash */ 7)))
+
+/***/ },
+/* 16 */
+/*!****************************************************!*\
+  !*** ./app/webpack/javascripts/plugins/url.coffee ***!
+  \****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(_) {module.exports = function(core, options) {
+	  'use strict';
+	  var _encodeObjects, encodeHash, onPluginDestroy, onPluginInit;
+	  _encodeObjects = function(name, value, recursive) {
+	    var i, ln, objects, self;
+	    self = _encodeObjects;
+	    objects = [];
+	    i = void 0;
+	    ln = void 0;
+	    if (_.isArray(value)) {
+	      i = 0;
+	      ln = value.length;
+	      while (i < ln) {
+	        if (recursive) {
+	          objects = objects.concat(self(name + '[' + i + ']', value[i], true));
+	        } else {
+	          objects.push({
+	            name: name,
+	            value: value[i]
+	          });
+	        }
+	        i++;
+	      }
+	    } else if (_.isObject(value)) {
+	      for (i in value) {
+	        i = i;
+	        if (value.hasOwnProperty(i)) {
+	          if (recursive) {
+	            objects = objects.concat(self(name + '[' + i + ']', value[i], true));
+	          } else {
+	            objects.push({
+	              name: name,
+	              value: value[i]
+	            });
+	          }
+	        }
+	      }
+	    } else {
+	      objects.push({
+	        name: name,
+	        value: value
+	      });
+	    }
+	    return objects;
+	  };
+	  encodeHash = function(object, recursive) {
+	    var i, j, ln, paramObject, paramObjects, params, value;
+	    paramObjects = [];
+	    params = [];
+	    i = void 0;
+	    j = void 0;
+	    ln = void 0;
+	    paramObject = void 0;
+	    value = void 0;
+	    for (i in object) {
+	      i = i;
+	      if (object.hasOwnProperty(i)) {
+	        paramObjects = paramObjects.concat(_encodeObjects(i, object[i], recursive));
+	      }
+	    }
+	    j = 0;
+	    ln = paramObjects.length;
+	    while (j < ln) {
+	      paramObject = paramObjects[j];
+	      value = paramObject.value;
+	      if (_.isNumber(value)) {
+	        value = value.toString();
+	      } else {
+	        if (_.isDate(value)) {
+	          value = new Date(value).toString();
+	        } else {
+	          if (_.isEmpty(value)) {
+	            value = '';
+	          }
+	        }
+	      }
+	      params.push(encodeURIComponent(paramObject.name) + '=' + encodeURIComponent(String(value)));
+	      j++;
+	    }
+	    return params.join('&');
+	  };
+	
+	  /* Inicializar el plugin
+	   */
+	  onPluginInit = function(instanceSandbox, options) {};
+	
+	  /* Liberar medios
+	   */
+	  onPluginDestroy = function() {};
+	  _.extend(core, {
+	    url: {
+	      encodeHash: encodeHash
+	    }
+	  }, this);
+	  _.extend(core.Sandbox.prototype, {
+	    url: {
+	      encodeHash: encodeHash
+	    }
+	  }, this);
+	  return {
+	    init: onPluginInit,
+	    destroy: onPluginDestroy
+	  };
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! lodash */ 7)))
+
+/***/ },
+/* 17 */
+/*!***************************************!*\
+  !*** (webpack)/buildin/amd-define.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
+
+
+/***/ },
+/* 18 */
+/*!****************************************!*\
+  !*** (webpack)/buildin/amd-options.js ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ },
+/* 19 */,
+/* 20 */
+/*!************************************************!*\
+  !*** ./app/webpack/javascripts/session.coffee ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(_) {module.exports = function(core) {
+	  'use strict';
+	  var _setCurrentUser, current_user, destroy, getCurrentUser, getCurrentUserCompleteName, initialize, isAuthenticated, loadCurrentUser, login, logout;
+	  current_user = null;
+	  initialize = function() {};
+	  destroy = function() {};
+	  login = function(record) {
+	    return core.services.get('sessions', 'create', {
+	      record: record
+	    }).then(function(data) {
+	      return current_user = data.data.user;
+	    });
+	  };
+	  logout = function() {
+	    return core.services.get('sessions', 'destroy').then(function() {
+	      return current_user = null;
+	    });
+	  };
+	  getCurrentUser = function() {
+	    return current_user;
+	  };
+	  getCurrentUserCompleteName = function() {
+	    if (current_user) {
+	      return current_user.surname + ', ' + current_user.name;
+	    }
+	    return null;
+	  };
+	  _setCurrentUser = function(data) {
+	    current_user = data;
+	  };
+	  loadCurrentUser = function() {
+	    return core.services.get('current_user', 'show').then(function(data) {
+	      _setCurrentUser(data.data);
+	    });
+	  };
+	  isAuthenticated = function() {
+	    return !_.isNull(current_user);
+	  };
+	  _.extend(core, {
+	    session: {
+	      getCurrentUser: getCurrentUser,
+	      getCurrentUserCompleteName: getCurrentUserCompleteName,
+	      isAuthenticated: isAuthenticated,
+	      login: login,
+	      logout: logout
+	    }
+	  }, this);
+	  _.extend(core.Sandbox.prototype, {
+	    session: {
+	      getCurrentUser: getCurrentUser,
+	      getCurrentUserCompleteName: getCurrentUserCompleteName,
+	      isAuthenticated: isAuthenticated,
+	      login: login,
+	      logout: logout
+	    }
+	  }, this);
+	  return {
+	    initialize: initialize,
+	    destroy: destroy,
+	    loadCurrentUser: loadCurrentUser
+	  };
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! lodash */ 7)))
+
+/***/ },
+/* 21 */
+/*!*****************************************************************!*\
+  !*** ./vendor/assets/bower_components/superagent/lib/client.js ***!
+  \*****************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Module dependencies.
+	 */
+	
+	var Emitter = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"emitter\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var reduce = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"reduce\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	/**
+	 * Root reference for iframes.
+	 */
+	
+	var root = 'undefined' == typeof window
+	  ? (this || self)
+	  : window;
+	
+	/**
+	 * Noop.
+	 */
+	
+	function noop(){};
+	
+	/**
+	 * Check if `obj` is a host object,
+	 * we don't want to serialize these :)
+	 *
+	 * TODO: future proof, move to compoent land
+	 *
+	 * @param {Object} obj
+	 * @return {Boolean}
+	 * @api private
+	 */
+	
+	function isHost(obj) {
+	  var str = {}.toString.call(obj);
+	
+	  switch (str) {
+	    case '[object File]':
+	    case '[object Blob]':
+	    case '[object FormData]':
+	      return true;
+	    default:
+	      return false;
+	  }
+	}
+	
+	/**
+	 * Determine XHR.
+	 */
+	
+	request.getXHR = function () {
+	  if (root.XMLHttpRequest
+	      && (!root.location || 'file:' != root.location.protocol
+	          || !root.ActiveXObject)) {
+	    return new XMLHttpRequest;
+	  } else {
+	    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
+	    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
+	    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
+	    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
+	  }
+	  return false;
+	};
+	
+	/**
+	 * Removes leading and trailing whitespace, added to support IE.
+	 *
+	 * @param {String} s
+	 * @return {String}
+	 * @api private
+	 */
+	
+	var trim = ''.trim
+	  ? function(s) { return s.trim(); }
+	  : function(s) { return s.replace(/(^\s*|\s*$)/g, ''); };
+	
+	/**
+	 * Check if `obj` is an object.
+	 *
+	 * @param {Object} obj
+	 * @return {Boolean}
+	 * @api private
+	 */
+	
+	function isObject(obj) {
+	  return obj === Object(obj);
+	}
+	
+	/**
+	 * Serialize the given `obj`.
+	 *
+	 * @param {Object} obj
+	 * @return {String}
+	 * @api private
+	 */
+	
+	function serialize(obj) {
+	  if (!isObject(obj)) return obj;
+	  var pairs = [];
+	  for (var key in obj) {
+	    if (null != obj[key]) {
+	      pairs.push(encodeURIComponent(key)
+	        + '=' + encodeURIComponent(obj[key]));
+	    }
+	  }
+	  return pairs.join('&');
+	}
+	
+	/**
+	 * Expose serialization method.
+	 */
+	
+	 request.serializeObject = serialize;
+	
+	 /**
+	  * Parse the given x-www-form-urlencoded `str`.
+	  *
+	  * @param {String} str
+	  * @return {Object}
+	  * @api private
+	  */
+	
+	function parseString(str) {
+	  var obj = {};
+	  var pairs = str.split('&');
+	  var parts;
+	  var pair;
+	
+	  for (var i = 0, len = pairs.length; i < len; ++i) {
+	    pair = pairs[i];
+	    parts = pair.split('=');
+	    obj[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+	  }
+	
+	  return obj;
+	}
+	
+	/**
+	 * Expose parser.
+	 */
+	
+	request.parseString = parseString;
+	
+	/**
+	 * Default MIME type map.
+	 *
+	 *     superagent.types.xml = 'application/xml';
+	 *
+	 */
+	
+	request.types = {
+	  html: 'text/html',
+	  json: 'application/json',
+	  xml: 'application/xml',
+	  urlencoded: 'application/x-www-form-urlencoded',
+	  'form': 'application/x-www-form-urlencoded',
+	  'form-data': 'application/x-www-form-urlencoded'
+	};
+	
+	/**
+	 * Default serialization map.
+	 *
+	 *     superagent.serialize['application/xml'] = function(obj){
+	 *       return 'generated xml here';
+	 *     };
+	 *
+	 */
+	
+	 request.serialize = {
+	   'application/x-www-form-urlencoded': serialize,
+	   'application/json': JSON.stringify
+	 };
+	
+	 /**
+	  * Default parsers.
+	  *
+	  *     superagent.parse['application/xml'] = function(str){
+	  *       return { object parsed from str };
+	  *     };
+	  *
+	  */
+	
+	request.parse = {
+	  'application/x-www-form-urlencoded': parseString,
+	  'application/json': JSON.parse
+	};
+	
+	/**
+	 * Parse the given header `str` into
+	 * an object containing the mapped fields.
+	 *
+	 * @param {String} str
+	 * @return {Object}
+	 * @api private
+	 */
+	
+	function parseHeader(str) {
+	  var lines = str.split(/\r?\n/);
+	  var fields = {};
+	  var index;
+	  var line;
+	  var field;
+	  var val;
+	
+	  lines.pop(); // trailing CRLF
+	
+	  for (var i = 0, len = lines.length; i < len; ++i) {
+	    line = lines[i];
+	    index = line.indexOf(':');
+	    field = line.slice(0, index).toLowerCase();
+	    val = trim(line.slice(index + 1));
+	    fields[field] = val;
+	  }
+	
+	  return fields;
+	}
+	
+	/**
+	 * Return the mime type for the given `str`.
+	 *
+	 * @param {String} str
+	 * @return {String}
+	 * @api private
+	 */
+	
+	function type(str){
+	  return str.split(/ *; */).shift();
+	};
+	
+	/**
+	 * Return header field parameters.
+	 *
+	 * @param {String} str
+	 * @return {Object}
+	 * @api private
+	 */
+	
+	function params(str){
+	  return reduce(str.split(/ *; */), function(obj, str){
+	    var parts = str.split(/ *= */)
+	      , key = parts.shift()
+	      , val = parts.shift();
+	
+	    if (key && val) obj[key] = val;
+	    return obj;
+	  }, {});
+	};
+	
+	/**
+	 * Initialize a new `Response` with the given `xhr`.
+	 *
+	 *  - set flags (.ok, .error, etc)
+	 *  - parse header
+	 *
+	 * Examples:
+	 *
+	 *  Aliasing `superagent` as `request` is nice:
+	 *
+	 *      request = superagent;
+	 *
+	 *  We can use the promise-like API, or pass callbacks:
+	 *
+	 *      request.get('/').end(function(res){});
+	 *      request.get('/', function(res){});
+	 *
+	 *  Sending data can be chained:
+	 *
+	 *      request
+	 *        .post('/user')
+	 *        .send({ name: 'tj' })
+	 *        .end(function(res){});
+	 *
+	 *  Or passed to `.send()`:
+	 *
+	 *      request
+	 *        .post('/user')
+	 *        .send({ name: 'tj' }, function(res){});
+	 *
+	 *  Or passed to `.post()`:
+	 *
+	 *      request
+	 *        .post('/user', { name: 'tj' })
+	 *        .end(function(res){});
+	 *
+	 * Or further reduced to a single call for simple cases:
+	 *
+	 *      request
+	 *        .post('/user', { name: 'tj' }, function(res){});
+	 *
+	 * @param {XMLHTTPRequest} xhr
+	 * @param {Object} options
+	 * @api private
+	 */
+	
+	function Response(req, options) {
+	  options = options || {};
+	  this.req = req;
+	  this.xhr = this.req.xhr;
+	  // responseText is accessible only if responseType is '' or 'text' and on older browsers
+	  this.text = ((this.req.method !='HEAD' && (this.xhr.responseType === '' || this.xhr.responseType === 'text')) || typeof this.xhr.responseType === 'undefined')
+	     ? this.xhr.responseText
+	     : null;
+	  this.statusText = this.req.xhr.statusText;
+	  this.setStatusProperties(this.xhr.status);
+	  this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
+	  // getAllResponseHeaders sometimes falsely returns "" for CORS requests, but
+	  // getResponseHeader still works. so we get content-type even if getting
+	  // other headers fails.
+	  this.header['content-type'] = this.xhr.getResponseHeader('content-type');
+	  this.setHeaderProperties(this.header);
+	  this.body = this.req.method != 'HEAD'
+	    ? this.parseBody(this.text ? this.text : this.xhr.response)
+	    : null;
+	}
+	
+	/**
+	 * Get case-insensitive `field` value.
+	 *
+	 * @param {String} field
+	 * @return {String}
+	 * @api public
+	 */
+	
+	Response.prototype.get = function(field){
+	  return this.header[field.toLowerCase()];
+	};
+	
+	/**
+	 * Set header related properties:
+	 *
+	 *   - `.type` the content type without params
+	 *
+	 * A response of "Content-Type: text/plain; charset=utf-8"
+	 * will provide you with a `.type` of "text/plain".
+	 *
+	 * @param {Object} header
+	 * @api private
+	 */
+	
+	Response.prototype.setHeaderProperties = function(header){
+	  // content-type
+	  var ct = this.header['content-type'] || '';
+	  this.type = type(ct);
+	
+	  // params
+	  var obj = params(ct);
+	  for (var key in obj) this[key] = obj[key];
+	};
+	
+	/**
+	 * Parse the given body `str`.
+	 *
+	 * Used for auto-parsing of bodies. Parsers
+	 * are defined on the `superagent.parse` object.
+	 *
+	 * @param {String} str
+	 * @return {Mixed}
+	 * @api private
+	 */
+	
+	Response.prototype.parseBody = function(str){
+	  var parse = request.parse[this.type];
+	  return parse && str && (str.length || str instanceof Object)
+	    ? parse(str)
+	    : null;
+	};
+	
+	/**
+	 * Set flags such as `.ok` based on `status`.
+	 *
+	 * For example a 2xx response will give you a `.ok` of __true__
+	 * whereas 5xx will be __false__ and `.error` will be __true__. The
+	 * `.clientError` and `.serverError` are also available to be more
+	 * specific, and `.statusType` is the class of error ranging from 1..5
+	 * sometimes useful for mapping respond colors etc.
+	 *
+	 * "sugar" properties are also defined for common cases. Currently providing:
+	 *
+	 *   - .noContent
+	 *   - .badRequest
+	 *   - .unauthorized
+	 *   - .notAcceptable
+	 *   - .notFound
+	 *
+	 * @param {Number} status
+	 * @api private
+	 */
+	
+	Response.prototype.setStatusProperties = function(status){
+	  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+	  if (status === 1223) {
+	    status = 204;
+	  }
+	
+	  var type = status / 100 | 0;
+	
+	  // status / class
+	  this.status = status;
+	  this.statusType = type;
+	
+	  // basics
+	  this.info = 1 == type;
+	  this.ok = 2 == type;
+	  this.clientError = 4 == type;
+	  this.serverError = 5 == type;
+	  this.error = (4 == type || 5 == type)
+	    ? this.toError()
+	    : false;
+	
+	  // sugar
+	  this.accepted = 202 == status;
+	  this.noContent = 204 == status;
+	  this.badRequest = 400 == status;
+	  this.unauthorized = 401 == status;
+	  this.notAcceptable = 406 == status;
+	  this.notFound = 404 == status;
+	  this.forbidden = 403 == status;
+	};
+	
+	/**
+	 * Return an `Error` representative of this response.
+	 *
+	 * @return {Error}
+	 * @api public
+	 */
+	
+	Response.prototype.toError = function(){
+	  var req = this.req;
+	  var method = req.method;
+	  var url = req.url;
+	
+	  var msg = 'cannot ' + method + ' ' + url + ' (' + this.status + ')';
+	  var err = new Error(msg);
+	  err.status = this.status;
+	  err.method = method;
+	  err.url = url;
+	
+	  return err;
+	};
+	
+	/**
+	 * Expose `Response`.
+	 */
+	
+	request.Response = Response;
+	
+	/**
+	 * Initialize a new `Request` with the given `method` and `url`.
+	 *
+	 * @param {String} method
+	 * @param {String} url
+	 * @api public
+	 */
+	
+	function Request(method, url) {
+	  var self = this;
+	  Emitter.call(this);
+	  this._query = this._query || [];
+	  this.method = method;
+	  this.url = url;
+	  this.header = {};
+	  this._header = {};
+	  this.on('end', function(){
+	    var err = null;
+	    var res = null;
+	
+	    try {
+	      res = new Response(self);
+	    } catch(e) {
+	      err = new Error('Parser is unable to parse the response');
+	      err.parse = true;
+	      err.original = e;
+	      return self.callback(err);
+	    }
+	
+	    self.emit('response', res);
+	
+	    if (err) {
+	      return self.callback(err, res);
+	    }
+	
+	    if (res.status >= 200 && res.status < 300) {
+	      return self.callback(err, res);
+	    }
+	
+	    var new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
+	    new_err.original = err;
+	    new_err.response = res;
+	    new_err.status = res.status;
+	
+	    self.callback(err || new_err, res);
+	  });
+	}
+	
+	/**
+	 * Mixin `Emitter`.
+	 */
+	
+	Emitter(Request.prototype);
+	
+	/**
+	 * Allow for extension
+	 */
+	
+	Request.prototype.use = function(fn) {
+	  fn(this);
+	  return this;
+	}
+	
+	/**
+	 * Set timeout to `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.timeout = function(ms){
+	  this._timeout = ms;
+	  return this;
+	};
+	
+	/**
+	 * Clear previous timeout.
+	 *
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.clearTimeout = function(){
+	  this._timeout = 0;
+	  clearTimeout(this._timer);
+	  return this;
+	};
+	
+	/**
+	 * Abort the request, and clear potential timeout.
+	 *
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	Request.prototype.abort = function(){
+	  if (this.aborted) return;
+	  this.aborted = true;
+	  this.xhr.abort();
+	  this.clearTimeout();
+	  this.emit('abort');
+	  return this;
+	};
+	
+	/**
+	 * Set header `field` to `val`, or multiple fields with one object.
+	 *
+	 * Examples:
+	 *
+	 *      req.get('/')
+	 *        .set('Accept', 'application/json')
+	 *        .set('X-API-Key', 'foobar')
+	 *        .end(callback);
+	 *
+	 *      req.get('/')
+	 *        .set({ Accept: 'application/json', 'X-API-Key': 'foobar' })
+	 *        .end(callback);
+	 *
+	 * @param {String|Object} field
+	 * @param {String} val
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.set = function(field, val){
+	  if (isObject(field)) {
+	    for (var key in field) {
+	      this.set(key, field[key]);
+	    }
+	    return this;
+	  }
+	  this._header[field.toLowerCase()] = val;
+	  this.header[field] = val;
+	  return this;
+	};
+	
+	/**
+	 * Remove header `field`.
+	 *
+	 * Example:
+	 *
+	 *      req.get('/')
+	 *        .unset('User-Agent')
+	 *        .end(callback);
+	 *
+	 * @param {String} field
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.unset = function(field){
+	  delete this._header[field.toLowerCase()];
+	  delete this.header[field];
+	  return this;
+	};
+	
+	/**
+	 * Get case-insensitive header `field` value.
+	 *
+	 * @param {String} field
+	 * @return {String}
+	 * @api private
+	 */
+	
+	Request.prototype.getHeader = function(field){
+	  return this._header[field.toLowerCase()];
+	};
+	
+	/**
+	 * Set Content-Type to `type`, mapping values from `request.types`.
+	 *
+	 * Examples:
+	 *
+	 *      superagent.types.xml = 'application/xml';
+	 *
+	 *      request.post('/')
+	 *        .type('xml')
+	 *        .send(xmlstring)
+	 *        .end(callback);
+	 *
+	 *      request.post('/')
+	 *        .type('application/xml')
+	 *        .send(xmlstring)
+	 *        .end(callback);
+	 *
+	 * @param {String} type
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.type = function(type){
+	  this.set('Content-Type', request.types[type] || type);
+	  return this;
+	};
+	
+	/**
+	 * Set Accept to `type`, mapping values from `request.types`.
+	 *
+	 * Examples:
+	 *
+	 *      superagent.types.json = 'application/json';
+	 *
+	 *      request.get('/agent')
+	 *        .accept('json')
+	 *        .end(callback);
+	 *
+	 *      request.get('/agent')
+	 *        .accept('application/json')
+	 *        .end(callback);
+	 *
+	 * @param {String} accept
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.accept = function(type){
+	  this.set('Accept', request.types[type] || type);
+	  return this;
+	};
+	
+	/**
+	 * Set Authorization field value with `user` and `pass`.
+	 *
+	 * @param {String} user
+	 * @param {String} pass
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.auth = function(user, pass){
+	  var str = btoa(user + ':' + pass);
+	  this.set('Authorization', 'Basic ' + str);
+	  return this;
+	};
+	
+	/**
+	* Add query-string `val`.
+	*
+	* Examples:
+	*
+	*   request.get('/shoes')
+	*     .query('size=10')
+	*     .query({ color: 'blue' })
+	*
+	* @param {Object|String} val
+	* @return {Request} for chaining
+	* @api public
+	*/
+	
+	Request.prototype.query = function(val){
+	  if ('string' != typeof val) val = serialize(val);
+	  if (val) this._query.push(val);
+	  return this;
+	};
+	
+	/**
+	 * Write the field `name` and `val` for "multipart/form-data"
+	 * request bodies.
+	 *
+	 * ``` js
+	 * request.post('/upload')
+	 *   .field('foo', 'bar')
+	 *   .end(callback);
+	 * ```
+	 *
+	 * @param {String} name
+	 * @param {String|Blob|File} val
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.field = function(name, val){
+	  if (!this._formData) this._formData = new root.FormData();
+	  this._formData.append(name, val);
+	  return this;
+	};
+	
+	/**
+	 * Queue the given `file` as an attachment to the specified `field`,
+	 * with optional `filename`.
+	 *
+	 * ``` js
+	 * request.post('/upload')
+	 *   .attach(new Blob(['<a id="a"><b id="b">hey!</b></a>'], { type: "text/html"}))
+	 *   .end(callback);
+	 * ```
+	 *
+	 * @param {String} field
+	 * @param {Blob|File} file
+	 * @param {String} filename
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.attach = function(field, file, filename){
+	  if (!this._formData) this._formData = new root.FormData();
+	  this._formData.append(field, file, filename);
+	  return this;
+	};
+	
+	/**
+	 * Send `data`, defaulting the `.type()` to "json" when
+	 * an object is given.
+	 *
+	 * Examples:
+	 *
+	 *       // querystring
+	 *       request.get('/search')
+	 *         .end(callback)
+	 *
+	 *       // multiple data "writes"
+	 *       request.get('/search')
+	 *         .send({ search: 'query' })
+	 *         .send({ range: '1..5' })
+	 *         .send({ order: 'desc' })
+	 *         .end(callback)
+	 *
+	 *       // manual json
+	 *       request.post('/user')
+	 *         .type('json')
+	 *         .send('{"name":"tj"})
+	 *         .end(callback)
+	 *
+	 *       // auto json
+	 *       request.post('/user')
+	 *         .send({ name: 'tj' })
+	 *         .end(callback)
+	 *
+	 *       // manual x-www-form-urlencoded
+	 *       request.post('/user')
+	 *         .type('form')
+	 *         .send('name=tj')
+	 *         .end(callback)
+	 *
+	 *       // auto x-www-form-urlencoded
+	 *       request.post('/user')
+	 *         .type('form')
+	 *         .send({ name: 'tj' })
+	 *         .end(callback)
+	 *
+	 *       // defaults to x-www-form-urlencoded
+	  *      request.post('/user')
+	  *        .send('name=tobi')
+	  *        .send('species=ferret')
+	  *        .end(callback)
+	 *
+	 * @param {String|Object} data
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.send = function(data){
+	  var obj = isObject(data);
+	  var type = this.getHeader('Content-Type');
+	
+	  // merge
+	  if (obj && isObject(this._data)) {
+	    for (var key in data) {
+	      this._data[key] = data[key];
+	    }
+	  } else if ('string' == typeof data) {
+	    if (!type) this.type('form');
+	    type = this.getHeader('Content-Type');
+	    if ('application/x-www-form-urlencoded' == type) {
+	      this._data = this._data
+	        ? this._data + '&' + data
+	        : data;
+	    } else {
+	      this._data = (this._data || '') + data;
+	    }
+	  } else {
+	    this._data = data;
+	  }
+	
+	  if (!obj || isHost(data)) return this;
+	  if (!type) this.type('json');
+	  return this;
+	};
+	
+	/**
+	 * Invoke the callback with `err` and `res`
+	 * and handle arity check.
+	 *
+	 * @param {Error} err
+	 * @param {Response} res
+	 * @api private
+	 */
+	
+	Request.prototype.callback = function(err, res){
+	  var fn = this._callback;
+	  this.clearTimeout();
+	  fn(err, res);
+	};
+	
+	/**
+	 * Invoke callback with x-domain error.
+	 *
+	 * @api private
+	 */
+	
+	Request.prototype.crossDomainError = function(){
+	  var err = new Error('Origin is not allowed by Access-Control-Allow-Origin');
+	  err.crossDomain = true;
+	  this.callback(err);
+	};
+	
+	/**
+	 * Invoke callback with timeout error.
+	 *
+	 * @api private
+	 */
+	
+	Request.prototype.timeoutError = function(){
+	  var timeout = this._timeout;
+	  var err = new Error('timeout of ' + timeout + 'ms exceeded');
+	  err.timeout = timeout;
+	  this.callback(err);
+	};
+	
+	/**
+	 * Enable transmission of cookies with x-domain requests.
+	 *
+	 * Note that for this to work the origin must not be
+	 * using "Access-Control-Allow-Origin" with a wildcard,
+	 * and also must set "Access-Control-Allow-Credentials"
+	 * to "true".
+	 *
+	 * @api public
+	 */
+	
+	Request.prototype.withCredentials = function(){
+	  this._withCredentials = true;
+	  return this;
+	};
+	
+	/**
+	 * Initiate request, invoking callback `fn(res)`
+	 * with an instanceof `Response`.
+	 *
+	 * @param {Function} fn
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+	
+	Request.prototype.end = function(fn){
+	  var self = this;
+	  var xhr = this.xhr = request.getXHR();
+	  var query = this._query.join('&');
+	  var timeout = this._timeout;
+	  var data = this._formData || this._data;
+	
+	  // store callback
+	  this._callback = fn || noop;
+	
+	  // state change
+	  xhr.onreadystatechange = function(){
+	    if (4 != xhr.readyState) return;
+	
+	    // In IE9, reads to any property (e.g. status) off of an aborted XHR will
+	    // result in the error "Could not complete the operation due to error c00c023f"
+	    var status;
+	    try { status = xhr.status } catch(e) { status = 0; }
+	
+	    if (0 == status) {
+	      if (self.timedout) return self.timeoutError();
+	      if (self.aborted) return;
+	      return self.crossDomainError();
+	    }
+	    self.emit('end');
+	  };
+	
+	  // progress
+	  var handleProgress = function(e){
+	    if (e.total > 0) {
+	      e.percent = e.loaded / e.total * 100;
+	    }
+	    self.emit('progress', e);
+	  };
+	  if (this.hasListeners('progress')) {
+	    xhr.onprogress = handleProgress;
+	  }
+	  try {
+	    if (xhr.upload && this.hasListeners('progress')) {
+	      xhr.upload.onprogress = handleProgress;
+	    }
+	  } catch(e) {
+	    // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
+	    // Reported here:
+	    // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
+	  }
+	
+	  // timeout
+	  if (timeout && !this._timer) {
+	    this._timer = setTimeout(function(){
+	      self.timedout = true;
+	      self.abort();
+	    }, timeout);
+	  }
+	
+	  // querystring
+	  if (query) {
+	    query = request.serializeObject(query);
+	    this.url += ~this.url.indexOf('?')
+	      ? '&' + query
+	      : '?' + query;
+	  }
+	
+	  // initiate request
+	  xhr.open(this.method, this.url, true);
+	
+	  // CORS
+	  if (this._withCredentials) xhr.withCredentials = true;
+	
+	  // body
+	  if ('GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !isHost(data)) {
+	    // serialize stuff
+	    var serialize = request.serialize[this.getHeader('Content-Type')];
+	    if (serialize) data = serialize(data);
+	  }
+	
+	  // set header fields
+	  for (var field in this.header) {
+	    if (null == this.header[field]) continue;
+	    xhr.setRequestHeader(field, this.header[field]);
+	  }
+	
+	  // send stuff
+	  this.emit('request', this);
+	  xhr.send(data);
+	  return this;
+	};
+	
+	/**
+	 * Expose `Request`.
+	 */
+	
+	request.Request = Request;
+	
+	/**
+	 * Issue a request:
+	 *
+	 * Examples:
+	 *
+	 *    request('GET', '/users').end(callback)
+	 *    request('/users').end(callback)
+	 *    request('/users', callback)
+	 *
+	 * @param {String} method
+	 * @param {String|Function} url or callback
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	function request(method, url) {
+	  // callback
+	  if ('function' == typeof url) {
+	    return new Request('GET', method).end(url);
+	  }
+	
+	  // url first
+	  if (1 == arguments.length) {
+	    return new Request('GET', method);
+	  }
+	
+	  return new Request(method, url);
+	}
+	
+	/**
+	 * GET `url` with optional callback `fn(res)`.
+	 *
+	 * @param {String} url
+	 * @param {Mixed|Function} data or fn
+	 * @param {Function} fn
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	request.get = function(url, data, fn){
+	  var req = request('GET', url);
+	  if ('function' == typeof data) fn = data, data = null;
+	  if (data) req.query(data);
+	  if (fn) req.end(fn);
+	  return req;
+	};
+	
+	/**
+	 * HEAD `url` with optional callback `fn(res)`.
+	 *
+	 * @param {String} url
+	 * @param {Mixed|Function} data or fn
+	 * @param {Function} fn
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	request.head = function(url, data, fn){
+	  var req = request('HEAD', url);
+	  if ('function' == typeof data) fn = data, data = null;
+	  if (data) req.send(data);
+	  if (fn) req.end(fn);
+	  return req;
+	};
+	
+	/**
+	 * DELETE `url` with optional callback `fn(res)`.
+	 *
+	 * @param {String} url
+	 * @param {Function} fn
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	request.del = function(url, fn){
+	  var req = request('DELETE', url);
+	  if (fn) req.end(fn);
+	  return req;
+	};
+	
+	/**
+	 * PATCH `url` with optional `data` and callback `fn(res)`.
+	 *
+	 * @param {String} url
+	 * @param {Mixed} data
+	 * @param {Function} fn
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	request.patch = function(url, data, fn){
+	  var req = request('PATCH', url);
+	  if ('function' == typeof data) fn = data, data = null;
+	  if (data) req.send(data);
+	  if (fn) req.end(fn);
+	  return req;
+	};
+	
+	/**
+	 * POST `url` with optional `data` and callback `fn(res)`.
+	 *
+	 * @param {String} url
+	 * @param {Mixed} data
+	 * @param {Function} fn
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	request.post = function(url, data, fn){
+	  var req = request('POST', url);
+	  if ('function' == typeof data) fn = data, data = null;
+	  if (data) req.send(data);
+	  if (fn) req.end(fn);
+	  return req;
+	};
+	
+	/**
+	 * PUT `url` with optional `data` and callback `fn(res)`.
+	 *
+	 * @param {String} url
+	 * @param {Mixed|Function} data or fn
+	 * @param {Function} fn
+	 * @return {Request}
+	 * @api public
+	 */
+	
+	request.put = function(url, data, fn){
+	  var req = request('PUT', url);
+	  if ('function' == typeof data) fn = data, data = null;
+	  if (data) req.send(data);
+	  if (fn) req.end(fn);
+	  return req;
+	};
+	
+	/**
+	 * Expose `request`.
+	 */
+	
+	module.exports = request;
 
 
 /***/ }

@@ -38,6 +38,8 @@ var config = module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
+      _: 'lodash',
+      scaleApp: 'scaleapp/dist/scaleApp',      
     })    
   ]  
 };
