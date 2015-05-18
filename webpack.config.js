@@ -8,7 +8,12 @@ var config = module.exports = {
   entry: './app/webpack/javascripts/entry.js',
   module: {
     loaders: [
-      { test: /\.coffee$/, loader: 'coffee-loader' }
+      { test: /\.coffee$/, loader: 'coffee-loader' },
+      {
+        //tell webpack to use jsx-loader for all *.jsx files
+        test: /\.jsx$/,
+        loader: 'jsx-loader?insertPragma=React.DOM&harmony'
+      }
     ],
   },  
   node: {
@@ -28,11 +33,16 @@ var config = module.exports = {
   resolve: {
     // tell webpack which extensions to auto search when it resolves modules. With this,
     // you'll be able to do `require('./utils')` instead of `require('./utils.js')`
-    extensions: ['', '.js','.coffee'],
+    extensions: ['', '.js','.coffee','.jsx'],
     // by default, webpack will search in `web_modules` and `node_modules`. Because we're using
     // Bower, we want it to look in there too
     modulesDirectories: [ 'node_modules', 'vendor/assets/bower_components' ]
   },
+  externals: {
+    //don't bundle the 'react' npm package with our bundle.js
+    //but get it from a global 'React' variable
+    // 'react': 'React'
+  },  
   plugins: [
     // we need this plugin to teach webpack how to find module entry points for bower files,
     // as these may not have a package.json file

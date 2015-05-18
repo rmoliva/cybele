@@ -3,9 +3,13 @@
   "version": "0.0.1",
   "devDependencies": {
     "webpack": "~1.8",
+    "coffee-loader": "~0.7",
+    "expose-loader": "~0.6",
+    "jsx-loader": "~0.13.2"
+  },
+  "dependencies": {
     "lodash": "~3.5",
     "superagent": "~1.2",
-    "coffee-loader": "~0.7",
-    "expose-loader": "~0.6"
+    "react": "~0.13"
   }
 }

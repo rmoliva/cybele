@@ -19,7 +19,7 @@ module.exports = (core, options) ->
       core.promises.moduleStart 'simplify', options
 
   startLogin = (options) ->
-    core.promises.moduleStart('login', _.merge({ el: core.conf.get('el') }, options)).then(->
+    core.promises.moduleStart('login', _.merge({ el: '#application' }, options)).then(->
       core.promises.moduleStart 'notification', options
     ).then ->
       core.promises.moduleStart 'simplify', options

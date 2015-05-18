@@ -1,3 +1,4 @@
+React = require('react')
 
 module.exports = (core, options) ->
   'use strict'
