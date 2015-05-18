@@ -1,29 +1,13 @@
-module.exports = (core,decoder) ->
+module.exports = (core,_doRequest) ->
 
   initialize = () ->
     #
 
   create = (options) ->
-    new Promise((resolve,error) ->
-      request.post(
-        '/sessions.json'
-      ).query(
-        options
-      ).end(
-        resolve(decoder)
-      )
-    )
+    _doRequest('POST','/sessions.json', options)
 
   destroy = (options) ->
-    new Promise((resolve,error) ->
-      request.del(
-        '/sessions.json'
-      ).query(
-        options
-      ).end(
-        resolve(decoder)
-      )
-    )
+    _doRequest('DELETE', '/sessions.json', options)
 
   {
     initialize: initialize

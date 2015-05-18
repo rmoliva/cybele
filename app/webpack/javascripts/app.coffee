@@ -30,12 +30,13 @@ module.exports = class App
     # Inicializar el core
     core.boot()
 
-    @session.loadCurrentUser().then ->
-      # Inicializar modulos
-      # modules.initialize()
-      
-      # Incializar el router
-      #router.initialize()
+    core.services.get('sessions','destroy').then ->
+      @session.loadCurrentUser().then ->
+        # Inicializar modulos
+        # modules.initialize()
+        
+        # Incializar el router
+        #router.initialize()
     
   destroy: ->
     # Liberar elementos

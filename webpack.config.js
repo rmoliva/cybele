@@ -11,6 +11,10 @@ var config = module.exports = {
       { test: /\.coffee$/, loader: 'coffee-loader' }
     ],
   },  
+  node: {
+    net: "empty",
+    tls: "empty"
+  },  
   output: {
     // this is our app/assets/javascripts directory, which is part of the Sprockets pipeline
     path: path.join(__dirname, 'app', 'assets', 'javascripts'),

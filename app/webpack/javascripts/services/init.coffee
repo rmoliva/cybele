@@ -7,23 +7,24 @@ sessions = require('./sessions')
 module.exports = (core) ->
   'use strict'
 
-  getRequest = (url, options) ->
-    new Promise((resolve,error) ->
-      debugger;
-    
-      return request.get(
-        '/current_user.json'
+  _doRequest = (method, url, options) ->
+    new Promise((resolve,reject) ->
+      return request(
+        method,
+        url
       ).query(
         options
-      ).end(
-        resolve)
-    ).then((err, request) -> 
-      debugger;
-    
-
-      console.log(err);
-      console.log(request);
-    
+      ).on(
+        'error', reject
+      ).end((err, response) ->
+        return reject(err) if err
+        
+        data = JSON.parse(response.text)
+        if(data.success)
+          resolve(data.data)
+        else
+          reject(data.message)
+      )
     )
 
   ###*
@@ -60,9 +61,9 @@ module.exports = (core) ->
     return
 
   services = 
-    current_user: new current_user(core,_decoder)
-    sessions: new sessions(core,_decoder)
-    users: new users(core,_decoder)
+    current_user: new current_user(core,_doRequest)
+    sessions: new sessions(core,_doRequest)
+    users: new users(core,_doRequest)
 
   initialize = ->
     _.each services, ((service) ->
@@ -103,13 +104,11 @@ module.exports = (core) ->
   _.extend core, {
     services: 
       get: get
-      getRequest: getRequest 
   }, this
   # Extender el sandbox
   _.extend core.Sandbox.prototype, {     
     services: 
       get: get
-      getRequest: getRequest 
   }, this
   
   {

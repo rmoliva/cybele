@@ -1,9 +1,9 @@
-module.exports = (core, decoder) ->
+module.exports = (core, _doRequest) ->
   initialize = () ->
     #
 
   show = (options) ->
-    core.services.getRequest('/current_user.json', options)
+    _doRequest('GET','/current_user.json', options)
 
   {
     initialize: initialize
