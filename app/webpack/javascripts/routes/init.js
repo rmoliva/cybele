@@ -20,8 +20,7 @@ module.exports = function(core) {
 
     function _parseHash(newHash, oldHash) {
       var not_loggedin_hashes = ["", "login", "register", "forgot_password"]
-      
-      debugger;
+
       hasher.replaceHash('login');
       router.parse('login');
       return;
