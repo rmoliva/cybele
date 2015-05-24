@@ -1,5 +1,5 @@
-React = require('react')
-ReactComponent = require('../../components/login')
+view = require('./view')
+model_lib = require("./model")
 
 module.exports = function(sb) {
     'use strict';
@@ -12,7 +12,11 @@ module.exports = function(sb) {
     var initialize = function(opts, done) {
         el = opts.el;
         
-        sb.promises.reactRender(opts.el, ReactComponent, null).then(function() {
+        model = model_lib.create(sb);
+        
+        sb.promises.reactRender(opts.el, view, {
+          model: model
+        }).then(function() {
           return done();
         });
         

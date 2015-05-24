@@ -2,7 +2,6 @@
 model_mixin = require('../../mixins/model_mixin')
 parsley_mixin = require('../../mixins/parsley_mixin')
 
-
 module.exports = React.createClass({
   mixins: [model_mixin, parsley_mixin],
   

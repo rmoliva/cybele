@@ -20,7 +20,6 @@ module.exports = function(core) {
 
     function _parseHash(newHash, oldHash) {
       var not_loggedin_hashes = ["", "login", "register", "forgot_password"]
-
       hasher.replaceHash('login');
       router.parse('login');
       return;
@@ -63,6 +62,7 @@ module.exports = function(core) {
     var initialize = function() {
       router = crossroads.create();
       _initalizeRouteManagers();
+
       router.routed.add(console.log, console); //log all routes
       router.bypassed.add(_bypassedHandler);
       hasher.initialized.add(_parseHash); //parse initial hash

@@ -1,6 +1,7 @@
 
 var App, modules, plugins, routes, services, session;
 
+errors = require('./error');
 plugins_init = require('./plugins/init');
 services_init = require('./services/init');
 routes_init = require('./routes/init');
@@ -23,6 +24,8 @@ module.exports = function(options) {
      * Inicializa la aplicacion
      */
     var initialize = function() {
+        errors();
+      
         // inicializar el scaleApp
         core = new scaleApp.Core();
 

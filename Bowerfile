@@ -2,7 +2,6 @@
 asset "lodash"
 asset "scaleapp"
 asset "bluebird"
-asset "react"
 asset "classnames"
 asset "bootstrap-sass"
 asset "bootstrap"

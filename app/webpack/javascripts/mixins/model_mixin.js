@@ -1,16 +1,14 @@
 
 module.exports = {
   getInitialState: function() {
-    return this.props.model.getValues();
+    return this.props.model.getState();
   },
     
   componentDidMount: function() {
-    this.props.model.on.setted.add(this.onModelSetted);
+    this.props.model.on.commited.add(this.onModelCommited);
   },
     
-  onModelSetted: function(data) {
-    var state = {};
-    state[data.key] = data.value;
-    this.setState(state);
+  onModelCommited: function() {
+    this.setState(this.props.model.getState());
   },
 };
