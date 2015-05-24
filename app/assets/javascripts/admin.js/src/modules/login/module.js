@@ -11,9 +11,7 @@ AdminJS.modules.login.Module = function(sb) {
     var initialize = function(opts, done) {
         el = opts.el;
         
-        debugger;
-
-        model = AdminJS.modules.login.Model.create(sb);
+        model = AdminJS.lib.Model.create(sb, {spinner: false, state: 'login'});
         
         sb.promises.reactRender(
             el,
