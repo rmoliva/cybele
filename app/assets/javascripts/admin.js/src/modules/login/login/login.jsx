@@ -1,7 +1,7 @@
-NS('AdminJS.components.adminjs.login');
+NS('AdminJS.modules.login.login');
 NS('AdminJS.lib');
 
-AdminJS.components.adminjs.login.Login = React.createClass({
+AdminJS.modules.login.login.Login = React.createClass({
   mixins: [AdminJS.lib.ModelMixin, AdminJS.lib.ParsleyMixin],
   
   onClickSignIn: function() {

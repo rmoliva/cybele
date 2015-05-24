@@ -1,6 +1,6 @@
-NS('AdminJS.components.adminjs.login');
+NS('AdminJS.modules.login.login');
 
-AdminJS.components.adminjs.login.Register = React.createClass({
+AdminJS.modules.login.login.Register = React.createClass({
   getInitialState: function() {
     return {
       email_value: null, 

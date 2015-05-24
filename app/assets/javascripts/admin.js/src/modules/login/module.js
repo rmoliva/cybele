@@ -11,7 +11,22 @@ AdminJS.modules.login.Module = function(sb) {
     var initialize = function(opts, done) {
         el = opts.el;
         
-        fsm = StateMachine.create({
+        debugger;
+
+        model = AdminJS.modules.login.Model.create(sb);
+        
+        sb.promises.reactRender(
+            el,
+            AdminJS.modules.login.View, {
+              // controller: controller,
+              model: model
+            }
+        ).then(function(component) {
+          sb.hash.setSilently("login");
+        });
+        
+        
+/*        fsm = StateMachine.create({
           events: [
             { name: 'do_register', from: ['none','login'], to: 'register'},
             { name: 'do_forgot_password', from: ['none','login'], to: 'forgot_password'},
@@ -46,6 +61,7 @@ AdminJS.modules.login.Module = function(sb) {
             fsm.do_login();
         }
         done();
+ */        
     };
     
     var onEnterLogin = function() {

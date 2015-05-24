@@ -16,9 +16,9 @@
 
  *= require dropzone/dist/dropzone.css
  *= require jquery.gritter/css/jquery.gritter.css
- *= require select2/select2.css
+ *  require select2/select2.css
  *= require bootstrap-slider/slider.css
- *= require jquery.tagsinput/jquery.tagsinput.css
+ * require jquery.tagsinput/jquery.tagsinput.css
  *= require owl.carousel/dist/assets/owl.carousel.css
 
  *= require ./lib/colorbox/colorbox

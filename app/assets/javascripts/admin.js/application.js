@@ -14,6 +14,7 @@
 //= require eventemitter2
 //= require bootstrap
 //= require signals
+//= require immutable
 
 //= require hasher
 //= require crossroads/dist/crossroads
@@ -31,7 +32,7 @@
 //= require jquery.slimscroll
 //= require jquery.sortable/jquery.sortable
 //= require jquery.steps/build/jquery.steps
-//= require jquery.tagsinput/jquery.tagsinput
+// require jquery.tagsinput/jquery.tagsinput
 //= require owl.carousel/dist/owl.carousel
 //= require select2
 //= require skycons

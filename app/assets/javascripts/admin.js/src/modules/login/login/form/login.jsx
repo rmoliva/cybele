@@ -1,6 +1,6 @@
 NS('AdminJS.components.adminjs.login.form');
 
-AdminJS.components.adminjs.login.form.Login = React.createClass({
+AdminJS.modules.login.login.Login = React.createClass({
   getInitialState: function() {
     return { model: {} };
   },
