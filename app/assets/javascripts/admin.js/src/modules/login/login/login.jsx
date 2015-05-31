@@ -6,7 +6,7 @@ AdminJS.modules.login.login.Login = React.createClass({
   
   onClickSignIn: function() {
     if(this.validate()) {
-      this.props.controller.call("handleSignIn",{
+      this.props.handleSignIn({
         email: this.state.email,
         password: this.state.password,
         remember_me: this.state.remember_me
@@ -15,11 +15,11 @@ AdminJS.modules.login.login.Login = React.createClass({
   },
   
   onClickForgotPassword: function() {
-    this.props.controller.call("handleForgotPassword");
+    this.props.handleForgotPassword();
   },
   
   onClickRegister: function() {
-    this.props.controller.call("handleRegister");
+    this.props.handleRegister();
   },
 
   loginFormConfig: function() {
@@ -67,12 +67,17 @@ AdminJS.modules.login.login.Login = React.createClass({
         "btn-success": true,
         block: true
         // disabled: this.state.spinner
-      });
+      }), login_form_model;
     
 /*    if(this.state.spinner) {
       spinner = <i className="fa fa-spinner fa-spin m-right-xs"></i>;
     }
 */    
+    login_form_model = {
+      email: this.props.email,
+      remember_me: this.props.remember_me
+    };
+
     return (
       <div className="wrapper no-navigation preload">
         <div className="sign-in-wrapper">
@@ -83,7 +88,7 @@ AdminJS.modules.login.login.Login = React.createClass({
             
           {/* <pre>{JSON.stringify(this.state)}</pre> */}
             
-            <AdminJS.components.form.Formly ref="parsley_form" config={this.loginFormConfig()} model={this.state} onFormlyUpdate={this.onFormlyUpdate} />
+            <AdminJS.components.form.Formly ref="parsley_form" config={this.loginFormConfig()} model={login_form_model} onFormlyUpdate={this.onFormlyUpdate} />
   
             <div className="m-top-md p-top-sm">
               <a onClick={this.onClickSignIn} className={btn_classes}>

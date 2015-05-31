@@ -15,7 +15,8 @@ AdminJS.lib.Model = {
       return data.toObject();
     };
     var setData = function() {
-      return data.set(arguments);
+      data = data.set(arguments);
+      return data;
     };
     var getDataObject = function() {
       return data;

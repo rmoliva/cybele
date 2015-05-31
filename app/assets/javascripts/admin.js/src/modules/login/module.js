@@ -11,7 +11,12 @@ AdminJS.modules.login.Module = function(sb) {
     var initialize = function(opts, done) {
         el = opts.el;
         
-        model = AdminJS.lib.Model.create(sb, {spinner: false, state: 'login'});
+        model = AdminJS.lib.Model.create(sb, {
+          spinner: false, 
+          state: 'login',
+          email: null,
+          remember_me: false
+       });
 
         controller = AdminJS.lib.ControllerCreator.create(
           AdminJS.modules.login.Controller(sb, model),
