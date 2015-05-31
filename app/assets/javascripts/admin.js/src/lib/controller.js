@@ -1,6 +1,6 @@
 NS('AdminJS.lib');
 
-AdminJS.lib.Controller = function(sb, fsm, model, handlers) {
+AdminJS.lib.Controller = function(handlers) {
     'use strict';
     
     var callHandler = function(name, options, scope) {
@@ -17,3 +17,18 @@ AdminJS.lib.Controller = function(sb, fsm, model, handlers) {
       call: callHandler
     };
 };
+
+/**
+ * Todos los controladores deben tener una funcion denominada HandleInit
+ * que es con la que se inicia el controlador.
+ * Reciben el objeto **options** pasado en el creador
+ */
+AdminJS.lib.ControllerCreator = (function() {
+  return {
+    create: function(handlers, options) {
+      var controller = new AdminJS.lib.Controller(handlers);
+      controller.call("handleInit", options);
+      return controller;
+    }
+  };
+}());

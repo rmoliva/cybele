@@ -10,6 +10,9 @@ AdminJS.lib.ModelMixin = {
   },
     
   onModelCommited: function(data) {
+    console.log("onModelCommited");
+    console.log(data);
+    
     this.setState(data);
   },
 };

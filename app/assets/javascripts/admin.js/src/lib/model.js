@@ -9,16 +9,23 @@ AdminJS.lib.Model = {
       commited: new Signal()
     };
     var commit = function() {
-      signals.commited.dispatch(data.get());
+      signals.commited.dispatch(getData());
     };
     var getData = function() {
       return data.toObject();
     };
-    
+    var setData = function() {
+      return data.set(arguments);
+    };
+    var getDataObject = function() {
+      return data;
+    };
     return {
       on: signals,
       commit: commit,
-      getData: getData
+      getData: getData,
+      getDataObject: getDataObject,
+      setData: setData 
     };
   },
   create: function(sb, initial_state) {

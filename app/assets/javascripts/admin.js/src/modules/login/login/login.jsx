@@ -2,7 +2,7 @@ NS('AdminJS.modules.login.login');
 NS('AdminJS.lib');
 
 AdminJS.modules.login.login.Login = React.createClass({
-  mixins: [AdminJS.lib.ModelMixin, AdminJS.lib.ParsleyMixin],
+  mixins: [AdminJS.lib.ParsleyMixin],
   
   onClickSignIn: function() {
     if(this.validate()) {
@@ -65,14 +65,14 @@ AdminJS.modules.login.login.Login = React.createClass({
       btn_classes = classNames({
         btn: true,
         "btn-success": true,
-        block: true,
-        disabled: this.state.spinner
+        block: true
+        // disabled: this.state.spinner
       });
     
-    if(this.state.spinner) {
+/*    if(this.state.spinner) {
       spinner = <i className="fa fa-spinner fa-spin m-right-xs"></i>;
     }
-    
+*/    
     return (
       <div className="wrapper no-navigation preload">
         <div className="sign-in-wrapper">
