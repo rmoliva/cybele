@@ -9,6 +9,12 @@ AdminJS.routes.Init = function(core) {
         login: new AdminJS.routes.Login(core),
         users: new AdminJS.routes.Users(core)
     };
+    // Rutas que no requieren autenticacion
+    var not_require_authenticated_hashes = [
+      "login", 
+      "register", 
+      "forgot_password"
+    ];
 
     /**
      * setup hasher
@@ -17,19 +23,31 @@ AdminJS.routes.Init = function(core) {
      */
 
     function _parseHash(newHash, oldHash) {
-      var not_loggedin_hashes = ["", "login", "register", "forgot_password"]
+      var homeHash;
       
-      if(!core.session.isAuthenticated()) {
-        hasher.replaceHash('login');
-        router.parse('login');
-        return;
+      // Ver si la url solicitada requiere autenticacion
+      if(!_requireAuthenticated(newHash)) {
+        // Si no se ha pasado nada, poner login por defecto
+        homeHash = _.isEmpty(newHash) ? "login" : newHash;        
+      } else {
+        // Si no se ha pasado nada, poner dashboard por defecto
+        homeHash = _.isEmpty(newHash) ? "dashboard" : newHash;
+        
+        // Comprobar que esta autenticado y, si no, ir al login        
+        if(!core.session.isAuthenticated()) {
+          homeHash = 'login';
+        }
       }
       
-      if (_.include(not_loggedin_hashes, newHash)) {
-        hasher.replaceHash('dashboard');
+      if (newHash != homeHash) {
+        hasher.replaceHash(homeHash);
       } else {
         router.parse(newHash);
       }
+    };
+
+    function _requireAuthenticated(hash) {
+      return !_.include(not_require_authenticated_hashes, hash);
     };
 
     function _bypassedHandler(req, res, requestString) {

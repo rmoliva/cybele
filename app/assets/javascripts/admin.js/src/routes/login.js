@@ -24,7 +24,7 @@ AdminJS.routes.Login = function(core) {
 
     var onRouteLogin = function() {
       core.modules.stopAllModules();
-      core.modules.startLogin({state: 'signin'});
+      core.modules.startLogin({state: 'login'});
     };
     
     var onRouteForgotPassword = function() {

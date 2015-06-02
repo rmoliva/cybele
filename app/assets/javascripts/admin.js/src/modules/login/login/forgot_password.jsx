@@ -8,11 +8,11 @@ AdminJS.modules.login.login.ForgotPassword = React.createClass({
   },
 
   onClickLogin: function() {
-    this.props.controller.call("handleLogin");
+    this.props.handleLogin();
   },
   
   onSendPassword: function() {
-    this.props.controller.call("handleSendPassword", this.state);
+    this.props.handleSendPassword(this.state);
   },
   
   handleEmailChange: function(event) {
@@ -38,9 +38,7 @@ AdminJS.modules.login.login.ForgotPassword = React.createClass({
               </div>
   
               <div className="m-top-md p-top-sm">
-                <div className="font-12 text-center m-bottom-xs">
-                  <a onClick={this.onClickLogin} className="font-12">{t('login.access')}</a>
-                </div>
+                <a onClick={this.onClickLogin} className="btn btn-default block">{t('login.sign_in')}</a>
               </div>
             </form>
         </div>{/* ./sign-in-inner */}

@@ -61,18 +61,18 @@ AdminJS.modules.login.login.Login = React.createClass({
   },
   
   render: function() {
-    var spinner, 
+    var spinner = this.props.spinner,
+      spinner_html, 
       btn_classes = classNames({
         btn: true,
         "btn-success": true,
-        block: true
-        // disabled: this.state.spinner
+        block: true,
+        disabled: spinner
       }), login_form_model;
     
-/*    if(this.state.spinner) {
-      spinner = <i className="fa fa-spinner fa-spin m-right-xs"></i>;
+    if(spinner) {
+      spinner_html = <i className="fa fa-spinner fa-spin m-right-xs"></i>;
     }
-*/    
     login_form_model = {
       email: this.props.email,
       remember_me: this.props.remember_me
@@ -92,7 +92,7 @@ AdminJS.modules.login.login.Login = React.createClass({
   
             <div className="m-top-md p-top-sm">
               <a onClick={this.onClickSignIn} className={btn_classes}>
-              {spinner}
+              {spinner_html}
               {t('login.sign_in')}
               </a>
             </div>

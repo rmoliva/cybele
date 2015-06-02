@@ -4,7 +4,8 @@ var Signal = signals.Signal;
 
 AdminJS.lib.Model = {
   constructor: function(sb, initial_data) {
-    var data = Immutable.fromJS(initial_data);
+    var data = [];
+    data.push(Immutable.fromJS(initial_data));
     var signals = {
       commited: new Signal()
     };
@@ -12,10 +13,11 @@ AdminJS.lib.Model = {
       signals.commited.dispatch(getData());
     };
     var getData = function() {
-      return data.toObject();
+      return _.last(data).toObject();
     };
     var setData = function() {
-      data = data.set(arguments);
+      debugger;
+      data.push(_.last(data).set(arguments));
       return data;
     };
     var getDataObject = function() {

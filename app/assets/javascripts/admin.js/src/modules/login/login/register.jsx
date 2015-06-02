@@ -10,11 +10,11 @@ AdminJS.modules.login.login.Register = React.createClass({
   },
 
   onClickLogin: function() {
-    this.props.controller.call("handleLogin");
+    this.props.handleLogin();
   },
   
   onSendRegister: function() {
-    this.props.controller.call("handleSendRegister",this.state);
+    this.props.handleSendRegister(this.state);
   },
   
   handleEmailChange: function(event) {

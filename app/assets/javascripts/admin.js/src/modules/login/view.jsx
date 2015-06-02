@@ -2,7 +2,6 @@ NS('AdminJS.modules.login');
 NS('AdminJS.lib');
 
 AdminJS.modules.login.View = React.createClass({
-  mixins: [AdminJS.lib.ModelMixin],
   
   _handleSignIn: function(data) {
     this.props.controller.call("handleSignIn", data);
@@ -16,10 +15,24 @@ AdminJS.modules.login.View = React.createClass({
     this.props.controller.call("handleRegister");
   },
   
+  _handleLogin: function() {
+    this.props.controller.call("handleLogin");
+  },
+
+  _handleSendPassword: function(data){
+    this.props.controller.call("handleSendPassword", data);
+  },
+  
+  _handleSendRegister: function(data) {
+     this.props.controller.call("handleSendRegister",data);
+  },
+  
   _renderLogin: function() {
+    var cursor = this.props.model.cursor();
     return <AdminJS.modules.login.login.Login 
-      email={this.state.email} 
-      remember_me={this.state.remember_me}
+      email={cursor.get('email')} 
+      remember_me={cursor.get('remember_me')}
+      spinner={cursor.get('spinner')} 
       handleSignIn={this._handleSignIn}
       handleForgotPassword={this._handleForgotPassword} 
       handleRegister={this._handleRegister}
@@ -27,15 +40,23 @@ AdminJS.modules.login.View = React.createClass({
   },
   
   _renderForgotPassword: function() {
-    return <AdminJS.modules.login.login.ForgotPassword model={this.props.model} controller={this.props.controller} />
+    return <AdminJS.modules.login.login.ForgotPassword
+      handleLogin={this._handleLogin}
+      handleSendPassword={this._handleSendPassword}
+    />
   },
 
   _renderRegister: function() {
-    return <AdminJS.modules.login.login.Register model={this.props.model} controller={this.props.controller} />
+    return <AdminJS.modules.login.login.Register       
+      handleLogin={this._handleLogin}
+      handleSendRegister={this._handleSendRegister}
+    />
   },
 
   render: function() {
-    switch(this.state.state) {
+    var state = this.props.model.cursor().get('state');
+    
+    switch(state) {
       case 'login':
         return (<div id="login_module">{this._renderLogin()}</div>) 
       case 'forgot_password': 
