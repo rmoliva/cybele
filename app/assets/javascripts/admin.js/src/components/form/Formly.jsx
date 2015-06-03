@@ -27,7 +27,7 @@ AdminJS.components.form.Formly = function() {
   }
   
   function getComponent(FieldComponent, field, model, onValueUpdate) {
-    var component = <FieldComponent model={model} config={field} onValueUpdate={onValueUpdate} key={field.key} />;
+    var component = <FieldComponent model={model} config={field} onValueUpdate={onValueUpdate} />;
     if (field.props) {
       var props = typeof field.props === 'function' ? field.props(model, field) : field.props;
       component = React.addons.cloneWithProps(component, merge(props, {
@@ -81,12 +81,16 @@ AdminJS.components.form.Formly = function() {
     },
   
     onValueUpdate: function(fieldKey, value) {
-      this.props.model[fieldKey] = value;
-      this.props.onFormlyUpdate(this.props.model);
+      this.state[fieldKey] = value;
+      this.props.onFormlyUpdate(this.state);
+    },
+    
+    getInitialState: function() {
+      return this.props.model;
     },
     
     render: function() {
-      var model = this.props.model;
+      var model = this.state;
       var onValueUpdate = this.onValueUpdate;
       var fields = this.props.config.fields.map(function(field) {
         return generateFieldTag(field, model, onValueUpdate);

@@ -15,7 +15,7 @@ AdminJS.components.form.field_types.TextField = React.createClass({
   render: function() {
     var model = this.props.model;
     var config = this.props.config;
-    var key = this.props.key;
+    var key = config.key;
     var type = config.password ? "password" : "text"
 
     var validations = this.validations();

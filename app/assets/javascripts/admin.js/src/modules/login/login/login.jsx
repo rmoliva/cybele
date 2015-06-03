@@ -75,6 +75,7 @@ AdminJS.modules.login.login.Login = React.createClass({
     }
     login_form_model = {
       email: this.props.email,
+      password: null,
       remember_me: this.props.remember_me
     };
 

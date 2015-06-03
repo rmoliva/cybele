@@ -546,31 +546,35 @@ ActiveRecord::Schema.define(version: 20150401102321) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",               limit: 150
-    t.string   "surname",            limit: 250
-    t.string   "gender",             limit: 10
-    t.boolean  "active",                          default: true, null: false
-    t.string   "email",                                          null: false
-    t.string   "crypted_password",                               null: false
-    t.string   "password_salt",                                  null: false
-    t.string   "persistence_token",                              null: false
-    t.string   "perishable_token",                               null: false
-    t.integer  "login_count",                     default: 0,    null: false
-    t.integer  "failed_login_count",              default: 0,    null: false
+    t.string   "name",                limit: 150
+    t.string   "surname",             limit: 250
+    t.string   "gender",              limit: 10
+    t.boolean  "active",                           default: true, null: false
+    t.string   "email",                                           null: false
+    t.string   "crypted_password",                                null: false
+    t.string   "password_salt",                                   null: false
+    t.string   "persistence_token",                               null: false
+    t.string   "perishable_token",                                null: false
+    t.integer  "login_count",                      default: 0,    null: false
+    t.integer  "failed_login_count",               default: 0,    null: false
     t.datetime "last_request_at"
     t.datetime "current_login_at"
     t.datetime "last_login_at"
     t.string   "current_login_ip"
     t.string   "last_login_ip"
-    t.string   "address",            limit: 1024
-    t.string   "city",               limit: 1024
-    t.string   "state",              limit: 150
-    t.string   "postal_code",        limit: 50
-    t.string   "phone1",             limit: 50
-    t.string   "phone2",             limit: 50
-    t.string   "email2",             limit: 50
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.string   "address",             limit: 1024
+    t.string   "city",                limit: 1024
+    t.string   "state",               limit: 150
+    t.string   "postal_code",         limit: 50
+    t.string   "phone1",              limit: 50
+    t.string   "phone2",              limit: 50
+    t.string   "email2",              limit: 50
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
   end
 
   add_index "users", ["active"], name: "index_users_on_active", using: :btree
