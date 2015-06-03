@@ -1,7 +1,6 @@
 NS('AdminJS.components.adminjs');
 
-AdminJS.components.adminjs.Topnav = React.createClass({
-  mixins: [AdminJS.lib.ModelMixin],
+AdminJS.modules.topnav.View = React.createClass({
   
   onClickLogOut: function() {
     this.props.controller.call("handleOnLogout");
@@ -50,7 +49,7 @@ AdminJS.components.adminjs.Topnav = React.createClass({
                         <a href="#" id="userToggle" data-toggle="dropdown">
                             <img src="images/profile/profile1.jpg" alt="" className="img-circle inline-block user-profile-pic" />
                             <div className="user-detail inline-block">
-                                {this.state.user_name}
+                                {this.props.model.cursor().get('user_name')}
                                 <i className="fa fa-angle-down"></i>
                             </div>
                         </a>

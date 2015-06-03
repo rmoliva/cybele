@@ -1,7 +1,6 @@
 NS('AdminJS.components.adminjs');
 
-AdminJS.components.adminjs.Sidebar = React.createClass({
-  mixins: [AdminJS.lib.ModelMixin],
+AdminJS.modules.sidebar.View = React.createClass({
   
   _handleClickMenu: function(link) {
     this.props.controller.call('handleClick',{link: link});
@@ -23,6 +22,10 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
     })
   },
   
+  _getSidebarActive: function() {
+    return this.props.model.cursor().get("sidebar_active");
+  },
+  
   _renderMenu: function(menu) {
     var submenu, submenu_icon, liClass = [menu.palette];
     
@@ -32,7 +35,7 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
       submenu_icon = <span className="submenu-icon"></span>;
     }
     
-    if(this._hasKey(menu, this.state.sidebar_active)) {
+    if(this._hasKey(menu, this._getSidebarActive())) {
       liClass.push("active")
       liClass.push("open")
     }
@@ -62,10 +65,13 @@ AdminJS.components.adminjs.Sidebar = React.createClass({
   },
   
   render: function() {
-    var menus;
+    var menu_tree = this.props.model.cursor().get("menu_tree"),
+      menus;
     
-    if(this.state.menu_tree) {
-      menus = this.state.menu_tree.map(function(menu, index) {
+    debugger;
+    
+    if(menu_tree) {
+      menus = menu_tree.map(function(menu, index) {
         return this._renderMenu(menu);
       }, this);
     }

@@ -3,7 +3,7 @@ NS('AdminJS.modules.sidebar');
 AdminJS.modules.sidebar.Module = function(sb) {
     'use strict';
 
-    var $el = null;
+    var el = null;
     var model = null;
     var controller = null;
 
@@ -47,25 +47,31 @@ AdminJS.modules.sidebar.Module = function(sb) {
     };
     
     var initialize = function(opts, done) {
-        $el = $(opts.el);
+        el = opts.el;
         
-        model = AdminJS.modules.sidebar.Model.create(sb);
-        controller = new AdminJS.modules.sidebar.Controller(sb, model);
+        model = immstruct({
+          menu_tree: _getMenuTree(),
+          sidebar_active: opts.sidebar_active
+        });
         
-        // Renderizamos la plantilla
-        sb.promises.reactRender(
-          opts.el,
-          AdminJS.components.adminjs.Sidebar, {
+        controller = AdminJS.lib.ControllerCreator.create(
+            AdminJS.modules.sidebar.Controller(sb, model),
+            opts // Es lo mismo que se pasara al handleInit
+        );
+        doRender(done).then(function() {
+          model.on('swap', doRender);
+          done();
+        });
+    };
+
+    var doRender = function(newStructure, oldStructure, keyPath) {
+      return sb.promises.reactRender(
+          el,
+          AdminJS.modules.sidebar.View, {
             controller: controller,
             model: model
           }
-        ).then(function() {
-          // TODO: El menu lateral se carga dinamicamente en base a la entidad
-          model.set('menu_tree', _getMenuTree());
-          model.set('sidebar_active', opts.sidebar_active || 'dashboard_menu');
-        }).then(function() {
-          done();
-        });
+      );
     };
 
     var destroy = function() {
