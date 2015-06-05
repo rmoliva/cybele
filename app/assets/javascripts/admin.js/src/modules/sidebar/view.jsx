@@ -11,15 +11,17 @@ AdminJS.modules.sidebar.View = React.createClass({
    * determinada o la tienen sus hijos 
    */
   _hasKey: function(menu, key) {
+
     // Comprobar si la tiene el propio menu
-    if(menu.key === key) {
+    if(menu.get('key') === key) {
       return true; 
     }
     
     // Comprobar si la tiene alguno de sus hijos
-    return _.any(menu.menu, function(submenu) {
-      return submenu.key === key;
+    return _.any(menu.get('menu').toArray(), function(submenu) {
+      return submenu.get('key') === key;
     })
+    return false;
   },
   
   _getSidebarActive: function() {
@@ -27,28 +29,33 @@ AdminJS.modules.sidebar.View = React.createClass({
   },
   
   _renderMenu: function(menu) {
-    var submenu, submenu_icon, liClass = [menu.palette];
+    var submenu, 
+      submenu_icon,
+      active = this._hasKey(menu, this._getSidebarActive()),
+      with_submenu = !_.isEmpty(menu.get('menu')),
+      clsNames = {
+        active: active, 
+        open: active,
+        openable: with_submenu
+      },
+      liClass;
+    clsNames[menu.get('palette')] = true
+    liClass = classNames(clsNames);
     
-    if(menu.menu) {
-      submenu = this._renderSubmenu(menu, menu.palette);
-      liClass.push("openable")
+    if(with_submenu) {
+      submenu = this._renderSubmenu(menu, menu.get('palette'));
       submenu_icon = <span className="submenu-icon"></span>;
     }
-    
-    if(this._hasKey(menu, this._getSidebarActive())) {
-      liClass.push("active")
-      liClass.push("open")
-    }
-    
-    return <li className={liClass.join(" ")} key={menu.key}>
-      <a onClick={this._handleClickMenu.bind(this, menu.link)}>
+
+    return <li className={liClass} key={menu.get("key")}>
+      <a onClick={this._handleClickMenu.bind(this, menu.get("link"))}>
         <span className="menu-content block">
-          <span className="menu-icon"><i className={menu.iconClass}></i></span>
-          <span className="text m-left-sm">{menu.text}</span>
+          <span className="menu-icon"><i className={menu.get("iconClass")}></i></span>
+          <span className="text m-left-sm">{menu.get("text")}</span>
           {submenu_icon}
         </span>
         <span className="menu-content-hover block">
-          {menu.alt}
+          {menu.get("alt")}
         </span>
       </a>
       {submenu}
@@ -56,8 +63,8 @@ AdminJS.modules.sidebar.View = React.createClass({
   },
 
   _renderSubmenu: function(menu, palette) {
-    var submenu = menu.menu.map(function(submenu, index) {
-      return <li key={submenu.key}><a onClick={this._handleClickMenu.bind(this, submenu.link)}><span className="submenu-label">{submenu.text}</span></a></li>;
+    var submenu = menu.get('menu').toArray().map(function(submenu, index) {
+      return <li key={submenu.get('key')}><a onClick={this._handleClickMenu.bind(this, submenu.get('link'))}><span className="submenu-label">{submenu.get('text')}</span></a></li>;
     }, this), ulClass = ["submenu", palette];
     return <ul className={ulClass.join(" ")}>
       {submenu}
@@ -65,10 +72,8 @@ AdminJS.modules.sidebar.View = React.createClass({
   },
   
   render: function() {
-    var menu_tree = this.props.model.cursor().get("menu_tree"),
+    var menu_tree = this.props.model.cursor().get("menu_tree").toArray(),
       menus;
-    
-    debugger;
     
     if(menu_tree) {
       menus = menu_tree.map(function(menu, index) {

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pruebas</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.7.3/immutable.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/immstruct/1.4.1/immstruct.js"></script>
+  
+</head>
+
+<body>
+<div id='main_content'>
+<script>
+  // Comenzamos:
+  $(function() {
+    
+    var model = immstruct(
+      "menu_tree", [{
+        key: 'dashboard_menu',
+        iconClass: "block fa fa-home fa-lg",
+        palette: "bg-palette1",
+        link: 'dashboard'
+      }, {
+        key: 'users_menu',
+        iconClass: "block fa fa-users fa-lg",
+        palette: "bg-palette2",
+        menu: [{
+          key: 'users_submenu',
+          link: 'users'
+        }, {
+          key: 'roles_submenu',
+          link: 'roles'
+        }]
+      }, {
+        iconClass: "block fa fa-sitemap fa-lg",
+        palette: "bg-palette3",
+        key: 'entities',
+        menu: [{
+          key: 'congregation_submenu',
+        }]
+      }]
+    );
+    model.on('swap', function() {
+      console.log(arguments);
+    });
+    debugger;
+    
+    console.log(model.cursor('menu_tree').toArray());
+    
+    
+    alert("Arrancado");
+  });
+</script>
+</body>
+</html>
