@@ -17,10 +17,12 @@ AdminJS.modules.sidebar.View = React.createClass({
       return true; 
     }
     
-    // Comprobar si la tiene alguno de sus hijos
-    return _.any(menu.get('menu').toArray(), function(submenu) {
-      return submenu.get('key') === key;
-    })
+    if(menu.get('menu')) {
+      // Comprobar si la tiene alguno de sus hijos
+      return _.any(menu.get('menu').toArray(), function(submenu) {
+        return submenu.get('key') === key;
+      });
+    }
     return false;
   },
   
@@ -32,7 +34,7 @@ AdminJS.modules.sidebar.View = React.createClass({
     var submenu, 
       submenu_icon,
       active = this._hasKey(menu, this._getSidebarActive()),
-      with_submenu = !_.isEmpty(menu.get('menu')),
+      with_submenu = !_.isUndefined(menu.get('menu')),
       clsNames = {
         active: active, 
         open: active,

@@ -5,9 +5,12 @@ AdminJS.modules.login.Controller = function(sb, model) {
 
   return {
     handleInit: function(options) {
-      // inicializar el modelo
-      model.cursor().set("state", options.state);
-      sb.hash.setSilently(options.state);
+      return new Promise(function(resolve, reject) {
+        // inicializar el modelo
+        model.cursor().set("state", options.state);
+        sb.hash.setSilently(options.state);
+        resolve();
+      });
     },
     
     handleLogin: function() {

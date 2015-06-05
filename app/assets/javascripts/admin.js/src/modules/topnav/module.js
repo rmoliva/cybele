@@ -14,11 +14,13 @@ AdminJS.modules.topnav.Module = function(sb) {
         user_name: sb.session.getCurrentUserCompleteName()
       });
       
-      controller = AdminJS.lib.ControllerCreator.create(
+      AdminJS.lib.ControllerCreator.create(
           AdminJS.modules.topnav.Controller(sb, model),
           opts // Es lo mismo que se pasara al handleInit
-      );
-      doRender(done).then(function() {
+      ).then(function(ctl) {
+        controller = ctl;
+        return doRender(done); 
+      }).then(function() {
         model.on('swap', doRender);
         done();
       });
@@ -36,7 +38,7 @@ AdminJS.modules.topnav.Module = function(sb) {
 
     var destroy = function() {
         // Quitar la plantilla
-        $el.empty();
+        $(el).empty();
     };
 
     return {

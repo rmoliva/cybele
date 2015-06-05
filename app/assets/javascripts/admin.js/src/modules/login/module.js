@@ -19,11 +19,13 @@ AdminJS.modules.login.Module = function(sb) {
         });
         model.on('swap', doRender);
         
-        controller = AdminJS.lib.ControllerCreator.create(
+        AdminJS.lib.ControllerCreator.create(
           AdminJS.modules.login.Controller(sb, model),
           opts // Es lo mismo que se pasara al handleInit
-        ); 
-        doRender(done).then(done);
+        ).then(function(ctl) {
+          controller = ctl;
+          return doRender();
+        }).then(done); 
     };
     
     var doRender = function(newStructure, oldStructure, keyPath) {

@@ -7,6 +7,7 @@ AdminJS.modules.topnav.Controller = function(sb, model) {
   return {
     handleInit: function(options) {
       // inicializar el modelo
+      return Promise.resolve();
     }
   }
 };

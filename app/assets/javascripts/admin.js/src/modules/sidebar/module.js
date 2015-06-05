@@ -54,11 +54,13 @@ AdminJS.modules.sidebar.Module = function(sb) {
           sidebar_active: opts.sidebar_active
         });
         
-        controller = AdminJS.lib.ControllerCreator.create(
+        AdminJS.lib.ControllerCreator.create(
             AdminJS.modules.sidebar.Controller(sb, model),
             opts // Es lo mismo que se pasara al handleInit
-        );
-        doRender(done).then(function() {
+        ).then(function(ctl) {
+          controller = ctl;
+          return doRender();
+        }).then(function() {
           model.on('swap', doRender);
           done();
         });
@@ -76,7 +78,7 @@ AdminJS.modules.sidebar.Module = function(sb) {
 
     var destroy = function() {
         // Quitar la plantilla
-        $el.empty();
+        $(el).empty();
     };
 
     return {

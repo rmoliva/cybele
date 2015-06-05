@@ -27,8 +27,9 @@ AdminJS.lib.ControllerCreator = (function() {
   return {
     create: function(handlers, options) {
       var controller = new AdminJS.lib.Controller(handlers);
-      controller.call("handleInit", options);
-      return controller;
+      return controller.call("handleInit", options).then(function(){
+        return controller;
+      });
     }
   };
 }());

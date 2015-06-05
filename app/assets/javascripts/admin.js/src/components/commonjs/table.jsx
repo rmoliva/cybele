@@ -36,7 +36,7 @@ CommonJS.components.Table = React.createClass({
   _renderRow: function(row) {
     var columns = this.props.columns,
       cells = columns.map(function(column) {
-        return <td key={key}>{this._renderCell(row,column.key)}</td>;
+        return <td key={column.key}>{this._renderCell(row,column.key)}</td>;
       }, this),
       key = this._keyValue(row);
     return <tr key={key}>{cells}</tr>;
@@ -64,8 +64,12 @@ CommonJS.components.Table = React.createClass({
         "table-hover": this.props.hover,
         "table-condensed": this.props.condensed
       }), 
-      colgroup = this._renderColgroup(),
-      head = this._renderHeader(),
+      colgroup,
+      head,
+      body;
+     
+      colgroup = this._renderColgroup();
+      head = this._renderHeader();
       body = this._renderBody();
      
       return <table className={table_classes}>

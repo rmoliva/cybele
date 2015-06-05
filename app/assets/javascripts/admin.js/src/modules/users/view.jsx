@@ -1,7 +1,7 @@
-NS('AdminJS.components.adminjs');
+NS('AdminJS.modules.users');
 
-AdminJS.components.adminjs.Users = React.createClass({
-  mixins: [AdminJS.lib.ModelMixin],
+AdminJS.modules.users.View = React.createClass({
+  // TODO: mixins: [Omniscient.shouldComponentUpdate],
   
   _handleToolbar: function(command) {
     this.props.controller.call('handleToolbar', command);
@@ -11,8 +11,80 @@ AdminJS.components.adminjs.Users = React.createClass({
     this.props.controller.call('handlePageClick', {page: page});
   },
   
+  _renderTable: function(records) {
+    return <CommonJS.components.Table 
+      columns={[{
+        key: 'btn',
+        text: '',
+        renderer: _.bind(function(row, key) {
+          return <div> 
+              <button type="button" className="btn btn-warning btn-xs" data-toggle='tooltip' data-placement="top" onClick={this._handleToolbar.bind(this, {cmd: 'upd', id: row.id})} title={t("update")}>
+                <i className="fa fa-save"></i>
+              </button>
+              <button type="button" className="btn btn-danger btn-xs" data-toggle='tooltip' data-placement="top" onClick={this._handleToolbar.bind(this, {cmd: 'del', id: row.id})} title={t("delete")}>
+                <i className="fa fa-trash-o"></i>
+              </button>
+            </div>;
+        }, this),
+        align: 'center',
+        width: '10%'
+      }, {
+        key: 'name',
+        text: t('users.name'),
+        align: 'center',
+        width: 150
+      }, {
+        key: 'surname',
+        text: t('users.surname'),
+        align: 'center',
+        width: 150
+      }, {
+        key: 'email',
+        text: t('users.email'),
+        align: 'center',
+        width: 150
+      }]}
+      
+      records = {records}
+      
+      condensed={true}
+      hover={true}
+      keyAttribute="name"
+    />;
+  },
+  _renderPaginator: function(options) {
+    return <div className="row">
+      <div className="col-xs-6">
+        <CommonJS.components.PaginatorLegend
+            page={options.page}
+            page_count={options.page_count} 
+            per_page={options.per_page} 
+            total={options.total}
+        />
+      </div>
+      <div className="col-xs-6">
+        <div className="pull-right">
+          <CommonJS.components.Paginator 
+            page={options.page}
+            page_count={options.page_count} 
+            size='normal' 
+            limit={3} 
+            onClickPage={this._handlePageClick}
+          />
+        </div>
+      </div>
+    </div>;
+  },
   render: function() {
-    var spinner_style = (this.state.loading_spinner ? {} : {display: "none"})
+    var cursor = this.props.model.cursor(),
+      spinner_style = (cursor.get('loading_spinner') ? {} : {display: "none"}),
+      table = this._renderTable(cursor.get('records')),
+      paginator = this._renderPaginator({
+        page: cursor.get('page'), 
+        page_count: cursor.get('page_count'), 
+        per_page: cursor.get('per_page'), 
+        total: cursor.get('total')
+      });
     
     return (
       <div className="padding-md">
@@ -80,66 +152,8 @@ AdminJS.components.adminjs.Users = React.createClass({
           */}
           <div className="smart-widget-inner">
             <div className="smart-widget-body">
-              <CommonJS.components.Table 
-                columns={[{
-                  key: 'btn',
-                  text: '',
-                  renderer: _.bind(function(row, key) {
-                    return <div> 
-                        <button type="button" className="btn btn-warning btn-xs" data-toggle='tooltip' data-placement="top" onClick={this._handleToolbar.bind(this, {cmd: 'upd', id: row.id})} title={t("update")}>
-                          <i className="fa fa-save"></i>
-                        </button>
-                        <button type="button" className="btn btn-danger btn-xs" data-toggle='tooltip' data-placement="top" onClick={this._handleToolbar.bind(this, {cmd: 'del', id: row.id})} title={t("delete")}>
-                          <i className="fa fa-trash-o"></i>
-                        </button>
-                      </div>;
-                  }, this),
-                  align: 'center',
-                  width: '10%'
-                }, {
-                  key: 'name',
-                  text: t('users.name'),
-                  align: 'center',
-                  width: 150
-                }, {
-                  key: 'surname',
-                  text: t('users.surname'),
-                  align: 'center',
-                  width: 150
-                }, {
-                  key: 'email',
-                  text: t('users.email'),
-                  align: 'center',
-                  width: 150
-                }]}
-                
-                records = {this.state.records}
-                
-                condensed={true}
-                hover={true}
-                keyAttribute="name"
-              />
-              <div className="row">
-                <div className="col-xs-6">
-                  <CommonJS.components.PaginatorLegend
-                      page={this.state.page}
-                      page_count={this.state.page_count} 
-                      per_page={this.state.per_page} 
-                      total={this.state.total}
-                  />
-                </div>
-                <div className="col-xs-6">
-                  <div className="pull-right">
-                    <CommonJS.components.Paginator 
-                      page={this.state.page}
-                      page_count={this.state.page_count} 
-                      size='normal' 
-                      limit={3} 
-                      onClickPage={this._handlePageClick}
-                    />
-                  </div>
-                </div>
-              </div>
+              {table}
+              {paginator}
             </div>
           </div>
         </div>
