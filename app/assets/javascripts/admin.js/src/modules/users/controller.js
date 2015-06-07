@@ -31,11 +31,18 @@ AdminJS.modules.users.Controller = function(sb, model) {
       show: {  from: 'index', to: 'form_show' },
       new: {  from: 'index', to: 'form_new' },
       create: {  from: 'form_new', to: 'index' },
-      edit: {  from: 'index', to: 'form_edit' },
-      update: { from: 'form_edit', to: 'index' },
-      delete: { from: ['index','form_edit','form_show'], to: 'form_delete' },
-      destroy: {  from: 'form_delete', to: 'index' },
-      cancel: { from: ['form_new', 'form_edit', 'form_show', 'form_delete'], to: 'index' }
+      edit_index: {  from: 'index', to: 'form_edit_index' },
+      edit_show: {  from: 'form_show', to: 'form_edit_show' },
+      update_index: { from: 'form_edit_index', to: 'index' },
+      update_show: { from: 'form_edit_show', to: 'form_show' },
+      delete_index: { from: 'index', to: 'form_delete_index' },
+      delete_show: { from: 'form_show', to: 'form_delete_show' },
+      delete_show_edit: { from: 'form_show', to: 'form_delete_show' },
+      delete_edit: { from: 'form_edit', to: 'form_delete_edit' },
+      destroy: {  from: ['form_delete_index', 'form_delete_show', 'form_delete_edit'], to: 'index' },
+      cancel_index: { from: ['form_new', 'form_edit_index', 'form_show', 'form_delete_index'], to: 'index' },
+      cancel_show: { from: ['form_edit_show', 'form_delete_show'], to: 'form_show' },
+      cancel_edit: { from: ['form_delete_edit'], to: 'form_edit' }
     }
   });
   
@@ -60,19 +67,39 @@ AdminJS.modules.users.Controller = function(sb, model) {
     return Promise.resolve();
   });
 
-  fsm.enter('update', function(event, from, to, options) {
+  fsm.enter('update_index', function(event, from, to, options) {
     return Promise.resolve();
   });
 
-  fsm.enter('delete', function(event, from, to, options) {
+  fsm.enter('update_show', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('delete_index', function(event, from, to, options) {
     return Promise.resolve();
   });
   
+  fsm.enter('delete_show', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('delete_edit', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
   fsm.enter('destroy', function(event, from, to, options) {
     return Promise.resolve();
   });
 
-  fsm.enter('cancel', function(event, from, to, options) {
+  fsm.enter('cancel_index', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+  
+  fsm.enter('cancel_show', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('cancel_edit', function(event, from, to, options) {
     return Promise.resolve();
   });
 
@@ -81,18 +108,65 @@ AdminJS.modules.users.Controller = function(sb, model) {
     model.cursor().set('state', to);
   });
 
+  var handleEdit = function(options) {
+    // Dependiendo del estado utilizar la transicion apropiada
+    switch(fsm.state()) {
+      case "index":
+        return fsm.edit_index(options);
+      case "form_show":
+        return fsm.edit_show(options);
+    };
+  };
+  
+  var handleUpdate = function(options) {
+    // Dependiendo del estado utilizar la transicion apropiada
+    switch(fsm.state()) {
+      case "form_edit_index":
+        return fsm.update_index(options);
+      case "form_edit_show":
+        return fsm.update_show(options);
+    };
+  };
+
+  var handleDelete = function(options) {
+    // Dependiendo del estado utilizar la transicion apropiada
+    switch(fsm.state()) {
+      case "index":
+        return fsm.delete_index(options);
+      case "form_show":
+        return fsm.delete_show(options);
+      case "form_edit_index":
+      case "form_edit_show":
+        return fsm.delete_edit(options);
+    };
+  };
+
+  var handleCancel = function(options) {
+    // Dependiendo del estado utilizar la transicion apropiada
+    switch(fsm.state()) {
+      case 'form_new':
+      case 'form_edit_index':
+      case 'form_show':
+      case 'form_delete_index':
+        return fsm.cancel_index(options);
+      case 'form_edit_show':
+      case 'form_delete_show':
+        return fsm.cancel_show(options);
+      case "form_delete_edit":
+        return fsm.cancel_edit(options);
+    };
+  };
+
   return {
     handleInit: _.bind(fsm.init, fsm),
     handlePageClick: _.bind(fsm.page, fsm),
     handleShow:  _.bind(fsm.show, fsm),
     handleNew:  _.bind(fsm.new, fsm),
-    handleEdit:  _.bind(fsm.edit, fsm),
-    handleDelete:  _.bind(fsm.delete, fsm),
-    handleCancel: function() {
-      fsm.cancel();
-    },
+    handleDelete: handleDelete,
+    handleCancel: handleCancel,
     handleCreate: _.bind(fsm.create, fsm),
-    handleUpdate: _.bind(fsm.update, fsm),
+    handleEdit:  handleEdit,
+    handleUpdate: handleUpdate,
     handleDestroy: _.bind(fsm.destroy, fsm)
   };
 };

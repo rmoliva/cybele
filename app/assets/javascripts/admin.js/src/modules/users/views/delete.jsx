@@ -16,7 +16,7 @@ AdminJS.modules.users.views.Delete = React.createClass({
           This modal is controlled by our custom trigger component.
         </div>
         <div className='modal-footer'>
-          <ReactBootstrap.Button onClick={this._handleDestroy}>Close</ReactBootstrap.Button>
+          <ReactBootstrap.Button onClick={this._handleDestroy}>Destroy</ReactBootstrap.Button>
         </div>
       </ReactBootstrap.Modal>
     );    
