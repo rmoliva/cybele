@@ -11,8 +11,12 @@ AdminJS.modules.users.Module = function(sb) {
         el = opts.el;
         
         model = immstruct({
+          object: 'users',
           loading_spinner: false,
+          state: 'index',
+          show_detroy_confirmation: false,
           records: [],
+          record_sel: null,
           page: 1,
           per_page: 15,
           total: 1, // Numero total de registros

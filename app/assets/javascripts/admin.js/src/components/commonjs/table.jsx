@@ -1,6 +1,10 @@
 NS('CommonJS.components');
 
 CommonJS.components.Table = React.createClass({
+  _onCellClick: function(options) {
+    this.props.onCellClick(options);
+  },
+  
   _keyAttribute: function() {
     return (this.props.keyAttribute || 'id');
   },
@@ -36,7 +40,7 @@ CommonJS.components.Table = React.createClass({
   _renderRow: function(row) {
     var columns = this.props.columns,
       cells = columns.map(function(column) {
-        return <td key={column.key}>{this._renderCell(row,column.key)}</td>;
+        return <td onClick={this._onCellClick.bind(this,{column: column, row: row})} key={column.key}>{this._renderCell(row,column.key)}</td>;
       }, this),
       key = this._keyValue(row);
     return <tr key={key}>{cells}</tr>;

@@ -1,17 +1,12 @@
 'use strict';
 
-var StateTransitionError = function(message) {
-  this.name = 'StateTransitionError';
-  this.message = message;
-  this.stack = (new Error()).stack;
-};
-
-StateTransitionError.prototype = new Error();
-
 var PromiseStateMachine = function(options) {
   this._state = options.initial;
   this._events = options.events;
-  this._eventEmitter = new EventEmitter2();
+  this._eventEmitter = {
+    enter: new EventEmitter2(),
+    all: new EventEmitter2()
+  };
 
   _.each(this._events, function(transitions, event) {
     if(!_.isArray(transitions.from)) {
@@ -21,10 +16,6 @@ var PromiseStateMachine = function(options) {
     this[event] = this._buildEvent(event, transitions);
   }, this);
 };
-
-_.extend(PromiseStateMachine, {
-  Promise: Promise
-});
 
 _.extend(PromiseStateMachine.prototype, {
   is: function(otherState) {
@@ -39,8 +30,12 @@ _.extend(PromiseStateMachine.prototype, {
     return this._state;
   },
 
-  on: function(event, handler) {
-    this._eventEmitter.on(event, handler);
+  enter: function(event, handler) {
+    this._eventEmitter.enter.addListener(event, handler);
+  },
+
+  all: function(handler) {
+    this._eventEmitter.all.addListener('all', handler);
   },
 
   _buildEvent: function(event, transitions) {
@@ -49,7 +44,8 @@ _.extend(PromiseStateMachine.prototype, {
       var to = transitions.to;
 
       if(!this.can(event)) {
-        return PromiseStateMachine.Promise.reject(
+        console.log("PSM ERROR: 'Cannot transition from '" + from + "' via '" + event);
+        return Promise.reject(
           new StateTransitionError(
             'Cannot transition from ' + from + ' via ' + event
           )
@@ -58,12 +54,17 @@ _.extend(PromiseStateMachine.prototype, {
 
       var args = Array.prototype.slice.call(arguments);
 
-      var handlers = this._eventEmitter.listeners(event);
+      // LLamar a los eventos de entrar en un estado
+      var handlers = this._eventEmitter.enter.listeners(event);
+      
+      // Llamar a los eventos comunes
+      handlers = handlers.concat(this._eventEmitter.all.listeners('all'));
+      
       var promises = _.map(handlers, function(handler) {
         return handler.apply(null, [event, from, to, args]);
       });
 
-      return PromiseStateMachine.Promise.all(promises).then(function(results) {
+      return Promise.all(promises).then(function(results) {
         this._state = to;
         return results;
       }.bind(this));

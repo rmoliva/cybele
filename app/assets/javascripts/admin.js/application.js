@@ -10,6 +10,7 @@
 //= require scaleapp
 //= require bluebird
 //= require react
+//= require react-bootstrap
 //= require classnames
 //= require eventemitter2
 //= require bootstrap
@@ -20,7 +21,6 @@
 //= require crossroads/dist/crossroads
 //= require moment
 //= require amplify
-//= require javascript-state-machine
 //= require modernizr/modernizr
 //= require bootstrap-datetimepicker
 //= require bootstrap-slider

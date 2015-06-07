@@ -3,32 +3,67 @@ NS('AdminJS.modules.users');
 AdminJS.modules.users.View = React.createClass({
   // TODO: mixins: [Omniscient.shouldComponentUpdate],
   
-  _handleToolbar: function(command) {
-    this.props.controller.call('handleToolbar', command);
+  _handlePageClick: function(options) {
+    this.props.controller.call('handlePageClick', options);
   },
   
-  _handlePageClick: function(page) {
-    this.props.controller.call('handlePageClick', {page: page});
+  _handleNew: function(options) {
+    return this.props.controller.call('handleNew', options);
+  },
+
+  _handleShow: function(options) {
+    return this.props.controller.call('handleShow', options);
+  },
+
+  _handleCreate: function(options) {
+    return this.props.controller.call('handleCreate', options);
+  },
+
+  _handleEdit: function(options) {
+    return this.props.controller.call('handleEdit', options);
+  },
+
+  _handleUpdate: function(options) {
+    return this.props.controller.call('handleUpdate', options);
+  },
+
+  _handleDelete: function(options) {
+    return this.props.controller.call('handleDelete', options);
+  },
+
+  _handleDestroy: function(options) {
+    return this.props.controller.call('handleDestroy', options);
   },
   
-  _renderTable: function(records) {
-    return <CommonJS.components.Table 
+  _handleCancel: function(options) {
+    return this.props.controller.call('handleCancel', options);
+  },
+  
+  _onCellClick: function(options) {
+    return this._handleShow(options);
+  },
+
+  _renderIndex: function() {
+    var cursor= this.props.model.cursor(),
+      page = cursor.get('page'), 
+      page_count = cursor.get('page_count'), 
+      per_page = cursor.get('per_page'), 
+      total = cursor.get('total'),
+      records = cursor.get('records'),
+      loading_spinner = cursor.get('loading_spinner');
+    
+    return <AdminJS.modules.users.views.Index
+      handleNew={this._handleNew}
+      handleEdit={this._handleEdit}
+      handleDelete={this._handleDelete}
+      handlePageClick={this._handlePageClick}
+      page={page}
+      page_count={page_count} 
+      per_page={per_page} 
+      total={total}
+      records={records}
+      loading_spinner = {loading_spinner}
       columns={[{
-        key: 'btn',
-        text: '',
-        renderer: _.bind(function(row, key) {
-          return <div> 
-              <button type="button" className="btn btn-warning btn-xs" data-toggle='tooltip' data-placement="top" onClick={this._handleToolbar.bind(this, {cmd: 'upd', id: row.id})} title={t("update")}>
-                <i className="fa fa-save"></i>
-              </button>
-              <button type="button" className="btn btn-danger btn-xs" data-toggle='tooltip' data-placement="top" onClick={this._handleToolbar.bind(this, {cmd: 'del', id: row.id})} title={t("delete")}>
-                <i className="fa fa-trash-o"></i>
-              </button>
-            </div>;
-        }, this),
-        align: 'center',
-        width: '10%'
-      }, {
         key: 'name',
         text: t('users.name'),
         align: 'center',
@@ -44,50 +79,57 @@ AdminJS.modules.users.View = React.createClass({
         align: 'center',
         width: 150
       }]}
-      
-      records = {records}
-      
-      condensed={true}
-      hover={true}
-      keyAttribute="name"
+      onCellClick={this._onCellClick}
+    />
+  },
+  
+  _renderShow: function() {
+    return <AdminJS.modules.users.views.Show
+      handleEdit={this._handleEdit}
+      handleDelete={this._handleDelete}
+      handleCancel={this._handleCancel}
     />;
   },
-  _renderPaginator: function(options) {
-    return <div className="row">
-      <div className="col-xs-6">
-        <CommonJS.components.PaginatorLegend
-            page={options.page}
-            page_count={options.page_count} 
-            per_page={options.per_page} 
-            total={options.total}
-        />
-      </div>
-      <div className="col-xs-6">
-        <div className="pull-right">
-          <CommonJS.components.Paginator 
-            page={options.page}
-            page_count={options.page_count} 
-            size='normal' 
-            limit={3} 
-            onClickPage={this._handlePageClick}
-          />
-        </div>
-      </div>
-    </div>;
+
+  _renderNew: function() {
+    return <AdminJS.modules.users.views.New
+      handleCreate={this._handleCreate}
+      handleCancel={this._handleCancel}
+    />;
   },
-  render: function() {
-    var cursor = this.props.model.cursor(),
-      spinner_style = (cursor.get('loading_spinner') ? {} : {display: "none"}),
-      table = this._renderTable(cursor.get('records')),
-      paginator = this._renderPaginator({
-        page: cursor.get('page'), 
-        page_count: cursor.get('page_count'), 
-        per_page: cursor.get('per_page'), 
-        total: cursor.get('total')
-      });
-    
-    return (
-      <div className="padding-md">
+  
+  _renderEdit: function() {
+    return <AdminJS.modules.users.views.Edit
+      handleUpdate={this._handleUpdate}
+      handleDelete={this._handleDelete}
+      handleCancel={this._handleCancel}
+    />;
+  },
+
+  _renderDelete: function() {
+    return <AdminJS.modules.users.views.Delete
+      handleDestroy={this._handleDestroy}
+      handleCancel={this._handleCancel}
+    />;
+  },
+  
+  _renderToolbar: function() {
+    // La barra de herramientas debe cambiar dependiendo de la vista
+    return <div className="col-sm-6 text-right text-left-sm p-top-sm">
+      <div className="btn-group">
+        <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          <i className="fa fa-cog" /><span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu pull-right" role="menu">
+          <li><a onClick={this._handleNew}>{t("add")}</a></li>
+        </ul>
+      </div>
+    </div>;      
+  },
+  
+  _renderTitle: function() {
+    var toolbar = this._renderToolbar();
+    return <div> 
         <div className="row">
           <div className="col-sm-6">
             <div className="clearfix">
@@ -101,76 +143,45 @@ AdminJS.modules.users.View = React.createClass({
               </div>
             </div>
           </div>
-          <div className="col-sm-6 text-right text-left-sm p-top-sm">
-            <div className="btn-group">
-              <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <i className="fa fa-cog" /><span className="caret"></span>
-              </button>
-              <ul className="dropdown-menu pull-right" role="menu">
-                <li><a onClick={this._handleToolbar.bind(this, 'add')}>{t("add")}</a></li>
-              </ul>
-            </div>
-          </div>      
+          {toolbar}
         </div>      
         <hr />
-          
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="filterToolbar">
-          
-          
-          
-          
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="buttonToolbar">
-          
-          
-          
-          
-            </div>
-          </div>
-        </div>
-
-        <div className="smart-widget">
-          {/* 
-          <div className="smart-widget-header">
-            <button type="submit" className="btn btn-primary marginTB-xs" onClick={this._handleToolbar('add')}>{t("add")}</button>
-            <button type="submit" className="btn btn-warning marginTB-xs" onClick={this._handleToolbar('add')}>{t("update")}</button>
-            <button type="submit" className="btn btn-danger marginTB-xs" onClick={this._handleToolbar('add')}>{t("delete")}</button>
-            <span className="smart-widget-option">
-              <a className="widget-toggle-hidden-option" style={spinner_style}>
-                  <i className="fa fa-circle-o-notch fa-spin"></i>
-              </a>
-            </span>
-          </div>
-          
-          */}
-          <div className="smart-widget-inner">
-            <div className="smart-widget-body">
-              {table}
-              {paginator}
-            </div>
-          </div>
-        </div>
-          
-          
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="navigatorToolbar">
-          
-          
-          
-          
-            </div>
-          </div>
-        </div>
-
-      </div>
-    );
+      </div>;
+  },
+  
+  render: function() {
+    var cursor = this.props.model.cursor(),
+      state = cursor.get('state'),
+      output = [],
+      title = this._renderTitle();
+      
+    switch(state) {
+      case 'index':
+        output = this._renderIndex();
+        break;
+      case 'form_new':
+        output = this._renderNew();
+        break;
+      case 'form_show':
+        output = this._renderShow();
+        break;
+     }
+        
+/*      case 'form_edit':
+        return this._renderEdit();
+      case 'form_index_delete':
+        output.push(this._renderDelete());
+        output.push(this._renderIndex());
+        return <div>{output}</div>;
+      case 'form_edit_delete':
+        output.push(this._renderDelete());
+        output.push(this._renderEdit());
+        return <div></div>;
+    };
+ */   
+    return <div className="padding-md">
+        {title}
+        {output}
+      </div>;
   }
 });

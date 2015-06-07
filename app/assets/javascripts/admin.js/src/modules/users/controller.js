@@ -3,39 +3,99 @@ NS('AdminJS.modules.users');
 AdminJS.modules.users.Controller = function(sb, model) {
   'use strict';
 
+  var object = model.cursor().get('object');
+
   var _loadRecords = function(options) {
-    var page = (options.page || 1), 
+    var page = (model.cursor().get('page') || 1), 
       per_page = model.cursor().get('per_page'),
       query_string;
     
     model.cursor().set("loading_spinner", true);
     return sb.services.get(
-      'users', 'index', {page: page, per_page: per_page}
+      object, 'index', {page: page, per_page: per_page}
     ).then(function(data) {
       // Calcular el numero de paginas
       model.cursor().set('page_count', parseInt(data.total/per_page,10)+1);
       model.cursor().set('records', data.data);
-      model.cursor().set('page', page);
       model.cursor().set('total', data.total);
     }).finally(function() {
       model.cursor().set("loading_spinner", false);
     });
   };
 
-  return {
-    handleInit: function(options) {
-      return _loadRecords(options);
-    },
-    handlePageClick: function(options) {
-      return _loadRecords(options);
-    },
-    handleToolbar: function(options) {
-      console.log(options);
+  var fsm = new PromiseStateMachine({
+    initial: 'nothing',
+    events: {
+      init: { from: 'nothing', to: 'index' },
+      page: { from: 'index', to: 'index' },
+      show: {  from: 'index', to: 'form_show' },
+      new: {  from: 'index', to: 'form_new' },
+      create: {  from: 'form_new', to: 'index' },
+      edit: {  from: 'index', to: 'form_edit' },
+      update: { from: 'form_edit', to: 'index' },
+      delete: { from: ['index','form_edit','form_show'], to: 'form_delete' },
+      destroy: {  from: 'form_delete', to: 'index' },
+      cancel: { from: ['form_new', 'form_edit', 'form_show', 'form_delete'], to: 'index' }
     }
+  });
+  
+  fsm.enter('init', function(event, from, to, options) {
+    return _loadRecords(options);
+  });
+
+  fsm.enter('page', function(event, from, to, options) {
+    model.cursor().set('page', _.first(options).page);
+    return _loadRecords(options);
+  });
+  
+  fsm.enter('new', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('create', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+  
+  fsm.enter('edit', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('update', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('delete', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+  
+  fsm.enter('destroy', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.enter('cancel', function(event, from, to, options) {
+    return Promise.resolve();
+  });
+
+  fsm.all(function(event, from, to, options){
+    console.log(to);
+    model.cursor().set('state', to);
+  });
+
+  return {
+    handleInit: _.bind(fsm.init, fsm),
+    handlePageClick: _.bind(fsm.page, fsm),
+    handleShow:  _.bind(fsm.show, fsm),
+    handleNew:  _.bind(fsm.new, fsm),
+    handleEdit:  _.bind(fsm.edit, fsm),
+    handleDelete:  _.bind(fsm.delete, fsm),
+    handleCancel: function() {
+      fsm.cancel();
+    },
+    handleCreate: _.bind(fsm.create, fsm),
+    handleUpdate: _.bind(fsm.update, fsm),
+    handleDestroy: _.bind(fsm.destroy, fsm)
   };
-
 };
-
 
 /* AdminJS.modules.users.Controller = function(sb, model, module_options) {
   'use strict';
