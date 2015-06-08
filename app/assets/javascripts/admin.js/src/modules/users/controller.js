@@ -23,37 +23,112 @@ AdminJS.modules.users.Controller = function(sb, model) {
     });
   };
   
+  var show_fsm = new machina.Fsm({
+    namespace: "show_fsm",
+    initialState: "initial",
+    states: {
+      initial: {
+        edit: function(options) {
+          this.transition("edit");
+        },
+        delete: function(options) {
+          this.transition("delete");
+        }
+      },
+      edit: {
+        cancel: function(options) {
+          this.transition("initial");
+        },
+        update: function(options) {
+          this.transition("initial");
+          this.handle('update');
+        }
+      },
+      delete: {
+        cancel: function(options) {
+          this.transition("initial");
+        },
+        destroy: function(options) {
+          this.transition("initial");
+          this.handle('destroy');
+        }
+      }
+    }
+  });
+  
   var index_fsm = new machina.Fsm({
+    namespace: "index_fsm",
     initialState: "nothing",
     states: {
       nothing: {
         init: function() {
-          console.log("called init");
           this.transition("index");
         }
       },
       index: {
         page: function(options) {
           // set page
-          debugger;
           model.cursor().set('page', options.page);
-        }
+        },
+        show: function(options) {
+          this.transition("show");
+        },
+        new: function(options) {
+          this.transition("new");
+        },
+        create: function(options) {
+          this.transition("index");
+        },
+        edit: function(options) {
+          this.transition("edit");
+        },
+        update: function(options) {
+          this.transition("index");
+        },
+        delete: function(options) {
+          this.transition("delete");
+        },
+        destroy: function(options) {
+          this.transition("index");
+        },
       },
       show: {
-        
+        _child: show_fsm,
+        cancel: function(options) {
+          this.transition("index");
+        },
+        update: function(options) {
+          // Preform update
+          this.transition("index");
+        },
+        destroy: function(options) {
+          // Perform destroy
+          this.transition("index");
+        }
+      },
+      new: {
+        create: function(options) {
+          // Perform create
+          this.transition("index");
+        },
+        cancel: function(options) {
+          this.transition("index");
+        }
       },
       edit: {
-        
-      },
-      update: {
-        
+        cancel: function(options) {
+          this.transition("index");
+        }
       },
       delete: {
-        
+        destroy: function(options) {
+          // Perform destroy
+          this.transition("index");
+        },
+        cancel: function(options) {
+          this.transition("index");
+        }
       }
-      
-      
-      
     },
     handleInit: function(options) {
       return this.promiseTransition("init", options).then(function() {
@@ -65,6 +140,30 @@ AdminJS.modules.users.Controller = function(sb, model) {
         return _loadRecords(options);
       });
     },
+    handleShow: function(options) {
+      return this.promiseTransition("show", options);
+    },
+    handleCancel: function(options) {
+      return this.promiseTransition("cancel", options);
+    },
+    handleEdit: function(options) {
+      return this.promiseTransition("edit", options);
+    },
+    handleUpdate: function(options) {
+      return this.promiseTransition("update", options);
+    },
+    handleDelete: function(options) {
+      return this.promiseTransition("delete", options);
+    },
+    handleDestroy: function(options) {
+      return this.promiseTransition("destroy", options);
+    },
+    handleNew: function(options) {
+      return this.promiseTransition("new", options);
+    },
+    handleCreate: function(options) {
+      return this.promiseTransition("create", options);
+    },
     
     
     promiseTransition: function(transition, options) {
@@ -74,8 +173,13 @@ AdminJS.modules.users.Controller = function(sb, model) {
         invalidstate: null
       }, that = this;
       
+      debugger;
+      
       return new Promise(function(resolve, reject) {
         subscriptions.handled = that.on("handled", function() {
+          model.cursor().set('state', that.compositeState());
+          console.log(that.compositeState());
+          
           _.each(subscriptions, function(s){s.off();});  
           return resolve(arguments);
         });
@@ -230,14 +334,14 @@ AdminJS.modules.users.Controller = function(sb, model) {
   return {
     handleInit: _.bind(index_fsm.handleInit, index_fsm), // _.bind(fsm.init, fsm),
     handlePageClick: _.bind(index_fsm.handlePageClick, index_fsm), // _.bind(fsm.page, fsm),
-    handleShow:  _.bind(fsm.show, fsm),
-    handleNew:  _.bind(fsm.new, fsm),
-    handleDelete: handleDelete,
-    handleCancel: handleCancel,
-    handleCreate: _.bind(fsm.create, fsm),
-    handleEdit:  handleEdit,
-    handleUpdate: handleUpdate,
-    handleDestroy: _.bind(fsm.destroy, fsm)
+    handleShow: _.bind(index_fsm.handleShow, index_fsm), // _.bind(fsm.show, fsm),
+    handleNew: _.bind(index_fsm.handleNew, index_fsm),
+    handleDelete: _.bind(index_fsm.handleDelete, index_fsm),
+    handleCancel: _.bind(index_fsm.handleCancel, index_fsm),
+    handleCreate: _.bind(index_fsm.handleCreate, index_fsm),
+    handleEdit:  _.bind(index_fsm.handleEdit, index_fsm),
+    handleUpdate: _.bind(index_fsm.handleUpdate, index_fsm),
+    handleDestroy: _.bind(index_fsm.handleDestroy, index_fsm)
   };
 };
 
