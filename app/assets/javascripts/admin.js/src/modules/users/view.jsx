@@ -176,23 +176,10 @@ AdminJS.modules.users.View = React.createClass({
         output.push(this._renderDelete());
         output.push(this._renderShow());
         break;
-        
-        
-      case 'form_edit_index':
+      case 'edit.initial':
         output = this._renderEdit();
         break;
-      case 'form_edit_show':
-        output = this._renderEdit();
-        break;
-      case 'form_delete_index':
-        output.push(this._renderDelete());
-        output.push(this._renderIndex());
-        break;
-      case 'form_delete_show':
-        output.push(this._renderDelete());
-        output.push(this._renderShow());
-        break;
-      case 'form_delete_edit':
+      case 'edit.delete':
         output.push(this._renderDelete());
         output.push(this._renderEdit());
         break;

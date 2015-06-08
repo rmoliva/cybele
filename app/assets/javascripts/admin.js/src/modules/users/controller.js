@@ -56,6 +56,27 @@ AdminJS.modules.users.Controller = function(sb, model) {
     }
   });
   
+  var edit_fsm = new machina.Fsm({
+    namespace: "edit_fsm",
+    initialState: "initial",
+    states: {
+      initial: {
+        delete: function(options) {
+          this.transition("delete");
+        }
+      },
+      delete: {
+        cancel: function(options) {
+          this.transition("initial");
+        },
+        destroy: function(options) {
+          this.transition("initial");
+          this.handle('destroy');
+        }
+      }
+    }
+  });
+
   var index_fsm = new machina.Fsm({
     namespace: "index_fsm",
     initialState: "nothing",
@@ -116,7 +137,16 @@ AdminJS.modules.users.Controller = function(sb, model) {
         }
       },
       edit: {
+        _child: edit_fsm,
+        update: function(options) {
+          // Perform destroy
+          this.transition("index");
+        },
         cancel: function(options) {
+          this.transition("index");
+        },
+        destroy: function(options) {
+          // Perform destroy
           this.transition("index");
         }
       },
@@ -165,7 +195,6 @@ AdminJS.modules.users.Controller = function(sb, model) {
       return this.promiseTransition("create", options);
     },
     
-    
     promiseTransition: function(transition, options) {
       var subscriptions = {
         handled: null,
@@ -173,9 +202,11 @@ AdminJS.modules.users.Controller = function(sb, model) {
         invalidstate: null
       }, that = this;
       
-      debugger;
-      
       return new Promise(function(resolve, reject) {
+        console.group("promiseTransition");
+        console.log(transition);
+        console.groupEnd();
+      
         subscriptions.handled = that.on("handled", function() {
           model.cursor().set('state', that.compositeState());
           console.log(that.compositeState());
