@@ -163,8 +163,8 @@ AdminJS.modules.users.View = React.createClass({
         output = this._renderNew();
         break;
       case 'delete':
+        output.push(this._renderDelete());
         output.push(this._renderIndex());
-        output.push(this._renderShow());
         break;
       case 'show.initial':
         output = this._renderShow();
