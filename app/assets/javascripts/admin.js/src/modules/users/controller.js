@@ -22,6 +22,76 @@ AdminJS.modules.users.Controller = function(sb, model) {
       model.cursor().set("loading_spinner", false);
     });
   };
+  
+  var index_fsm = new machina.Fsm({
+    initialState: "nothing",
+    states: {
+      nothing: {
+        init: function() {
+          console.log("called init");
+          this.transition("index");
+        }
+      },
+      index: {
+        page: function(options) {
+          // set page
+          debugger;
+          model.cursor().set('page', options.page);
+        }
+      },
+      show: {
+        
+      },
+      edit: {
+        
+      },
+      update: {
+        
+      },
+      delete: {
+        
+      }
+      
+      
+      
+    },
+    handleInit: function(options) {
+      return this.promiseTransition("init", options).then(function() {
+        return _loadRecords(options);
+      });
+    },
+    handlePageClick: function(options) {
+      return this.promiseTransition("page", options).then(function() {
+        return _loadRecords(options);
+      });
+    },
+    
+    
+    promiseTransition: function(transition, options) {
+      var subscriptions = {
+        handled: null,
+        nohandler: null,
+        invalidstate: null
+      }, that = this;
+      
+      return new Promise(function(resolve, reject) {
+        subscriptions.handled = that.on("handled", function() {
+          _.each(subscriptions, function(s){s.off();});  
+          return resolve(arguments);
+        });
+        subscriptions.nohandler = that.on("nohandler", function() {
+          _.each(subscriptions, function(s){s.off();});  
+          return reject(arguments);
+        });
+        subscriptions.invalidstate = that.on("invalidstate", function() {
+          _.each(subscriptions, function(s){s.off();});  
+          return reject(arguments);
+        });
+
+        that.handle(transition,  options);
+      });
+    }
+  }); 
 
   var fsm = new PromiseStateMachine({
     initial: 'nothing',
@@ -158,8 +228,8 @@ AdminJS.modules.users.Controller = function(sb, model) {
   };
 
   return {
-    handleInit: _.bind(fsm.init, fsm),
-    handlePageClick: _.bind(fsm.page, fsm),
+    handleInit: _.bind(index_fsm.handleInit, index_fsm), // _.bind(fsm.init, fsm),
+    handlePageClick: _.bind(index_fsm.handlePageClick, index_fsm), // _.bind(fsm.page, fsm),
     handleShow:  _.bind(fsm.show, fsm),
     handleNew:  _.bind(fsm.new, fsm),
     handleDelete: handleDelete,

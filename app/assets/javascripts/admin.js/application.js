@@ -16,6 +16,7 @@
 //= require bootstrap
 //= require signals
 //= require immutable
+//= require machina
 
 //= require hasher
 //= require crossroads/dist/crossroads
