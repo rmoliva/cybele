@@ -23,64 +23,78 @@ AdminJS.modules.users.Controller = function(sb, model) {
     });
   };
   
-  var promiseTransition = function(fsm, transition, options) {
+  var promiseTransition = function(transition, options) {
     var subscriptions = {
+      transition: null,
+      handling: null,
       handled: null,
       nohandler: null,
       invalidstate: null
     };
     
     return new Promise(function(resolve, reject) {
-      console.group("promiseTransition");
-      console.log(transition);
-      console.groupEnd();
-    
-      subscriptions.handled = fsm.on("handled", function() {
-        model.cursor().set('state', fsm.compositeState());
+      subscriptions.transition = index_fsm.on("transition", function() {
+        console.group("transitionEvent");
+        console.log(index_fsm.compositeState());
+        console.groupEnd();
+      });
+
+      subscriptions.handling = index_fsm.on("handling", function() {
+        console.group("handlingEvent");
+        console.log(index_fsm.compositeState());
+        console.groupEnd();
+      });
+
+      subscriptions.handled = index_fsm.on("handled", function() {
+        console.group("handledEvent");
+        console.log(index_fsm.compositeState());
+        console.groupEnd();
+        model.cursor().set('state', index_fsm.compositeState());
         _.each(subscriptions, function(s){s.off();});  
         return resolve(arguments);
       });
-      subscriptions.nohandler = fsm.on("nohandler", function() {
+      subscriptions.nohandler = index_fsm.on("nohandler", function() {
+        console.log("ERROR: nohandler");
         _.each(subscriptions, function(s){s.off();});  
         return reject(arguments);
       });
-      subscriptions.invalidstate = fsm.on("invalidstate", function() {
+      subscriptions.invalidstate = index_fsm.on("invalidstate", function() {
+        console.log("ERROR: invalidstate");
         _.each(subscriptions, function(s){s.off();});  
         return reject(arguments);
       });
-
-      fsm.transition(transition,  options);
+      index_fsm.transition(transition,  options);
     });
   };
   
   var show_fsm = new machina.Fsm({
     namespace: "show_fsm",
-    initialState: "initial",
+    initialState: "show_initial",
     states: {
-      initial: {
+      show_initial: {
         edit: function(options) {
-          return promiseTransition(this, "edit", options);
+          return promiseTransition("show_edit", options);
         },
         delete: function(options) {
-          return promiseTransition(this, "delete", options);
+          return promiseTransition("show_delete", options);
         }
       },
-      edit: {
+      show_edit: {
         cancel: function(options) {
-          return promiseTransition(this, "initial", options);
+          return promiseTransition("show_initial", options);
         },
         update: function(options) {
-          return promiseTransition(this, "initial", options).then(function() {
+          return promiseTransition("show_initial", options).then(function() {
             return this.handle('update', options);
           });
         }
       },
-      delete: {
+      show_delete: {
         cancel: function(options) {
-          return promiseTransition(this, "initial", options);
+          return promiseTransition("show_initial", options);
         },
         destroy: function(options) {
-          return promiseTransition(this, "initial", options).then(function() {
+          return promiseTransition("show_initial", options).then(function() {
             return this.handle('destroy', options);
           });
         }
@@ -90,19 +104,19 @@ AdminJS.modules.users.Controller = function(sb, model) {
   
   var edit_fsm = new machina.Fsm({
     namespace: "edit_fsm",
-    initialState: "initial",
+    initialState: "edit_initial",
     states: {
-      initial: {
+      edit_initial: {
         delete: function(options) {
-          return promiseTransition(this, "delete", options);
+          return promiseTransition("edit_delete", options);
         }
       },
-      delete: {
+      edit_delete: {
         cancel: function(options) {
-          return promiseTransition(this, "initial", options);
+          return promiseTransition("edit_initial", options);
         },
         destroy: function(options) {
-          return promiseTransition(this, "initial", options).then(function() {
+          return promiseTransition("edit_initial", options).then(function() {
             return this.handle('destroy', options);
           });
         }
@@ -116,7 +130,7 @@ AdminJS.modules.users.Controller = function(sb, model) {
     states: {
       nothing: {
         init: function(options) {
-          return promiseTransition(this, "index", options).then(function() {
+          return promiseTransition("index", options).then(function() {
             return _loadRecords(options);
           });
         }
@@ -125,76 +139,76 @@ AdminJS.modules.users.Controller = function(sb, model) {
         page: function(options) {
           // set page
           model.cursor().set('page', options.page);
-          return promiseTransition(this, "index", options).then(function() {
+          return promiseTransition("index", options).then(function() {
             return _loadRecords(options);
           });
         },
         show: function(options) {
-          return promiseTransition(this, "show", options);
+          return promiseTransition("show", options);
         },
         new: function(options) {
-          return promiseTransition(this, "new", options);
+          return promiseTransition("new", options);
         },
         create: function(options) {
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         edit: function(options) {
-          return promiseTransition(this, "edit", options);
+          return promiseTransition("edit", options);
         },
         update: function(options) {
-          return promiseTransition(this, "update", options);
+          return promiseTransition("update", options);
         },
         delete: function(options) {
-          return promiseTransition(this, "delete", options);
+          return promiseTransition("delete", options);
         },
         destroy: function(options) {
-          return promiseTransition(this, "destroy", options);
+          return promiseTransition("destroy", options);
         },
       },
       show: {
         _child: show_fsm,
         cancel: function(options) {
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         update: function(options) {
           // Preform update
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         destroy: function(options) {
           // Perform destroy
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         }
       },
       new: {
         create: function(options) {
           // Perform create
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         cancel: function(options) {
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         }
       },
       edit: {
         _child: edit_fsm,
         update: function(options) {
           // Perform destroy
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         cancel: function(options) {
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         destroy: function(options) {
           // Perform destroy
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         }
       },
       delete: {
         destroy: function(options) {
           // Perform destroy
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         },
         cancel: function(options) {
-          return promiseTransition(this, "index", options);
+          return promiseTransition("index", options);
         }
       }
     },
