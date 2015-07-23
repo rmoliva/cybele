@@ -4,7 +4,7 @@ AdminJS.modules.users.View = React.createClass({
   // TODO: mixins: [Omniscient.shouldComponentUpdate],
   
   _handlePageClick: function(options) {
-    this.props.controller.call('handlePageClick', options);
+    return this.props.controller.call('handlePageClick', options);
   },
   
   _handleNew: function(options) {
@@ -44,13 +44,12 @@ AdminJS.modules.users.View = React.createClass({
   },
 
   _renderIndex: function() {
-    var cursor= this.props.model.cursor(),
-      page = cursor.get('page'), 
-      page_count = cursor.get('page_count'), 
-      per_page = cursor.get('per_page'), 
-      total = cursor.get('total'),
-      records = cursor.get('records'),
-      loading_spinner = cursor.get('loading_spinner');
+    var page = this.props.model.page,
+      page_count = this.props.model.page_count, 
+      per_page = this.props.model.per_page,
+      total = this.props.model.total,
+      records = this.props.model.records,
+      loading_spinner = false; // cursor.get('loading_spinner');
     
     return <AdminJS.modules.users.views.Index
       handleNew={this._handleNew}
@@ -150,8 +149,7 @@ AdminJS.modules.users.View = React.createClass({
   },
   
   render: function() {
-    var cursor = this.props.model.cursor(),
-      state = cursor.get('state'),
+    var state = 'index',
       output = [],
       title = this._renderTitle();
       
