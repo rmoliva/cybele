@@ -17,6 +17,7 @@ AdminJS.modules.users.views.Delete = React.createClass({
         </div>
         <div className='modal-footer'>
           <ReactBootstrap.Button onClick={this._handleDestroy}>Destroy</ReactBootstrap.Button>
+          <ReactBootstrap.Button bsStyle='link' onClick={this._handleCancel}>Cancel</ReactBootstrap.Button>
         </div>
       </ReactBootstrap.Modal>
     );    

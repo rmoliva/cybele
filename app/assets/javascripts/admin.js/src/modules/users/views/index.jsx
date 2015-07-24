@@ -43,7 +43,7 @@ AdminJS.modules.users.views.Index = React.createClass({
       records = {records}
       condensed={true}
       hover={true}
-      keyAttribute="name"
+      keyAttribute="id"
       onCellClick={this.props.onCellClick}
     />;
   },

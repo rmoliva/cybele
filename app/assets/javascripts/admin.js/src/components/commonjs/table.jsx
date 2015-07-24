@@ -40,7 +40,12 @@ CommonJS.components.Table = React.createClass({
   _renderRow: function(row) {
     var columns = this.props.columns,
       cells = columns.map(function(column) {
-        return <td onClick={this._onCellClick.bind(this,{column: column, row: row})} key={column.key}>{this._renderCell(row,column.key)}</td>;
+        // Si se define un renderer especifico para la celda, no aceptar clicks
+        if(column.renderer) {
+          return <td key={column.key}>{this._renderCell(row,column.key)}</td>;
+        } else {
+          return <td onClick={this._onCellClick.bind(this,{column: column, row: row})} key={column.key}>{this._renderCell(row,column.key)}</td>;
+        }
       }, this),
       key = this._keyValue(row);
     return <tr key={key}>{cells}</tr>;

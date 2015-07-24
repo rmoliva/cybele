@@ -159,44 +159,31 @@ AdminJS.modules.users.View = React.createClass({
       case 'index':
         output = this._renderIndex();
         break;
-      case 'new':
+      case 'new_form':
         output = this._renderNew();
         break;
-      case 'delete':
+      case 'delete_form':
         output.push(this._renderDelete());
         output.push(this._renderIndex());
         break;
-      case 'show.initial':
+      case 'show_form':
         output = this._renderShow();
         break;
-      case 'show.edit':
+      case 'show_form-edit_form':
         output = this._renderEdit();
         break;
-      case 'show.delete':
+      case 'show_form-delete_form':
         output.push(this._renderDelete());
         output.push(this._renderShow());
         break;
-      case 'edit.initial':
+      case 'edit_form':
         output = this._renderEdit();
         break;
-      case 'edit.delete':
+      case 'edit_form-delete_form':
         output.push(this._renderDelete());
         output.push(this._renderEdit());
         break;
      }
-        
-/*      case 'form_edit':
-        return this._renderEdit();
-      case 'form_index_delete':
-        output.push(this._renderDelete());
-        output.push(this._renderIndex());
-        return <div>{output}</div>;
-      case 'form_edit_delete':
-        output.push(this._renderDelete());
-        output.push(this._renderEdit());
-        return <div></div>;
-    };
- */   
     return <div className="padding-md">
         {title}
         {output}
