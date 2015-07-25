@@ -44,13 +44,12 @@ AdminJS.modules.users.View = React.createClass({
   },
 
   _renderIndex: function() {
-    var cursor= this.props.model.cursor(),
-      page = cursor.get('page'), 
-      page_count = cursor.get('page_count'), 
-      per_page = cursor.get('per_page'), 
-      total = cursor.get('total'),
-      records = cursor.get('records'),
-      loading_spinner = cursor.get('loading_spinner');
+    var model = this.props.model,
+      page = model.page, 
+      page_count = model.page_count, 
+      per_page = model.per_page, 
+      total = model.total,
+      records = model.records;
     
     return <AdminJS.modules.users.views.Index
       handleNew={this._handleNew}
@@ -62,7 +61,7 @@ AdminJS.modules.users.View = React.createClass({
       per_page={per_page} 
       total={total}
       records={records}
-      loading_spinner = {loading_spinner}
+      // loading_spinner = {loading_spinner}
       columns={[{
         key: 'name',
         text: t('users.name'),
@@ -150,8 +149,8 @@ AdminJS.modules.users.View = React.createClass({
   },
   
   render: function() {
-    var cursor = this.props.model.cursor(),
-      state = cursor.get('state'),
+    var model = this.props.model,
+      state = model.state,
       output = [],
       title = this._renderTitle();
       

@@ -1,28 +1,40 @@
 NS('AdminJS.modules.users');
 
-AdminJS.modules.users.Controller = function(sb, model) {
+AdminJS.modules.users.Controller = function(sb) {
   'use strict';
 
-  var object = model.cursor().get('object');
-
-  var _loadRecords = function(options) {
-    var page = (model.cursor().get('page') || 1), 
-      per_page = model.cursor().get('per_page'),
-      query_string;
-    
-    model.cursor().set("loading_spinner", true);
-    return sb.services.get(
-      object, 'index', {page: page, per_page: per_page}
-    ).then(function(data) {
-      // Calcular el numero de paginas
-      model.cursor().set('page_count', parseInt(data.total/per_page,10)+1);
-      model.cursor().set('records', data.data);
-      model.cursor().set('total', data.total);
-    }).finally(function() {
-      model.cursor().set("loading_spinner", false);
-    });
-  };
+  var stateProperty = new Bacon.Bus();
+  var pageProperty = new Bacon.Bus();
+  var perPageProperty = Bacon.constant(20);
   
+  var indexStream = stateProperty.filter(function(state) {
+    return state === 'index';
+  });
+
+  var responseStream = pageProperty.flatMapLatest(function(page) {
+    console.log("responseStream: "+page);
+    
+    return Bacon.fromPromise( sb.services.get(
+        "users", 'index', {page: page, per_page: 20}
+      )
+    );
+  });
+
+  var recordsProperty = responseStream.map(function(data) {
+    return data.data;
+  }).toProperty([]);
+
+  var totalProperty = responseStream.map(function(data) {
+    return data.total;
+  }).toProperty(0);
+  
+  var pageCountProperty = Bacon.combineWith(function(total, per_page) {
+      return parseInt(total/per_page,10)+1;
+    },
+    totalProperty,
+    perPageProperty
+  );
+
    var ockham_fsm = Ockham.create({
     config: function(fsm) {
       return {
@@ -31,7 +43,7 @@ AdminJS.modules.users.Controller = function(sb, model) {
             init: this.initTransition
           },
           index: {
-            page: this.pageTransition,
+            page: 'index', // this.pageTransition,
             show: "show_form",
             new: 'new_form',
             create: 'index',
@@ -78,25 +90,27 @@ AdminJS.modules.users.Controller = function(sb, model) {
       };
     },
     initTransition: function(fsm, options) {
-      return _loadRecords(options).then(function() {
-        return Promise.resolve("index", options);
-      });
-    },
-    pageTransition: function(fsm, options) {
-      model.cursor().set('page', options.page);
-      return _loadRecords(options).then(function() {
-        return Promise.resolve("index", options);
-      });
+      return Promise.resolve("index", options);
     }
   });
   
   var handleTransition = function(transition) {
     return function(options) {
+      pageProperty.push(options.page || 1);
       return ockham_fsm.doTransition(transition, options).then(function(ret) {
-        model.cursor().set('state', ret.to);
+        stateProperty.push(ret.to);
       });
     };
   };
+  
+ var model = Bacon.combineTemplate({
+    page: pageProperty, 
+    per_page: perPageProperty,
+    records: recordsProperty,
+    total: totalProperty,
+    page_count: pageCountProperty,
+    state: stateProperty
+  });  
 
   return {
     handleInit: handleTransition("init"),
@@ -108,6 +122,8 @@ AdminJS.modules.users.Controller = function(sb, model) {
     handleCreate: handleTransition("create"),
     handleEdit: handleTransition("edit"),
     handleUpdate: handleTransition("update"),
-    handleDestroy: handleTransition("destroy")
+    handleDestroy: handleTransition("destroy"),
+    
+    model: model
   };
 };
