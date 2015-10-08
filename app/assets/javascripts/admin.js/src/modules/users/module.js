@@ -5,32 +5,31 @@ AdminJS.modules.users.Module = function(sb) {
 
     var el = null;
     var model = null;
-    var controller = null;
+    var dispatcher = null;
 
     var initialize = function(opts, done) {
         el = opts.el;
         
-      var mediator = AdminJS.modules.users.Controller(sb, model);
-      mediator.model.onValue(function(template) {
-        doRender(template);
+      var dispatcher = AdminJS.lib.Dispatcher.create(sb);
+      var model = AdminJS.modules.users.Model.create(sb, dispatcher.stream);
+      model.stream.onValue(function(template) {
+        doRender(template, {
+          dispatcher: dispatcher,
+          model: template
+        });
       });
+      var init = model.initialize(); 
       
-      AdminJS.lib.ControllerCreator.create(
-          mediator,
-          opts // Es lo mismo que se pasara al handleInit
-      ).then(function(ctl) {;
-        controller = ctl;
+      init.then(function() {
         done();
       });
     };
 
-    var doRender = function(model) {
+    var doRender = function(template, options) {
       return sb.promises.reactRender(
           el,
-          AdminJS.modules.users.View, {
-            controller: controller,
-            model: model
-          }
+          AdminJS.modules.users.View, 
+          options
       );
     };
 

@@ -1,46 +1,11 @@
 NS('AdminJS.modules.users');
 
 AdminJS.modules.users.View = React.createClass({
-  // TODO: mixins: [Omniscient.shouldComponentUpdate],
-  
-  _handlePageClick: function(options) {
-    this.props.controller.call('handlePageClick', options);
-  },
-  
-  _handleNew: function(options) {
-    return this.props.controller.call('handleNew', options);
-  },
-
-  _handleShow: function(options) {
-    return this.props.controller.call('handleShow', options);
-  },
-
-  _handleCreate: function(options) {
-    return this.props.controller.call('handleCreate', options);
-  },
-
-  _handleEdit: function(options) {
-    return this.props.controller.call('handleEdit', options);
-  },
-
-  _handleUpdate: function(options) {
-    return this.props.controller.call('handleUpdate', options);
-  },
-
-  _handleDelete: function(options) {
-    return this.props.controller.call('handleDelete', options);
-  },
-
-  _handleDestroy: function(options) {
-    return this.props.controller.call('handleDestroy', options);
-  },
-  
-  _handleCancel: function(options) {
-    return this.props.controller.call('handleCancel', options);
-  },
-  
-  _onCellClick: function(options) {
-    return this._handleShow(options);
+  // Currying the dispatcher
+  _handleDipatcher: function(action, options) {
+    return _.bind(function(options) {
+      this.props.dispatcher.call(action, options)
+    }, this);
   },
 
   _renderIndex: function() {
@@ -52,10 +17,10 @@ AdminJS.modules.users.View = React.createClass({
       records = model.records;
     
     return <AdminJS.modules.users.views.Index
-      handleNew={this._handleNew}
-      handleEdit={this._handleEdit}
-      handleDelete={this._handleDelete}
-      handlePageClick={this._handlePageClick}
+      handleNew={this._handleDipatcher("new")}
+      handleEdit={this._handleDipatcher("edit")}
+      handleDelete={this._handleDipatcher("delete")}
+      handlePageClick={this._handleDipatcher("page")}
       page={page}
       page_count={page_count} 
       per_page={per_page} 
@@ -78,38 +43,47 @@ AdminJS.modules.users.View = React.createClass({
         align: 'center',
         width: 150
       }]}
-      onCellClick={this._onCellClick}
+      onCellClick={this._handleDipatcher("show")}
     />
   },
   
   _renderShow: function() {
     return <AdminJS.modules.users.views.Show
-      handleEdit={this._handleEdit}
-      handleDelete={this._handleDelete}
-      handleCancel={this._handleCancel}
+      {...this.props}
+      handleEdit={this._handleDipatcher("edit")}
+      handleDelete={this._handleDipatcher("delete")}
+      handleCancel={this._handleDipatcher("cancel")}
     />;
   },
 
   _renderNew: function() {
     return <AdminJS.modules.users.views.New
-      handleCreate={this._handleCreate}
-      handleCancel={this._handleCancel}
+      handleCreate={this._handleDipatcher("create")}
+      handleCancel={this._handleDipatcher("cancel")}
     />;
   },
   
   _renderEdit: function() {
     return <AdminJS.modules.users.views.Edit
-      handleUpdate={this._handleUpdate}
-      handleDelete={this._handleDelete}
-      handleCancel={this._handleCancel}
+      handleUpdate={this._handleDipatcher("update")}
+      handleDelete={this._handleDipatcher("delete")}
+      handleCancel={this._handleDipatcher("cancel")}
     />;
   },
 
   _renderDelete: function() {
     return <AdminJS.modules.users.views.Delete
-      handleDestroy={this._handleDestroy}
-      handleCancel={this._handleCancel}
+      handleDestroy={this._handleDipatcher("destroy")}
+      handleCancel={this._handleDipatcher("cancel")}
     />;
+  },
+  
+  _renderSpinner: function() {
+    if(this.props.model.spinner) {
+      return <span className="refresh-icon-animated">
+        <i className="fa fa-circle-o-notch fa-spin"></i>
+      </span>;
+    }
   },
   
   _renderToolbar: function() {
@@ -120,14 +94,15 @@ AdminJS.modules.users.View = React.createClass({
           <i className="fa fa-cog" /><span className="caret"></span>
         </button>
         <ul className="dropdown-menu pull-right" role="menu">
-          <li><a onClick={this._handleNew}>{t("add")}</a></li>
+          <li><a onClick={this._handleDipatcher("new")}>{t("add")}</a></li>
         </ul>
       </div>
     </div>;      
   },
   
   _renderTitle: function() {
-    var toolbar = this._renderToolbar();
+    var toolbar = this._renderToolbar(), 
+      spinner = this._renderSpinner();
     return <div> 
         <div className="row">
           <div className="col-sm-6">
@@ -138,6 +113,7 @@ AdminJS.modules.users.View = React.createClass({
                 </span>
                 <div className="pull-left m-left-sm">
                   <h3 className="m-bottom-xs m-top-xs">{t("users.title")}</h3>
+                  {spinner}
                 </div>
               </div>
             </div>
@@ -179,6 +155,7 @@ AdminJS.modules.users.View = React.createClass({
         output = this._renderEdit();
         break;
       case 'edit_form-delete_form':
+      case 'show_form-edit_form-delete_form':
         output.push(this._renderDelete());
         output.push(this._renderEdit());
         break;
