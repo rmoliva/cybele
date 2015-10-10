@@ -17,6 +17,7 @@
 //= require signals
 //= require immutable
 //= require machina
+//= require kefir
 
 //= require hasher
 //= require crossroads/dist/crossroads

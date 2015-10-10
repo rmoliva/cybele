@@ -4,7 +4,10 @@ AdminJS.modules.users.View = React.createClass({
   // Currying the dispatcher
   _handleDipatcher: function(action, options) {
     return _.bind(function(options) {
-      this.props.dispatcher.call(action, options)
+      this.props.dispatcher.dispatch({
+        action: action,
+        options: options
+      });
     }, this);
   },
 

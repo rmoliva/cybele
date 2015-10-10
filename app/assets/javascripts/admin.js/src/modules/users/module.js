@@ -9,8 +9,8 @@ AdminJS.modules.users.Module = function(sb) {
 
     var initialize = function(opts, done) {
         el = opts.el;
-        
-      var dispatcher = AdminJS.lib.Dispatcher.create(sb);
+      
+      var dispatcher = sb.streams.signal(sb);
       var model = AdminJS.modules.users.Model.create(sb, dispatcher.stream);
       model.stream.onValue(function(template) {
         doRender(template, {

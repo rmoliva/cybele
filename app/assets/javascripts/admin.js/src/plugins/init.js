@@ -8,6 +8,7 @@ AdminJS.plugins.Init = function(core) {
       core.use(AdminJS.plugins.Promises);
       core.use(AdminJS.plugins.Modules);
       core.use(AdminJS.plugins.Url);
+      core.use(AdminJS.plugins.Streams);
     };
 
     return {

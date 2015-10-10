@@ -2,11 +2,18 @@ NS('AdminJS.lib');
 
 AdminJS.lib.Dispatcher = (function() {
   var creator = function(sb) {
-    var stream = new Bacon.Bus();
+	var call_signal = new Signal();
+	  
+    var stream = Kefir.stream(function(emitter) {
+    	var call_signal_emited = function(options) {
+    		emitter.emit(options);
+    	};
+    	call_signal.add(call_signal_emited);
+	});
     
     var callHandler = function(action, options) {
-      stream.push({
-        action: action, 
+      call_signal.dispath({
+        action: action,
         options: options
       });
     };
