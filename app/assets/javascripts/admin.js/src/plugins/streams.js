@@ -1,16 +1,10 @@
 NS('AdminJS.plugins');
 
 var SignalStreamObject = function(sb) {
-	var signal = new Signal();
-	
-	var stream = Kefir.stream(function(emitter) {
-    	signal.add(function(options) {
-    		emitter.emit(options);
-    	});
-	});
-	
+  var stream = Kefir.pool();
+
 	var dispatch = function(options) {
-	    signal.dispatch(options);
+	  stream.plug(Kefir.constant(options));
 	};
 
 	return {

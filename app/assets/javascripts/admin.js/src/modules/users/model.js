@@ -84,13 +84,14 @@ AdminJS.modules.users.Model = (function() {
 	  
     var stateProperty = fsm.stream;
     var perPageProperty = Kefir.constant(10);
-//     var spinnerProperty = new Bacon.Bus();
+    var spinnerStream = Kefir.pool();
+    var spinnerProperty = spinnerStream.toProperty();
     
     var showSpinner = function() {
-//      spinnerProperty.push(true);
+      spinnerStream.plug(Kefir.constant(true));
     };
     var hideSpinner = function() {
-//      spinnerProperty.push(false);
+      spinnerStream.plug(Kefir.constant(false));
     };
     
     var pageProperty = dispatcher_stream.filter(function(event) {
@@ -133,9 +134,13 @@ AdminJS.modules.users.Model = (function() {
     };
     
     var responseStream = pageProperty.flatMapLatest(function(page) {
+      showSpinner();
       return Kefir.fromPromise( sb.services.get(
           "users", 'index', {page: page, per_page: 10}
-        )
+        ).then(function(data) {
+          hideSpinner();
+          return data;
+        })
       );
     });
   
@@ -166,9 +171,10 @@ AdminJS.modules.users.Model = (function() {
         totalProperty,
         pageCountProperty,
         stateProperty,
-        selectedProperty
+        selectedProperty,
+        spinnerProperty
 	   ],
-	   function(page, per_page, records, total, page_count, state, selected) {
+	   function(page, per_page, records, total, page_count, state, selected,spinner) {
     	return {
 	        page: page, 
 	        per_page: per_page,
@@ -176,7 +182,8 @@ AdminJS.modules.users.Model = (function() {
 	        total: total,
 	        page_count: page_count,
 	        state: state.to,
-	        selected: selected
+	        selected: selected,
+	        spinner: spinner
     	};
 	  }
     );
