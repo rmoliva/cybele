@@ -87,7 +87,8 @@ AdminJS.modules.users.FSM = function(sb, input_stream) {
 
 AdminJS.modules.users.Streams = function(sb, input_streams) {
 	var fsm = new AdminJS.modules.users.FSM(sb, input_streams.jsx_stream);
-
+	
+	// Function helpers
     var showSpinner = function() {
     	spinner_stream.plug(Kefir.constant(true));
     };
@@ -95,73 +96,97 @@ AdminJS.modules.users.Streams = function(sb, input_streams) {
     var hideSpinner = function() {
     	spinner_stream.plug(Kefir.constant(false));
     };
+
+    var promiseService = function(model, action, options) {
+		showSpinner();
+		return sb.services.get(
+			model, action, options
+		).then(function(data) {
+			hideSpinner();
+			return data;
+		});		
+	};
     
-	var index_stream = fsm.stream.filter(function(event) {
+	var kefirFetch = function(action, options) {
+		return Kefir.fromPromise(promiseService("users", action, options));
+	};
+	
+	// Curry fetch
+	var kefirFetchIndex = function(options) {
+		return kefirFetch('index', options);
+	};
+	var kefirFetchShow = function(options) {
+		return kefirFetch('show', options);
+	};
+	
+	// First level Streams
+    var spinner_stream = Kefir.pool();
+	// FSM
+	var fsm_index_stream = fsm.stream.filter(function(event) {
       return event.to === 'index';
     });
+	var fsm_init_stream = fsm.stream.filter(function(event) {
+      return event.transition === 'init';
+    });
 	
-	var show_id_stream = input_streams.jsx_stream.filter(function(event) {
+    var fsm_state_name = fsm.stream.map(function(data) {
+    	return data.to;
+    });
+	
+	// JSX
+	var jsx_show_stream = input_streams.jsx_stream.filter(function(event) {
 		return "show" === event.action;
-	}).map(function(event) {
+	}); 
+	var jsx_page_stream = input_streams.jsx_stream.filter(function(event) {
+		return "page" === event.action;
+	}); 
+	
+	// Second Level Streams
+	var page_jsx_stream = Kefir.constant(1).merge(
+		jsx_page_stream.map(function(event) {
+			return event.options.page;
+		})
+	);
+
+	var show_id_stream = jsx_show_stream.map(function(event) {
 		return event.options.row.id;
 	});
 	
-	var get_show_stream = show_id_stream.flatMapLatest(function(id) {
-		showSpinner();
-		return Kefir.fromPromise(sb.services.get(
-				"users", 'show', {id: id}
-			).then(function(data) {
-				hideSpinner();
-				return data;
-			})
-		);
-	});
-
-	var selected_stream = get_show_stream.map(function(data) {
-	    return data.data;
-    });
-	
-	// El page se obtiene de las opciones de lanzar la transición
-	// "page" a la máquina de estados
-	var page_stream = fsm.stream.filter(function(event) {
-      return event.to === 'index';
-    }).map(function(fsm_event) {
-		if(fsm_event.options && fsm_event.options.page) {
-			return fsm_event.options.page;
-		} else {
-			return 1;
-		}
-    });
-
-	var get_index_stream = page_stream.flatMapLatest(function(page) {
-		showSpinner();
-		return Kefir.fromPromise(sb.services.get(
-				"users", 'index', {page: page, per_page: 10}
-			).then(function(data) {
-				hideSpinner();
-				return data;
-			})
-		);
+	// Fetch init Stream
+	var fetch_init_stream = fsm_init_stream.flatMapLatest(function(event) {
+		return kefirFetchIndex({page: 1, per_page: 10});
 	});
 	
-	var records_stream = get_index_stream.map(function(data) {
+	// Fetch Index Stream
+	var fetch_index_stream = page_jsx_stream.flatMapLatest(function(page) {
+		return kefirFetchIndex({page: page, per_page: 10});
+	});
+
+	var records_stream = fetch_init_stream.merge(fetch_index_stream).map(function(data) {
 	      return data.data;
     });
-
-	var total_stream = get_index_stream.map(function(data) {
+	
+	var total_stream = fetch_init_stream.merge(fetch_index_stream).map(function(data) {
 	      return data.total;
+	});
+	
+	// Fetch Show Stream
+	var fetch_show_stream = show_id_stream.flatMapLatest(function(id) {
+		return kefirFetchShow({id: id});
+	});
+
+	var selected_stream = fetch_show_stream.map(function(data) {
+	    return data.data;
     });
 
-    var spinner_stream = Kefir.pool();
-    
     var initialize = function() {
     	return fsm.initialize();
     };
 
     return {
     	initialize: initialize,
-		fsm_stream: fsm.stream,
-		page_stream: page_stream,
+		fsm_state_name: fsm_state_name, 
+		page_stream: page_jsx_stream,
 		selected_stream: selected_stream,
 		records_stream: records_stream,
 		total_stream: total_stream,
@@ -177,60 +202,72 @@ AdminJS.modules.users.Model = (function() {
 	});
 	  
 	// Properties
-    var stateProperty = streams.fsm_stream.toProperty();
-    stateProperty.log();
-    var perPageProperty = Kefir.constant(10);
-    var pageProperty = streams.page_stream.toProperty(function() {
-    	return 1;
-    });
-    var selectedProperty = streams.selected_stream.toProperty(function() {
-    	return null;
-    });
-    
-    var recordsProperty = streams.records_stream.toProperty(function() {
-      return [];
-    });
-  
-    var totalProperty = streams.total_stream.toProperty(function() {
-      return 0;
-    });
-    
-    var pageCountProperty = Kefir.combine([
-      totalProperty,
-      perPageProperty
+	var properties = {
+	    state: streams.fsm_state_name.toProperty(),
+	    per_page: Kefir.constant(10),
+	    page: streams.page_stream.toProperty(function() {
+	    	return 1;
+	    }),
+	    selected: streams.selected_stream.toProperty(function() {
+	    	return null;
+	    }),
+	    records: streams.records_stream.toProperty(function() {
+	      return [];
+	    }),
+	    total: streams.total_stream.toProperty(function() {
+	      return 0;
+	    }),
+	    spinner: streams.spinner_stream.toProperty(function() {
+	    	return false;
+	    })
+	};
+	properties.page_count = Kefir.combine([
+      properties.total,
+      properties.per_page
       ],
       function(total, per_page) {
         return parseInt(total/per_page,10)+1;
       }
     );
-
-    var spinnerProperty = streams.spinner_stream.toProperty(function() {
-    	return false;
-    });
-    
+	
+	var getPropertyKeys = function() {
+		return Object.keys(properties);
+	};
+	
+	var getPropertyValues = function() {
+		return getPropertyKeys().map(function(v) { return properties[v]; });
+	};
+	
     var stream = Kefir.combine([
-        pageProperty, 
-        perPageProperty,
-        recordsProperty,
-        totalProperty,
-        pageCountProperty,
-        stateProperty,
-        selectedProperty,
-        spinnerProperty
-	   ],
-	   function(page, per_page, records, total, page_count, state, selected,spinner) {
-    	return {
-	        page: page, 
-	        per_page: per_page,
-	        records: records,
-	        total: total,
-	        page_count: page_count,
-	        state: state.to,
-	        selected: selected,
-	        spinner: spinner
-    	};
-	  }
-    );
+       properties.state,
+       properties.per_page,
+       properties.page,
+       properties.selected,
+       properties.records,
+       properties.total,
+       properties.page_count,
+       properties.spinner
+   ], function(
+	   state,
+	   per_page,
+	   page,
+	   selected,
+	   records,
+	   total,
+	   page_count,
+	   spinner
+	) {
+      return {
+    	  state: state,
+    	  per_page: per_page,
+	      page: page,
+		  selected: selected,
+		  records: records,
+		  total: total,
+		  page_count: page_count,
+		  spinner: spinner
+      };
+    });
 
     var initialize = function(options) {
       return streams.initialize();
